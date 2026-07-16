@@ -1,0 +1,151 @@
+#!/bin/sh
+# skill-kit: deploy markdown/sh skills into any repo's .claude / .agents.
+# Two domains live in one kit and share a common core:
+#   - game  : engine-agnostic game-development skills (gdd, mechanic, balance, run, …)
+#   - story : language-agnostic authoring skills (write, plot, dupcheck, judge, …)
+# `shared/` holds the pieces both domains use verbatim (the LLM-instruction house
+# rules + the setup / create-skill meta-skills). A sync always deploys shared + the
+# one domain you name, so a consuming repo only ever sees the skills it wants.
+# POSIX sh + git only. No Node/npm.
+set -eu
+
+die() { echo "skill-kit: $*" >&2; exit 1; }
+
+# Resolve the kit's home directory. Precedence:
+#   1. explicit $SKILL_KIT_HOME
+#   2. self-detect: if this script lives inside the kit repo itself (shared/ + domains/
+#      + this very file are present), use that repo — lets you sync the kit into its own
+#      .claude/.agents to test skills without setting SKILL_KIT_HOME by hand.
+#   3. default install location
+resolve_kit_home() {
+	[ -n "${SKILL_KIT_HOME:-}" ] && { echo "$SKILL_KIT_HOME"; return; }
+	# Directory holding this script (bin/), then its parent (repo root).
+	self=$0
+	case $self in */*) ;; *) self=$(command -v -- "$self" 2>/dev/null || echo "$self") ;; esac
+	bindir=$(cd "$(dirname -- "$self")" 2>/dev/null && pwd) || bindir=
+	root=${bindir%/*}
+	if [ -n "$root" ] && [ -d "$root/shared" ] && [ -d "$root/domains" ] && [ -f "$root/bin/skill-kit" ]; then
+		echo "$root"
+		return
+	fi
+	echo "$HOME/.skill-kit"
+}
+
+KIT_HOME=$(resolve_kit_home)
+
+# link_srcs <dest-root> <src>...
+# Merge every source dir into one dest root by per-entry symlink. A pre-existing *real
+# file* (a local override) is left untouched and stays git-tracked; any symlink is
+# (re)pointed at the kit. Everything the kit owns is listed in the dest's .gitignore so
+# it is never committed. Dead kit links (entry removed upstream) are pruned. When more
+# than one src defines the same entry name, the first src wins (shared before domain).
+link_srcs() {
+	dst_root=$1
+	shift
+	# A whole-dir symlink from an older layout would shadow per-entry links.
+	[ -L "$dst_root" ] && rm "$dst_root"
+	mkdir -p "$dst_root"
+	ignored=".gitignore"
+	for src in "$@"; do
+		[ -d "$src" ] || continue
+		for entry in "$src"/*; do
+			[ -e "$entry" ] || continue
+			name=$(basename "$entry")
+			dst="$dst_root/$name"
+			if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+				continue # real local file = override -> leave it, track it
+			fi
+			[ -e "$dst" ] && continue # earlier src already claimed this name
+			ln -sfn "$entry" "$dst"
+			ignored="$ignored
+$name"
+		done
+	done
+	# Prune dead kit links (entry removed upstream).
+	for link in "$dst_root"/*; do
+		[ -L "$link" ] && [ ! -e "$link" ] && rm "$link" || true
+	done
+	printf '%s\n' "$ignored" >"$dst_root/.gitignore"
+}
+
+require_domain() {
+	case ${1:-} in
+	game | story) ;;
+	"") die "missing domain — usage: skill-kit {game|story} {sync|update}" ;;
+	*) die "unknown domain '$1' (want: game|story)" ;;
+	esac
+	[ -d "$KIT_HOME/domains/$1" ] || die "domain '$1' not found in kit at $KIT_HOME"
+}
+
+cmd_sync() {
+	domain=$1
+	require_domain "$domain"
+	[ -d "$KIT_HOME" ] || die "kit not found at $KIT_HOME — run the installer first"
+	shd="$KIT_HOME/shared"
+	dom="$KIT_HOME/domains/$domain"
+	# shared listed first so a shared entry wins any name clash with the domain.
+	link_srcs ".agents/skills" "$shd/skills" "$dom/skills"
+	link_srcs ".claude/skills" "$shd/skills" "$dom/skills"
+	link_srcs ".agents/hooks" "$shd/hooks" "$dom/hooks"
+	link_srcs ".claude/hooks" "$shd/hooks" "$dom/hooks"
+	link_srcs ".agents/refs" "$shd/refs" "$dom/refs"
+	# Persist the chosen domain so `update` (and the shared setup / create-skill skills)
+	# know which domain this repo runs, without re-passing it. A real, tracked file:
+	# link_srcs only touches symlinks, so this survives every re-sync.
+	mkdir -p .agents/refs
+	printf '%s\n' "$domain" >.agents/refs/domain
+	echo "skill-kit: synced [$domain] into $(pwd)"
+}
+
+cmd_update() {
+	domain=${1:-}
+	[ -d "$KIT_HOME/.git" ] || die "kit at $KIT_HOME is not a git checkout"
+	git -C "$KIT_HOME" pull --ff-only
+	echo "skill-kit: updated ($(git -C "$KIT_HOME" rev-parse --short HEAD))"
+	# Re-sync the current repo so added/removed skills/refs land (edits to existing
+	# files are already live via the symlinks). Domain comes from the arg, else the
+	# marker written at sync time. Skip when not inside a target repo.
+	[ -n "$domain" ] || domain=$(recorded_domain)
+	if [ -n "$domain" ]; then
+		cmd_sync "$domain"
+	elif [ -d .claude ] || [ -d .agents ]; then
+		die "cannot infer domain here — run: skill-kit {game|story} update"
+	fi
+}
+
+# Read the domain recorded at the last sync in this repo, or empty if none.
+recorded_domain() { cat .agents/refs/domain 2>/dev/null || true; }
+
+usage() {
+	cat >&2 <<'EOF'
+usage: skill-kit <domain> {sync|update}   (domain: game | story)
+       skill-kit {sync|update}            (reuse the domain recorded at last sync)
+
+  <domain> sync     symlink shared + <domain> skills/hooks/refs into ./.claude and ./.agents
+  <domain> update   git pull the kit, then re-sync this repo for <domain>
+  sync              re-sync using the domain recorded here at last sync
+  update            git pull, then re-sync using the domain recorded here at last sync
+EOF
+	exit 1
+}
+
+# Canonical form is domain-first (`skill-kit game sync`). When the domain is omitted
+# (`skill-kit sync` / `skill-kit update`) it is read back from the marker this repo
+# wrote at its last sync, so a repo already set up never needs to re-state its domain.
+case "${1:-}" in
+game | story)
+	domain=$1
+	case "${2:-}" in
+	sync) cmd_sync "$domain" ;;
+	update) cmd_update "$domain" ;;
+	*) usage ;;
+	esac
+	;;
+sync)
+	domain=$(recorded_domain)
+	[ -n "$domain" ] || die "no domain recorded here — run: skill-kit {game|story} sync"
+	cmd_sync "$domain"
+	;;
+update) cmd_update "" ;;
+*) usage ;;
+esac

@@ -5,7 +5,7 @@ description: Create world setting by specifying a project. Use when the user wan
 
 The user provides the project-id and optionally an overview of the world setting element to create.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id>'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `world` (the dir).
+Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `world` (the dir).
 
 Create and edit world settings through dialogue with the user, storing documents in the `world` directory.
 

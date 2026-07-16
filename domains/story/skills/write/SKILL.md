@@ -7,7 +7,7 @@ Run `.agents/skills/write/refs.sh`
 
 The user provides the project-id and a file path (the memo or work-in-progress file). Resolve the file path as described in step 2 below.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id> <name>'` and use the path it prints. Never hand-build a path. Functions used here: `story_memo` (takes the project id and a memo filename) and `story_body_file` (takes the project id and a chapter name).
+Get each path from `.agents/refs/path <project-id> <what> [name]`; never hand-build one. `<what>`: `story_memo` (takes a memo filename) and `story_body_file` (takes a chapter name).
 
 1. **Declare Work Start**
    - Output: `Starting work: <resolved memo path>` (the `story_memo` path for the filename)

@@ -7,7 +7,7 @@ The user provides the project-id.
 
 The synopsis summarizes the entire story in a concise narrative for submission purposes.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id>'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `story_outline`, `characters`, `story_plot`, `story_synopsis`.
+Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `story_outline`, `characters`, `story_plot`, `story_synopsis`.
 
 Read the `readme` path, all files in the `story_outline` directory, key character files from the `characters` directory, and any plot files in the `story_plot` directory for detailed story beats.
 

@@ -17,7 +17,7 @@ Produce a `flowchart TD` whose **nodes are events**, top-to-bottom in chronologi
 - Branch nodes for concurrent or parallel events; use a `subgraph` per phase.
 - Wrap node labels in double quotes and avoid raw parentheses / colons inside unquoted labels.
 
-Resolve the output path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; story_timeline <project-id>'` and use the path it prints; never hand-build it. Do not read any other project files. Write to that path (overwrite if it exists):
+Get the output path from `.agents/refs/path <project-id> story_timeline` and use the line it prints; never hand-build it. Do not read any other project files. Write to that path (overwrite if it exists):
 
 ```markdown
 # [project-id] タイムライン

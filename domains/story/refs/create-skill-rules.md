@@ -2,10 +2,11 @@
 
 Conventions the existing story skills establish — follow them when scaffolding a new one:
 
-- **Never hardcode project paths.** Every path a skill uses comes from `.agents/refs/layout.sh`;
-  source it and call a function (`. .agents/refs/layout.sh; characters_main "$id" "$name"`) rather
-  than writing a path in the body. If a location the new skill needs isn't defined there, add the
-  function to the default and have the user re-run `setup` — don't build the path in-model.
+- **Never hardcode project paths.** Get every path from `.agents/refs/path <project-id> <what>
+  [name]` rather than writing a path in the body; the resolver loads that project's own layout file,
+  so the skill never learns how paths resolve. If the kind the new skill needs isn't defined, add
+  the function name to `.agents/refs/layout-template.sh` and have the user re-run `setup` — don't
+  build the path in-model.
 - **Push deterministic work into `scripts/*.sh`** under the skill dir, called from the body in one
   line. Resolve refs inside the script so the body stays about the judgment.
 - **Extract a shared rule set when it's reused.** If the skill's rule set is shared with other

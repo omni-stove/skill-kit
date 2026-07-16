@@ -5,7 +5,7 @@ description: Create item settings by specifying a project, through dialogue with
 
 The user provides a project ID and, optionally, a brief overview of the item to create. Use any item overview as the starting point for the basic information.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id>'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `items` (the dir).
+Get every path from `.agents/refs/path <project-id> <what>` and use the line it prints; never hand-build a path. Kinds here: `readme`, `items` (the dir).
 
 Create and edit item settings through dialogue with the user, storing documents in the `items` directory.
 

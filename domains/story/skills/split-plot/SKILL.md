@@ -7,7 +7,7 @@ Run `.agents/skills/split-plot/refs.sh`
 
 The user provides a project-id and a source file path (long plot draft, scenario memo, outline, etc.).
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id>'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `story_plot` (the output dir).
+Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `story_plot` (the output dir).
 
 Read the source file. If a project-id is given, also read the `readme` path for world context, plus existing character and setting files relevant to the source.
 

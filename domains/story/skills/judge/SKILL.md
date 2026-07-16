@@ -7,7 +7,7 @@ Evaluate a work as a contest judge. Judge synopsis first, then opening text. If 
 
 The user states the project id.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id>'` and use the path it prints. Never hand-build a path. Functions used here: `story_synopsis`, `story_outline`, `story` (the manuscript dir). If contest rules are provided in this conversation, use them as the PRIMARY criteria; otherwise read the relevant contest-rules file under `.agents/refs/contest-rules/` (e.g. `k.md` = このミステリーがすごい!, `y.md` = 横溝正史, `h.md` = ハヤカワSF) for the contest's $CONTEST_RULES.
+Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `story_synopsis`, `story_outline`, `story` (the manuscript dir). If contest rules are provided in this conversation, use them as the PRIMARY criteria; otherwise read the relevant contest-rules file under `.agents/refs/contest-rules/` (e.g. `k.md` = このミステリーがすごい!, `y.md` = 横溝正史, `h.md` = ハヤカワSF) for the contest's $CONTEST_RULES.
 
 **Read timing**: Only read files needed for the current step. In Step 1, read ONLY the synopsis. Do NOT read story files until Step 2.
 

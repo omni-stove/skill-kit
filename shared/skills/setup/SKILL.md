@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Adapt the kit to this repo by generating the real .agents/refs override files (layout.sh, and for the game domain engine.sh) whose functions return this repo's actual paths / engine facts. Use when setting up skill-kit in a repo — a new repo, a non-default engine, or a repo laid out differently from the kit default (e.g. "setup", "このリポジトリ用に設定して", "layoutを合わせて", "Godot用に合わせて").
+description: Adapt the kit to this repo by generating this repo's real .agents/refs files (a per-project layout file per project, and for the game domain engine.sh) whose functions return this repo's actual paths / engine facts. Use when setting up skill-kit in a repo — a new repo, a non-default engine, or a repo laid out differently from the kit default (e.g. "setup", "このリポジトリ用に設定して", "layoutを合わせて", "Godot用に合わせて").
 ---
 
 Run `.agents/skills/setup/refs.sh` — it prints this repo's **domain** (game or story) and the

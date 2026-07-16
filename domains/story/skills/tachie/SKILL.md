@@ -7,7 +7,7 @@ Run `.agents/skills/tachie/refs.sh`
 
 The user supplies the character and, when it belongs to a project, the project id. Without a project id, build the prompt from the description alone.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id>'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `characters` (the dir).
+Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `characters` (the dir).
 
 Find the character's file under the `characters` directory and read it; read the `readme` for era and dress conventions.
 

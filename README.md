@@ -17,14 +17,16 @@ access are rejected by GitHub at clone time.
 
 ```sh
 gh auth login   # once, if you haven't already
-curl -fsSL https://raw.githubusercontent.com/omni-stove/skill-kit/main/install.sh | sh
+gh api repos/omni-stove/skill-kit/contents/install.sh -q .content | base64 -d | sh
 ```
 
 Clones the kit to `~/.skill-kit` and links `skill-kit` into `~/.local/bin`. The installer
 runs `gh auth setup-git` so `skill-kit update` can keep pulling the private repo.
 
-> If `raw.githubusercontent.com` 404s (the URL also needs read access), fetch via
-> `gh api repos/omni-stove/skill-kit/contents/install.sh -q .content | base64 -d | sh`.
+> Fetch `install.sh` via `gh api` (not `curl`): because the repo is private,
+> `raw.githubusercontent.com` doesn't see your GitHub credentials and returns 404, so a
+> plain `curl -fsSL https://raw.githubusercontent.com/…/install.sh | sh` fails at that step.
+> `gh api` authenticates, so it works.
 
 ## Use
 
@@ -45,8 +47,9 @@ with no domain — it reuses what the repo recorded. Pass the domain explicitly 
 switch or to be unambiguous.
 
 Then, once per repo, run the **`setup`** skill in Claude Code — it adapts the kit to this
-repo and writes the real `.agents/refs/*.sh` overrides (game: `engine.sh` + `layout.sh`;
-story: `layout.sh`). Skills read from those; nothing repo-specific is hardcoded.
+repo, writing a per-project layout file (`.agents/refs/layouts/<id>.sh`) for each project,
+plus, in game, the `engine.sh` override. Skills read from those; nothing repo-specific is
+hardcoded.
 
 ### Testing skills in the kit repo itself
 
@@ -63,31 +66,51 @@ shared/            everything both domains use verbatim
   skills/
     setup/         adapt the kit to this repo — dispatches on the recorded domain
     create-skill/  scaffold a new skill — dispatches on the recorded domain
+    character/     setting skills that make sense in either domain — deployed to
+    world/         both game and story. Domain-neutral bodies; they ask
+    item/          `.agents/refs/path` for every path and never learn how it
+    timeline/      resolves.
   refs/
+    path                       resolves <project-id> <what> to a path (both domains)
     llm-instruction-rules.md   house rules for LLM-facing instruction files
   hooks/
     llm-instruction-rules.sh   PreToolUse hook that injects those rules
 domains/
   game/
     skills/        gdd, mechanic, balance, run, fix, logs, setup-mcp
-    refs/          engine.sh, layout.sh, *-format.md, scriptability-rules.md,
-                   setup-rules.md, create-skill-rules.md
+    refs/          engine.sh, layout.sh, layout-template.sh, *-format.md,
+                   scriptability-rules.md, setup-rules.md, create-skill-rules.md
   story/
-    skills/        write, plot, character, world, dupcheck, judge, …
-    refs/          layout.sh, *-format.md, *-rules.md, contest-rules/,
-                   setup-rules.md, create-skill-rules.md
+    skills/        write, plot, dupcheck, judge, …
+    refs/          layout.sh, layout-template.sh, *-format.md, *-rules.md,
+                   contest-rules/, setup-rules.md, create-skill-rules.md
 ```
 
 ## How the shared skills stay one skill for two domains
 
-`setup` and `create-skill` are identical in shape across domains but differ in content
-(game setup wires an engine + logs; story setup wires a file layout). Rather than ship two
-copies, each lives once in `shared/skills/`. Its `refs.sh` reads the domain marker and
-`cat`s that domain's rules — `domains/<domain>/refs/setup-rules.md` or
-`create-skill-rules.md` — which `sync` has already deployed into `.agents/refs/`. The
-skill body stays domain-agnostic; the domain-specific instructions arrive as "the loaded
-rules". This is the same refs mechanism the other skills use, so the shared skills carry no
-special-casing beyond one `cat`.
+A skill lives in `shared/skills/` when its body is domain-agnostic and only its
+*content or paths* differ per domain. Two flavors of this:
+
+**Meta-skills — differ by loaded rules.** `setup` and `create-skill` are identical in
+shape across domains but differ in content (game setup wires an engine + logs; story setup
+wires a file layout). Rather than ship two copies, each lives once in `shared/skills/`. Its
+`refs.sh` reads the domain marker and `cat`s that domain's rules —
+`domains/<domain>/refs/setup-rules.md` or `create-skill-rules.md` — which `sync` has
+already deployed into `.agents/refs/`. The skill body stays domain-agnostic; the
+domain-specific instructions arrive as "the loaded rules".
+
+**Setting skills — differ by layout only.** `character`, `world`, `item`, and `timeline`
+describe things that exist in both a game and a story. Their bodies never name a path and
+never learn how one resolves: they call `.agents/refs/path <project-id> <what> [name]` and
+use the line it prints. `path` sources the domain's `.agents/refs/layout.sh`, which maps
+the id to that project's own layout file (`.agents/refs/layouts/<id>.sh`) and sources it;
+the project's structural functions then echo the concrete path. Those per-project files —
+scaffolded from `layout-template.sh` by `setup` — carry the whole base, so a project can
+live anywhere on disk (this repo, a sibling, an absolute path), with no assumed `src/` or
+`docs/design/` root. The id → file rule is one overridable line; the skill sees none of it.
+
+Either way the shared skills carry no special-casing — `sync` deploys them to both domains
+verbatim, and the domain supplies the difference through refs.
 
 ## How deployment works
 
@@ -99,10 +122,10 @@ same name into the deployed dir — `sync` detects the real file, leaves it unto
 keeps it git-tracked.
 
 Skills never hardcode repo facts or paths. Everything repo-specific comes from
-`.agents/refs/*.sh` — POSIX-sh functions that echo a resolved value. A skill runs
-`sh -c '. .agents/refs/layout.sh; story_synopsis co'` (or, in game, `engine.sh; runtime_log`)
-and uses what it prints, so the kit never builds a value in-model. The `setup` skill walks
-you through generating the overrides for your repo.
+`.agents/refs/` — a project path from `.agents/refs/path <project-id> <what> [name]`, an
+engine fact from `sh -c '. .agents/refs/engine.sh; runtime_log'` — and the skill uses what
+it prints, so the kit never builds a value in-model. The `setup` skill walks you through
+generating the per-project layout files and engine overrides for your repo.
 
 ## LLM-instruction-rules hook
 

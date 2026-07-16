@@ -7,7 +7,7 @@ Run `.agents/skills/plot/refs.sh`
 
 The user provides a project-id and, optionally, a plot overview. If an existing plot file is specified, check it against the loaded rules instead of creating a new one.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id> [english-title]'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `story_plot` (the dir), `story_plot_file` (takes the project id and a kebab-case english title).
+Get each path from `.agents/refs/path <project-id> <what> [name]`; never hand-build one. `<what>`: `readme`, `story_plot` (the dir), `story_plot_file` (takes a kebab-case english title).
 
 Develop high-level plot concepts collaboratively with the author.
 

@@ -4,11 +4,17 @@ Read the kit defaults first — they are the contract you are adapting:
 `cat .agents/refs/engine.sh .agents/refs/layout.sh`. In both files the function NAMES are
 fixed; the values they echo are what you change for this repo.
 
-This produces up to two **real** files in this repo:
+This produces up to two **real** files in this repo, plus one per project that uses the
+shared setting skills:
 - `.agents/refs/engine.sh` — engine-specific facts (source root, log path, build/run
   commands, compile/runtime/call-site grep patterns, and the optional engine-control MCP
   prefix).
-- `.agents/refs/layout.sh` — where this repo keeps its game-design docs.
+- `.agents/refs/layout.sh` — where this repo keeps its game-design docs (gdd / mechanics /
+  balance / levels). It also carries the resolver the setting skills use; leave that part
+  alone.
+- `.agents/refs/layouts/<id>.sh` — one per project that uses `character` / `world` / `item`
+  / `timeline`, copied from `.agents/refs/layout-template.sh` and pointed at where that
+  project keeps its setting docs (anywhere on disk).
 
 Wiring an engine-control MCP is a separate, optional step; by default `control_mcp` stays
 empty and the kit reads errors, logs, and runs the game from the log fallback.
@@ -45,7 +51,13 @@ Walk each default function with the user. For `engine.sh`, resolve at minimum:
 `engine_name`, `source_root`, `third_party`, `runtime_log`, `runtime_log_prev`,
 `build_log`, `compile_error_pattern`, `runtime_error_pattern`, `call_site_pattern`,
 `build_cmd`, `run_cmd`, `headless_cmd`, `recompile_hint`. For `layout.sh`: `design_root`,
-`gdd_file`, `mechanics`/`mechanic_file`, `balance`/`balance_file`, `levels`/`level_file`.
+`gdd_file`, `mechanics`/`mechanic_file`, `balance`/`balance_file`, `levels`/`level_file`
+— the game's own design docs. Leave the `project_layout` / `load_project` resolver below
+them untouched.
+
+When the game uses the shared setting skills, generate a per-project layout file too: copy
+`.agents/refs/layout-template.sh` to `.agents/refs/layouts/<id>.sh`, point `_base` at where
+that project keeps its characters / world / items / timeline, and keep every function name.
 
 Pay special attention to `headless_cmd`: find this engine's batch/headless launch (Unity
 `-batchmode -nographics … -runTests / -executeMethod`, a Godot `--headless` invocation, a
@@ -76,6 +88,7 @@ confirm they match reality:
 ```sh
 sh -c '. .agents/refs/engine.sh; runtime_log; echo "---"; compile_error_pattern'
 sh -c '. .agents/refs/layout.sh; gdd_file; mechanic_file demo'
+.agents/refs/path <id> characters_main テスト   # only if a per-project layout file was made
 ```
 
 Confirm the log path exists (`ls -l "$(sh -c '. .agents/refs/engine.sh; runtime_log')"`)

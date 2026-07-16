@@ -5,7 +5,7 @@ description: Create character settings by specifying a project. Use when the use
 
 The user specifies the target project id and an optional character overview.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id> [name]'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `characters` (the dir), and `characters_main` / `characters_supporting` / `characters_antagonist` / `characters_archive` (each takes the project id and the character name, e.g. `characters_main co "アリス"`).
+Get each path from `.agents/refs/path <project-id> <what> [name]`; never hand-build one. `<what>`: `readme`, `characters` (the dir), or `characters_main` / `characters_supporting` / `characters_antagonist` / `characters_archive` with the character name.
 
 Create and edit character settings through dialogue with the user.
 

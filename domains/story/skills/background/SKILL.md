@@ -7,7 +7,7 @@ Run `.agents/skills/background/refs.sh`
 
 The user supplies the location or scene and, when it belongs to a project, the project id. Without a project id, build the prompt from the description alone.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id>'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `world`, `story_plot`.
+Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `world`, `story_plot`.
 
 Read the `readme` and the `world` files that describe the location; for a scene from the story, read its plot file.
 

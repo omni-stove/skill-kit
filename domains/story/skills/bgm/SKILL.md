@@ -5,7 +5,7 @@ description: Build a Suno prompt for a BGM track from a story project's settings
 
 The user supplies what the track is for (a scene, an opening/ending, a character theme, a work-session loop, etc.) and, when the subject belongs to a project, the project id. Without a project id, build the prompt from the user's description alone and skip the setting-file steps.
 
-Resolve every project path by sourcing the layout — run `sh -c '. .agents/refs/layout.sh; <fn> <project-id> [name]'` and use the path it prints. Never hand-build a path. Functions used here: `readme`, `world`, `characters` (the dir), `story`, `story_plot`.
+Get each path from `.agents/refs/path <project-id> <what> [name]`; never hand-build one. `<what>`: `readme`, `world`, `characters` (the dir), `story`, `story_plot`.
 
 Read only the setting files the subject needs: the story or plot file for a specific scene, `readme` and files under `world` for era and technology level, the character file for a character theme. Extract the emotional arc, the pacing, and the moment the track should underscore.
 

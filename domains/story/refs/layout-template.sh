@@ -1,18 +1,11 @@
 #!/bin/sh
-# Per-project layout file — ONE per project. `.agents/refs/layout.sh` resolves it
-# deterministically (load_project <id> sources this), so it is never sourced with a
-# project argument: it already IS the project. Copy this to .agents/refs/layouts/<id>.sh
-# and point the paths at where THIS project actually keeps its files. Paths may be
-# relative to the repo root or absolute — the project need not live in this repo, and
-# there is no assumed base like src/ or docs/.
-#
-# Every function echoes one path and takes at most a name ($1); no project id is passed
-# (the loaded file is the project). The function NAMES are the contract skills rely on;
-# the paths are yours to set. Keep every name even if a project doesn't use it.
+# Per-project layout — ONE per project, sourced by `.agents/refs/layout.sh` (load_project
+# <id>). It IS the project, so no project id is passed; each function echoes one path and
+# takes at most a name ($1). Copy to .agents/refs/layouts/<id>.sh and set _base to this
+# project's root — a dir in this repo, a sibling checkout, or an absolute path. The
+# function NAMES are the contract skills rely on; keep them all, the paths are yours.
 
-# One place to set THIS project's base, reused below. Inline concrete paths instead if
-# a project's directories don't share a common base — the names are what matter.
-_base() { echo "src/co"; }   # <- point at THIS project's directory (edit per project)
+_base() { echo "."; }   # this project's root — everything below hangs off it (repo root by default)
 
 readme()                { echo "$(_base)/README.md"; }
 

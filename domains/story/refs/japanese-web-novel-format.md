@@ -1,8 +1,7 @@
 # Japanese Web Novel Format Rules
 
 - Plain text only; no markdown formatting
-- Dense body: every non-empty line sits adjacent to its non-empty neighbors. The only blank lines permitted: one immediately before and one immediately after a scene break
-- Separate scenes with `◇◇◇` on its own line
+- Separate scenes with `◇◇◇` on its own line; blank lines only there, one before and one after
 - Indent the first character of each narration paragraph with a full-width space; dialogue lines starting with 「 stay unindented
 - Place dialogue at the beginning of a line, never embedded mid-sentence
 - Merge consecutive dialogue from the same speaker, or insert narration between

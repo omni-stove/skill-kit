@@ -51,7 +51,7 @@ must populate; give every such field a code path that can (re)assign it.
 ## 4. Observe through logs, not the screen
 
 - The agent can't watch the Game view. Instrument with `Debug.Log` (tagged, e.g.
-  `[Combat]`) so behaviour is verifiable from the runtime log via the `logs` skill.
+  `[Combat]`) so behaviour is verifiable from the runtime log.
 - Prefer deterministic, logged outcomes over "you'll see it on screen".
 
 ## When a GUI step is unavoidable

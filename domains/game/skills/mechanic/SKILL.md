@@ -15,16 +15,9 @@ exists, edit it in place rather than duplicating. Read the GDD if present, so th
 stays consistent with the game's pillars and loop.
 
 Draw out the spec through dialogue. The high-value parts are the state machine and the
-edge cases — push on what happens when it's interrupted, re-triggered while active, or
-used with no resource. Clarify only genuine gaps; batch questions into one
-`AskUserQuestion` round.
+edge cases — push on them; the user won't volunteer them. Clarify only genuine gaps; batch
+questions into one `AskUserQuestion` round.
 
-Draft following the format: every rule implementable, states and transitions enumerated,
-edge cases as the spec, undecided numbers `TBD` with what decides them. Put tunable
-numbers in the parameters table; a value that belongs to a balance pass is marked and left
-to the balance doc, not fixed here. Omit empty headers. Describe what the system does, not
-how fun it is.
-
-Present, check consistency with the GDD and interacting mechanics, confirm, adjust, then
-write to the target file. If this mechanic isn't yet in the GDD's Mechanics section, offer
-to add a link there so the overview stays in sync.
+Draft following the format, present, check consistency with the GDD and interacting
+mechanics, confirm, adjust, then write to the target file. If this mechanic isn't yet in
+the GDD's Mechanics section, offer to add a link there so the overview stays in sync.

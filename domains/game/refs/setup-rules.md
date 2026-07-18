@@ -16,9 +16,6 @@ shared setting skills:
   / `timeline`, copied from `.agents/refs/layout-template.sh` and pointed at where that
   project keeps its setting docs (anywhere on disk).
 
-Wiring an engine-control MCP is a separate, optional step; by default `control_mcp` stays
-empty and the kit reads errors, logs, and runs the game from the log fallback.
-
 `skill-kit game sync` leaves real files untouched and keeps them git-tracked, so a real file
 overrides the kit's symlinked default. Do NOT edit a symlink target, and never
 hand-build engine facts or paths elsewhere — every value a skill uses comes from these
@@ -96,8 +93,7 @@ and that `compile_error_pattern` actually matches a real error line if the log h
 
 ## Surface the scriptability rules to the whole repo
 
-`.agents/refs/scriptability-rules.md` (headless over GUI, wire object references in code
-not the Inspector, observe through logs) is a rule the agent should follow on *every*
+`.agents/refs/scriptability-rules.md` is a rule the agent should follow on *every*
 task in this repo, not only when a skill happens to read it. Offer to add a one-line
 pointer to it in the repo's `CLAUDE.md` (create or append) so it's always in context —
 e.g. "Game workflow: follow `.agents/refs/scriptability-rules.md` (no GUI; wire refs and

@@ -25,9 +25,8 @@ well-known one they name.
 
 1. **Decide the server.** Ask the user which engine-control MCP server they want (its
    name/package/command, or a URL for a remote server). If they don't have one in mind,
-   say so plainly — the kit does not ship or endorse a specific one; they need to pick a
-   bridge for their engine. Do not fabricate one. If the user only wants log-based
-   behaviour, stop here and leave `control_mcp` empty.
+   say so plainly — they need to pick a bridge for their engine. If the user only wants
+   log-based behaviour, stop here and leave `control_mcp` empty.
 
 2. **Configure it in the repo, project-scoped** so it travels with the repo. Prefer the
    CLI over hand-editing when available:
@@ -50,15 +49,13 @@ well-known one they name.
    reload/restart the session for a newly added server's tools to appear.
 
 4. **Find the tool prefix.** The server exposes tools named `mcp__<name>__<tool>`. Confirm
-   the exact prefix from `claude mcp list` / the tool list (it derives from the server name
-   you registered, e.g. a server named `unity` → `mcp__unity__`).
+   the exact prefix from `claude mcp list` / the tool list.
 
 5. **Record it in the engine contract.** Set `control_mcp` in the repo's real
    `.agents/refs/engine.sh` to echo that prefix — e.g. `control_mcp() { echo "mcp__unity__"; }`.
    If `.agents/refs/engine.sh` is still the kit's symlinked default, first turn it into a
    real override (copy the default's contents, then edit) so `skill-kit game sync` won't touch
-   it — a real file overrides the kit's symlinked default. Change only `control_mcp`; leave
-   every other function intact.
+   it. Change only `control_mcp`; leave every other function intact.
 
 6. **Verify the wiring end to end.** Confirm the value resolves
    (`sh -c '. .agents/refs/engine.sh; control_mcp'` prints the prefix) and that a tool with
@@ -75,6 +72,5 @@ well-known one they name.
 
 ## Notes
 
-- Keep `.mcp.json` free of literal secrets — reference `env` vars.
 - To undo, `claude mcp remove --scope project <name>` and reset `control_mcp` to echo an
   empty string; the skills revert to log-scraping automatically.

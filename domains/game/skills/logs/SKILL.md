@@ -18,17 +18,13 @@ If it can't find `.agents/refs/engine.sh`, the kit isn't synced into this repo �
 user to run `skill-kit game sync`, then stop.
 
 The log is append-only, often huge, updates live, and repeats a message logged every
-frame; the script tails and dedupes for that. This project's own frames point into
+frame. This project's own frames point into
 `sh -c '. .agents/refs/engine.sh; source_root'` — engine/plugin frames and
 license/entitlement boilerplate are noise.
 
 For a specific tag — projects prefix `Debug.Log`/`print` lines with `[Combat]`, `[AI]`,
 etc.: `grep -nF "[Combat]" "$(sh -c '. .agents/refs/engine.sh; runtime_log')" | tail -50`.
 
-Read full context around an interesting hit: from its line number, read the surrounding
-±20 lines so message, stack trace, and source marker come together.
-
-Report what was logged, where it came from (`file:line`), and how often. Cross-check the
-call site in the real source before proposing a change — log line numbers go stale. To
-watch output stream while the user runs a scenario:
+Cross-check the call site in the real source before proposing a change — log line numbers
+go stale. To watch output stream while the user runs a scenario:
 `tail -f "$(sh -c '. .agents/refs/engine.sh; runtime_log')"`.

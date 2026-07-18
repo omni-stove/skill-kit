@@ -4,7 +4,7 @@
 #   - game  : engine-agnostic game-development skills (gdd, mechanic, balance, run, …)
 #   - story : language-agnostic authoring skills (write, plot, dupcheck, judge, …)
 # `shared/` holds the pieces both domains use verbatim (the LLM-instruction house
-# rules + the setup / create-skill meta-skills). A sync always deploys shared + the
+# rules + the setup meta-skill). A sync always deploys shared + the
 # one domain you name, so a consuming repo only ever sees the skills it wants.
 # POSIX sh + git only. No Node/npm.
 set -eu
@@ -89,8 +89,8 @@ cmd_sync() {
 	link_srcs ".agents/hooks" "$shd/hooks" "$dom/hooks"
 	link_srcs ".claude/hooks" "$shd/hooks" "$dom/hooks"
 	link_srcs ".agents/refs" "$shd/refs" "$dom/refs"
-	# Persist the chosen domain so `update` (and the shared setup / create-skill skills)
-	# know which domain this repo runs, without re-passing it. A real, tracked file:
+	# Persist the chosen domain so `update` (and the shared setup skill) know which
+	# domain this repo runs, without re-passing it. A real, tracked file:
 	# link_srcs only touches symlinks, so this survives every re-sync.
 	mkdir -p .agents/refs
 	printf '%s\n' "$domain" >.agents/refs/domain

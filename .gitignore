@@ -1,2 +1,5 @@
-.claude/
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/create-skill/
 .agents/

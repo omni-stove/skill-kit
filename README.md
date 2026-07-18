@@ -62,10 +62,12 @@ The generated `.claude/` / `.agents/` are git-ignored.
 
 ```
 bin/               the skill-kit CLI
+.claude/skills/
+  create-skill/    scaffold a new skill in this repo — the kit's own skill, never
+                   deployed; its refs/ holds the per-domain create-skill conventions
 shared/            everything both domains use verbatim
   skills/
     setup/         adapt the kit to this repo — dispatches on the recorded domain
-    create-skill/  scaffold a new skill — dispatches on the recorded domain
     character/     setting skills that make sense in either domain — deployed to
     world/         both game and story. Domain-neutral bodies; they ask
     item/          `.agents/refs/path` for every path and never learn how it
@@ -79,11 +81,11 @@ domains/
   game/
     skills/        gdd, mechanic, balance, run, fix, logs, setup-mcp
     refs/          engine.sh, layout.sh, layout-template.sh, *-format.md,
-                   scriptability-rules.md, setup-rules.md, create-skill-rules.md
+                   scriptability-rules.md, setup-rules.md
   story/
     skills/        write, plot, dupcheck, judge, …
     refs/          layout.sh, layout-template.sh, *-format.md, *-rules.md,
-                   contest-rules/, setup-rules.md, create-skill-rules.md
+                   contest-rules/, setup-rules.md
 ```
 
 ## How the shared skills stay one skill for two domains
@@ -91,13 +93,17 @@ domains/
 A skill lives in `shared/skills/` when its body is domain-agnostic and only its
 *content or paths* differ per domain. Two flavors of this:
 
-**Meta-skills — differ by loaded rules.** `setup` and `create-skill` are identical in
-shape across domains but differ in content (game setup wires an engine + logs; story setup
-wires a file layout). Rather than ship two copies, each lives once in `shared/skills/`. Its
-`refs.sh` reads the domain marker and `cat`s that domain's rules —
-`domains/<domain>/refs/setup-rules.md` or `create-skill-rules.md` — which `sync` has
-already deployed into `.agents/refs/`. The skill body stays domain-agnostic; the
-domain-specific instructions arrive as "the loaded rules".
+**Meta-skill — differs by loaded rules.** `setup` is identical in shape across domains
+but differs in content (game setup wires an engine + logs; story setup wires a file
+layout). Rather than ship two copies, it lives once in `shared/skills/`. Its `refs.sh`
+reads the domain marker and `cat`s that domain's rules —
+`domains/<domain>/refs/setup-rules.md` — which `sync` has already deployed into
+`.agents/refs/`. The skill body stays domain-agnostic; the domain-specific instructions
+arrive as "the loaded rules".
+
+New skills are authored in this repo with its own `create-skill` skill
+(`.claude/skills/create-skill/`) — it is not part of the payload, so consuming repos
+never see it; they receive the skills it creates on their next sync.
 
 **Setting skills — differ by layout only.** `character`, `world`, `item`, and `timeline`
 describe things that exist in both a game and a story. Their bodies never name a path and

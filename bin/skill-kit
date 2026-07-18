@@ -94,6 +94,11 @@ cmd_sync() {
 	# link_srcs only touches symlinks, so this survives every re-sync.
 	mkdir -p .agents/refs
 	printf '%s\n' "$domain" >.agents/refs/domain
+	# Seed the repo-level instruction files once. AGENTS.md is the canonical one;
+	# CLAUDE.md only imports it so the two can never drift. Existing files (or
+	# symlinks) are never touched — sync stays idempotent and override-safe.
+	[ -e AGENTS.md ] || [ -L AGENTS.md ] || : >AGENTS.md
+	[ -e CLAUDE.md ] || [ -L CLAUDE.md ] || printf '@AGENTS.md\n' >CLAUDE.md
 	echo "skill-kit: synced [$domain] into $(pwd)"
 }
 

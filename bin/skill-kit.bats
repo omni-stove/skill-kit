@@ -64,6 +64,23 @@ setup() {
   ! grep -Fxq "domain" .agents/refs/.gitignore
 }
 
+@test "sync seeds AGENTS.md and a CLAUDE.md that only imports it" {
+  SKILL_KIT_HOME="$kit" run "$CLI" game sync
+  [ "$status" -eq 0 ]
+  [ -f AGENTS.md ] && [ ! -L AGENTS.md ]
+  [ -f CLAUDE.md ] && [ ! -L CLAUDE.md ]
+  [ "$(cat CLAUDE.md)" = "@AGENTS.md" ]
+}
+
+@test "existing AGENTS.md / CLAUDE.md are never overwritten" {
+  echo myagents > AGENTS.md
+  echo myclaude > CLAUDE.md
+  SKILL_KIT_HOME="$kit" run "$CLI" game sync
+  [ "$status" -eq 0 ]
+  [ "$(cat AGENTS.md)" = "myagents" ]
+  [ "$(cat CLAUDE.md)" = "myclaude" ]
+}
+
 @test "no-domain sync reuses the recorded domain" {
   SKILL_KIT_HOME="$kit" "$CLI" game sync
   SKILL_KIT_HOME="$kit" run "$CLI" sync

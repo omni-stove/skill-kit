@@ -26,6 +26,18 @@ setup() {
   cd "$target"
 }
 
+# Turn the fixture kit into a git clone tracking a bare origin, so `update`'s
+# `git pull --ff-only` has a real upstream to talk to.
+make_git_kit() {
+  origin="$BATS_TEST_TMPDIR/origin.git"
+  git init -q --bare "$origin"
+  git -C "$kit" init -q -b main
+  git -C "$kit" add -A
+  git -C "$kit" -c user.email=t@t -c user.name=t commit -qm init
+  git -C "$kit" remote add origin "$origin"
+  git -C "$kit" push -qu origin main
+}
+
 @test "no args prints usage and fails" {
   run "$CLI"
   [ "$status" -eq 1 ]
@@ -121,6 +133,29 @@ setup() {
   [ "$status" -eq 0 ]
   [ ! -L .agents/skills ] && [ -d .agents/skills ]
   [ -L .agents/skills/gfoo ]
+}
+
+@test "update with nothing new upstream says so instead of claiming an update" {
+  make_git_kit
+  SKILL_KIT_HOME="$kit" run "$CLI" game update
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"already up to date"* ]]
+  [[ "$output" != *"skill-kit: updated"* ]]
+  [ -L .agents/skills/gfoo ]   # still re-syncs
+}
+
+@test "update with new upstream commits reports updated" {
+  make_git_kit
+  work="$BATS_TEST_TMPDIR/work"
+  git clone -q "$origin" "$work"
+  echo new > "$work/newfile"
+  git -C "$work" add newfile
+  git -C "$work" -c user.email=t@t -c user.name=t commit -qm change
+  git -C "$work" push -q
+  SKILL_KIT_HOME="$kit" run "$CLI" game update
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"skill-kit: updated"* ]]
+  [[ "$output" != *"already up to date"* ]]
 }
 
 @test "self-detects the kit repo when run from its own checkout" {

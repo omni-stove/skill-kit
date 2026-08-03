@@ -105,8 +105,13 @@ cmd_sync() {
 cmd_update() {
 	domain=${1:-}
 	[ -d "$KIT_HOME/.git" ] || die "kit at $KIT_HOME is not a git checkout"
+	before=$(git -C "$KIT_HOME" rev-parse HEAD)
 	git -C "$KIT_HOME" pull --ff-only
-	echo "skill-kit: updated ($(git -C "$KIT_HOME" rev-parse --short HEAD))"
+	if [ "$(git -C "$KIT_HOME" rev-parse HEAD)" = "$before" ]; then
+		echo "skill-kit: already up to date ($(git -C "$KIT_HOME" rev-parse --short HEAD)) — no changes"
+	else
+		echo "skill-kit: updated ($(git -C "$KIT_HOME" rev-parse --short HEAD))"
+	fi
 	# Re-sync the current repo so added/removed skills/refs land (edits to existing
 	# files are already live via the symlinks). Domain comes from the arg, else the
 	# marker written at sync time. Skip when not inside a target repo.

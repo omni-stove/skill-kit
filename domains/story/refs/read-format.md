@@ -6,11 +6,8 @@
 ## Overall
 [One-line impression]
 
-## Strengths
-- [Quote specific passages]
-
-## Concerns
-- [Quote specific passages]
+## Notable Points
+- [Only what genuinely stood out — good or bad — with quoted passages. If nothing stood out, say so in one line.]
 
 ## Thoughts
 [Honest, plain reaction. No flowery language.]

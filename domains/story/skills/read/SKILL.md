@@ -12,8 +12,7 @@ Read the specified file. Do **NOT** reference any project settings, character fi
 Cover:
 
 - Whether it was entertaining and if you want to read more
-- Strengths (quote specific passages)
-- Concerns (quote specific passages) — confusing, awkward, wanting more detail, etc.
+- What genuinely stood out, good or bad, quoting the specific passages — never manufacture praise or concerns just to have both
 - Honest reactions to characters and story developments
 
 For the output format, always apply the loaded rules exactly.

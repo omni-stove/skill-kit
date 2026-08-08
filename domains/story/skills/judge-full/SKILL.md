@@ -1,9 +1,10 @@
 ---
 name: judge-full
 description: Full manuscript review as a contest final judge. Evaluate whether this work deserves the grand prize. Use when the user asks for a full-manuscript final-round judgment of a complete work.
+argument-hint: <synopsis-path> <manuscript-path> [judges]
 ---
 
-The user states the synopsis file path and the manuscript file path. Optionally they specify the number of judges (default: 3).
+Arguments, in order: the synopsis file path, the manuscript file path, and optionally the number of judges (default: 3).
 
 Never read the synopsis or manuscript yourself; pass only the file paths to the judges.
 

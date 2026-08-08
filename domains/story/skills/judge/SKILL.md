@@ -1,9 +1,10 @@
 ---
 name: judge
 description: Evaluate a work as a contest judge, judging synopsis first and then opening text. Use when the user asks for a contest-judge evaluation of a work (synopsis screening then opening-text screening).
+argument-hint: <synopsis-path> <manuscript-dir>
 ---
 
-The user states the synopsis file path and the manuscript directory.
+Arguments, in order: the synopsis file path, then the manuscript directory.
 
 Judge by the contest rules provided in this conversation. How to weigh the criteria and what to say about the work is your call as a judge.
 

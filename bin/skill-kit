@@ -37,7 +37,7 @@ KIT_HOME=$(resolve_kit_home)
 # Merge every source dir into one dest root by per-entry symlink. A pre-existing *real
 # file* (a local override) is left untouched and stays git-tracked; any symlink is
 # (re)pointed at the kit. Everything the kit owns is listed in the dest's .gitignore so
-# it is never committed. Dead kit links (entry removed upstream) are pruned. When more
+# it is never committed. Kit links not re-claimed by the sync are pruned. When more
 # than one src defines the same entry name, the first src wins (shared before domain).
 link_srcs() {
 	dst_root=$1
@@ -46,6 +46,8 @@ link_srcs() {
 	[ -L "$dst_root" ] && rm "$dst_root"
 	mkdir -p "$dst_root"
 	ignored=".gitignore"
+	claimed="
+"
 	for src in "$@"; do
 		[ -d "$src" ] || continue
 		for entry in "$src"/*; do
@@ -55,15 +57,25 @@ link_srcs() {
 			if [ -e "$dst" ] && [ ! -L "$dst" ]; then
 				continue # real local file = override -> leave it, track it
 			fi
-			[ -e "$dst" ] && continue # earlier src already claimed this name
-			ln -sfn "$entry" "$dst"
+			case $claimed in *"
+$name
+"*) continue ;; esac # earlier src in THIS run already claimed this name
+			ln -sfn "$entry" "$dst" # (re)point even a live leftover link at the kit
+			claimed="$claimed$name
+"
 			ignored="$ignored
 $name"
 		done
 	done
-	# Prune dead kit links (entry removed upstream).
+	# Prune kit links this sync did not claim: entry removed/renamed upstream, or a
+	# leftover pointing into a previous kit location. Overrides are real files, so
+	# every symlink here is kit-owned and safe to drop.
 	for link in "$dst_root"/*; do
-		[ -L "$link" ] && [ ! -e "$link" ] && rm "$link" || true
+		[ -L "$link" ] || continue
+		name=$(basename "$link")
+		case $claimed in *"
+$name
+"*) ;; *) rm "$link" ;; esac
 	done
 	printf '%s\n' "$ignored" >"$dst_root/.gitignore"
 }

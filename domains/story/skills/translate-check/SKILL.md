@@ -5,13 +5,13 @@ description: Cross-check an existing English translation against its Japanese so
 
 Run `.agents/skills/translate-check/refs.sh`
 
-The user provides a path on either side of a pair — a Japanese source file, its `en/` translation, or a directory of sources. Pair each source with its translation; list unpaired files on both sides in the report.
+Run `.agents/refs/translation-pairs.sh <path>` on the user's path. List `source-only` and `en-only` lines in the report.
 
-Launch parallel Agent tools — one agent per pair, each given both file paths, the glossary, and the loaded rules. Each agent checks every dimension of the loaded check rules.
+Launch parallel Agent tools — one agent per `pair` line, each given both file paths, the glossary, and the loaded rules.
 
-For a directory, after the pair agents complete, compare their glossary findings across files and flag any term rendered differently in different files.
+For a directory, compare the agents' glossary findings and flag any term rendered differently across files.
 
-Output per pair, one section per dimension of the loaded check rules:
+Output per pair:
 
 ```
 ## Translation Check: <filename>
@@ -29,4 +29,4 @@ Output per pair, one section per dimension of the loaded check rules:
 - ✅ [Summary of checked items]
 ```
 
-Report every finding with line numbers and stop.
+Report every finding and stop.

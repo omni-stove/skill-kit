@@ -9,7 +9,7 @@ setup() {
   cd "$work"
 }
 
-mark_done() { echo "impression of $1" | sh "$DONE" "$1"; }
+mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$DONE" "$1"; }
 
 @test "next.sh prints the first file with its line count" {
   printf 'a\nb\n' > story/01.txt
@@ -57,27 +57,40 @@ mark_done() { echo "impression of $1" | sh "$DONE" "$1"; }
   [[ "$output" == *"b.txt"* ]]
 }
 
-@test "done.sh rejects an empty impression and records nothing" {
+@test "done.sh rejects an impression under 3 lines and records nothing" {
   : > story/a.txt
   run sh "$DONE" story/a.txt < /dev/null
+  [ "$status" -ne 0 ]
+  printf 'one line\n' > imp
+  run sh "$DONE" story/a.txt < imp
   [ "$status" -ne 0 ]
   run sh "$NEXT" story/a.txt
   [[ "$output" == *"a.txt"* ]]
 }
 
-@test "done.sh appends the impression to the run's record" {
+@test "done.sh rejects an impression copied from the previous file" {
   : > story/a.txt; : > story/b.txt
-  echo "solid opening" | sh "$DONE" story/a.txt
-  echo "weaker middle" | sh "$DONE" story/b.txt
-  record=$(find out/read-through -name '*.impressions.md')
-  grep -q "solid opening" "$record"
-  grep -q "weaker middle" "$record"
+  printf 'same\nsame\nsame\n' | sh "$DONE" story/a.txt
+  run sh "$DONE" story/b.txt < <(printf 'same\nsame\nsame\n')
+  [ "$status" -ne 0 ]
+  run sh "$NEXT" story/a.txt
+  [[ "$output" == *"b.txt"* ]]
+}
+
+@test "done.sh appends the impression to the run's record and prints its path" {
+  : > story/a.txt; : > story/b.txt
+  run mark_done story/a.txt
+  record="$output"
+  [[ "$record" == *".impressions.md" ]]
+  mark_done story/b.txt
+  grep -q "impression of story/a.txt" "$record"
+  grep -q "impression of story/b.txt" "$record"
   grep -q "## a.txt" "$record"
 }
 
 @test "a fresh run drops the previous run's impressions record" {
   : > story/only.txt
-  echo "old take" | sh "$DONE" story/only.txt
+  printf 'old take\nline two\nline three\n' | sh "$DONE" story/only.txt
   sh "$NEXT" story/only.txt
   run sh "$NEXT" story/only.txt
   [[ "$output" == *"only.txt"* ]]
@@ -85,14 +98,15 @@ mark_done() { echo "impression of $1" | sh "$DONE" "$1"; }
   ! grep -q "old take" "$record"
 }
 
-@test "next.sh prints ALL_DONE and clears state when everything is processed" {
+@test "next.sh prints ALL_DONE, clears state, and forgets the last impression" {
   : > story/only.txt
   mark_done story/only.txt
   run sh "$NEXT" story/only.txt
   [ "$output" = "ALL_DONE" ]
-  # state cleared -> the next run starts over from the first file
+  # state cleared -> the next run starts over and may reuse the same impression
   run sh "$NEXT" story/only.txt
   [[ "$output" == *"only.txt"* ]]
+  mark_done story/only.txt
 }
 
 @test "progress is tracked per directory" {

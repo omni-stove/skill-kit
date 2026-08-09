@@ -8,6 +8,7 @@ dir=$(cd "$(dirname "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
 state="out/read-through/$key.state"
 record="out/read-through/$key.impressions.md"
+last="out/read-through/$key.last"
 mkdir -p out/read-through
 touch "$state"
 # fresh run: drop the previous run's impressions record
@@ -19,6 +20,6 @@ next=$(find "$dir" -maxdepth 1 -type f -name '*.txt' ! -name 'synopsis*' ! -name
 if [ -n "$next" ]; then
   wc -l "$next"
 else
-  rm -f "$state"
+  rm -f "$state" "$last"
   echo ALL_DONE
 fi

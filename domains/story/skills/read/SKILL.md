@@ -5,7 +5,7 @@ description: Read a document without any context and provide honest reader impre
 
 Run `.agents/skills/read/refs.sh`
 
-The user provides a file path to the target document.
+The user provides a file path to the target document. When resolving an ambiguous reference to a file, pick from `.txt` files; a path the user names explicitly is read as-is, whatever its extension.
 
 Read the specified file. Do **NOT** reference any project settings, character files, or world building documents. Provide feedback as a reader encountering this text for the first time — an ordinary reader, not a critic. Avoid poetic or ornate phrasing; keep it plain and straightforward.
 

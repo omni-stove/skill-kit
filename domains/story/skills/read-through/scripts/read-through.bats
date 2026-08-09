@@ -33,10 +33,21 @@ mark_done() { echo "impression of $1" | sh "$DONE" "$1"; }
 
 @test "next.sh skips synopsis and dotfiles" {
   : > story/synopsis.txt
-  : > story/.hidden
+  : > story/.hidden.txt
   printf 'body\n' > story/chapter.txt
   run sh "$NEXT" story/chapter.txt
   [[ "$output" == *"chapter.txt"* ]]
+}
+
+@test "next.sh only picks up txt files" {
+  : > story/notes.md
+  : > story/cover.png
+  printf 'body\n' > story/chapter.txt
+  run sh "$NEXT" story/chapter.txt
+  [[ "$output" == *"chapter.txt"* ]]
+  mark_done story/chapter.txt
+  run sh "$NEXT" story/chapter.txt
+  [ "$output" = "ALL_DONE" ]
 }
 
 @test "done.sh advances progress across runs" {

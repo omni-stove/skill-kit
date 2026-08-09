@@ -5,23 +5,16 @@ description: Translate an existing Japanese manuscript into English. Accepts a f
 
 Run `.agents/skills/translate/refs.sh`
 
-The user provides a file path or a directory path. For a file, translate that file. For a directory, glob its `.txt` and `.md` files (natural sort, skip synopsis) and launch parallel Agent tools — one agent per file, each given its file path, the glossary, the loaded rules, and the translation rules below.
+The user provides a file path or a directory path. For a file, translate that file. For a directory, launch parallel Agent tools — one agent per source file, each given its file path, the glossary, and the loaded rules.
 
-Write each translation to `en/<same filename>` inside the source's directory. Never modify the source.
+Write each translation to its `en/` path. Never modify the source.
 
-Read `en/glossary.md` before translating and give it to every agent. If it does not exist, settle the work-wide decisions first with a single `AskUserQuestion` call: name romanization scheme, honorifics (keep as-is / drop / adapt), and register (web-novel casual / literary). After translating, create or update `en/glossary.md` with name romanizations, recurring term renderings, style decisions, and a Motifs section: one `語 → rendering` line per motif expected to echo beyond its own file.
+Read the glossary before translating. If it does not exist, settle the work-wide decisions first with a single `AskUserQuestion` call: name romanization scheme, honorifics (keep as-is / drop / adapt), and register (web-novel casual / literary). After translating, create or update the glossary with every new decision and motif.
 
-Translation rules:
+Before translating a file, list its deliberately repeated words and images and check each against the glossary's Motifs section. Where the source leaves a subject genuinely ambiguous, pick the most likely reading and flag it.
 
-- Translate for meaning and voice.
-- Keep every scene break, the order of events, and the intent of each paragraph.
-- Render wordplay by effect. Add nothing, omit nothing.
-- Resolve subjects and pronouns Japanese leaves implicit; when the source is genuinely ambiguous, pick the most likely reading and flag it.
-- Before translating, list the source's deliberately repeated words and images — a word recurring at structural moments, an image that returns transformed — and check each against the glossary's Motifs section.
-- Keep `POV:` lines and 【】 markers verbatim: manuscript scaffolding, not prose.
-
-After translating each file, run review agents over the loaded check rules — one for the English-only dimension, one for the rest against the source — and apply their fixes. Apply an English-only fix only after it is checked against the source.
+After translating each file, run review agents over the loaded check rules — one for the English-only dimension, one for the rest — and apply their fixes. Apply an English-only fix only after it is checked against the source.
 
 For a directory, after review, run one agent per adjacent file pair to align shared expressions and motif renderings to the glossary.
 
-After all agents complete, report: files written, glossary entries added, review fixes applied, and flagged passages with line numbers.
+Report: files written, glossary entries added, review fixes applied, and flagged passages with line numbers.

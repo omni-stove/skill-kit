@@ -4,9 +4,13 @@
 # natural sort, synopsis and dotfiles excluded. When every file is processed,
 # prints ALL_DONE and clears the progress record so the next run starts fresh.
 dir=$(cd "$(dirname "$1")" && pwd)
-state="out/read-through/$(echo "$dir" | tr '/' '_').state"
+key=$(echo "$dir" | tr '/' '_')
+state="out/read-through/$key.state"
+record="out/read-through/$key.impressions.md"
 mkdir -p out/read-through
 touch "$state"
+# fresh run: drop the previous run's impressions record
+[ -s "$state" ] || : > "$record"
 next=$(find "$dir" -maxdepth 1 -type f ! -name 'synopsis*' ! -name '.*' | sort -V |
   while IFS= read -r f; do
     grep -Fxq "$(basename "$f")" "$state" || { printf '%s\n' "$f"; break; }

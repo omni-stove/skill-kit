@@ -9,10 +9,10 @@ Repeat until `ALL_DONE`:
 
 Run `.agents/skills/read-through/scripts/next.sh <the file path the user gave>` — it prints the next unprocessed file in that file's directory with its line count, or `ALL_DONE` once every file is processed.
 
-Read the printed file; if the result is partial, paginate until the whole file is read.
+Read the printed file — only ever the file `next.sh` printed; if the result is partial, paginate until the whole file is read.
 
-Output that file's impression applying the loaded rules — always before the next Read.
+Output that file's impression applying the loaded rules.
 
-Run `.agents/skills/read-through/scripts/done.sh <printed file>` — it records the file as processed.
+Run `.agents/skills/read-through/scripts/done.sh <printed file>` with that impression on stdin — it rejects an empty impression, records the file as processed, and appends the impression to the run's record.
 
 On `ALL_DONE`, output an overall summary.

@@ -20,10 +20,7 @@ Translation rules:
 - Before translating, list the source's deliberately repeated words and images — a word recurring at structural moments, an image that returns transformed — and check each against the glossary's Motifs section.
 - Keep `POV:` lines and 【】 markers verbatim: manuscript scaffolding, not prose.
 
-After translating each file, run two review agents:
-
-1. English-only review: reads the English without the source and flags translationese — syntax showing through, filter phrases, monotone rhythm.
-2. Fidelity review: compares source and translation and flags additions, omissions, and thinned repetition. Apply an English-only fix only after this pass checks it against the source.
+After translating each file, run review agents over the loaded check rules — one for the English-only dimension, one for the rest against the source — and apply their fixes. Apply an English-only fix only after it is checked against the source.
 
 For a directory, after review, run one agent per adjacent file pair to align shared expressions and motif renderings to the glossary.
 

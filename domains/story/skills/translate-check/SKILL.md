@@ -9,7 +9,7 @@ Run `.agents/refs/translation-pairs.sh <path>` on the user's path. List `source-
 
 Launch parallel Agent tools — one agent per `pair` line, each given both file paths, the glossary, and the loaded rules.
 
-For a directory, compare the agents' glossary findings and flag any term rendered differently across files.
+For a directory, compare the agents' consistency findings and flag any term rendered differently across files.
 
 Output per pair:
 
@@ -22,7 +22,7 @@ Output per pair:
 ### English Quality
 - 🟡 (en:M) — [detail]
 
-### Glossary / Motifs
+### Consistency
 - 🟠 [term] — [detail with locations]
 
 ### Verified (No Issues)

@@ -1,6 +1,8 @@
 # Translation Rules
 
-`en/glossary.md` holds the work-wide decisions: name romanization scheme, honorifics, register, recurring term renderings, style decisions, and a Motifs section — one `語 → rendering` line per motif expected to echo beyond its own file.
+`en/glossary.md` holds the work-wide style decisions — name romanization scheme, honorifics, register — and the name table.
+
+Where a rendering is uncertain, grep the other sources for the Japanese expression and match the rendering in its paired translation.
 
 Fidelity:
 

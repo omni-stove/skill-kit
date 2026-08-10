@@ -13,7 +13,7 @@ Translate each printed source to its printed translation path. For a directory, 
 
 Before translating a file, list its deliberately repeated words and images and hold one rendering for each. Where the source leaves a subject genuinely ambiguous, pick the most likely reading and flag it.
 
-After translating each file, run review agents over the loaded check rules — one for the English-only dimension, one for the rest — and apply their fixes. Apply an English-only fix only after it is checked against the source.
+After translating each file, run two review agents. One gets only the English file and reports each passage it stumbles on or misreads — line and its own reading, no fixes; rewrite from the source wherever that reading diverges. The other runs over the loaded check rules with both files; apply its fixes, checking English-only ones against the source.
 
 For a directory, run one agent per adjacent file pair to align shared expressions and motif renderings.
 

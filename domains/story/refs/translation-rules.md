@@ -8,6 +8,6 @@ Fidelity:
 
 - Translate for meaning and voice.
 - Keep every scene break, the order of events, and the intent of each paragraph.
-- Render wordplay by effect. Add no meaning, drop no meaning.
+- Add no meaning, drop no meaning.
 - Resolve subjects and pronouns Japanese leaves implicit.
 - Keep `POV:` lines and 【】 markers verbatim.

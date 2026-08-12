@@ -4,6 +4,7 @@
 - Carry each character's voice — and what sentence-final particles, keigo levels, pronoun register (俺/僕/私), and counters signal — through diction, register, and rhythm, not accent spelling; treat as an omission only a lost relationship or tone
 - Render onomatopoeia, set phrases, wordplay, and ruby (`|単語《ルビ》`) by their effect in the prose, not their form
 - Merge narration lines that continue one topic and actor into a single paragraph; break where the topic, viewpoint, or actor shifts; keep a line alone only where its isolation is the beat
+- Blank lines only around the scene-break mark
 - Rewrite each paragraph from its meaning: split and merge sentences freely, and vary sentence length and openings
 - Match the English word's specificity to the Japanese word's: narrow a vague rendering with a more specific word or object, never past what the source states
 - Prefer the person as subject over a body part or abstract quality; save the body-part subject for a deliberate beat

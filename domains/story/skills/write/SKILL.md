@@ -30,20 +30,18 @@ Get each path from `.agents/refs/path <project-id> <what> [name]`; never hand-bu
      ```
 
    - Write 1 Scene following the loaded format, style, and rhythm rules
-   - Dialogue: one `(speaker: gist)` placeholder per utterance, instead of actual `「」` text. The placeholder IS the dialogue line — adjacent to surrounding narration with no blank lines, exactly as `「」` would be
-     - Gist = the utterance's intent, never its wording
 
 5. **Hand Off**
    - After 1 Scene, output the file and hand off:
 
      ```
-     [Scene name] skeleton complete. Dialogue placeholders left as-is. Say continue for the next Scene, or tell me to fill placeholders.
+     [Scene name] complete. Say continue for the next Scene, or tell me what to revise.
      ```
 
-   - Do not auto-fill placeholders. Wait for user signal.
+   - Wait for user signal.
 
 6. **Next Scene Confirmation**
-   - User continues → return to step 3 for the next Scene; prior placeholders stay
+   - User continues → return to step 3 for the next Scene
    - User requests narration revision → revise directly without re-reading
 
 Constraints:

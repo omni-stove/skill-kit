@@ -11,6 +11,6 @@ Run `.agents/skills/read-through/scripts/next.sh <the file path the user gave>` 
 
 Read the printed file — only ever the file `next.sh` printed; if the result is partial, paginate until the whole file is read.
 
-Run `.agents/skills/read-through/scripts/done.sh <printed file>` with that file's impression, written applying the loaded rules, on stdin — it appends the impression to this run's record and prints the record path.
+Run `.agents/skills/read-through/scripts/done.sh <printed file>` with that file's impression, written applying the loaded rules, on stdin — it appends the impression to the record and prints its path.
 
 On `ALL_DONE`, output the record path and an overall summary without restating the per-file impressions.

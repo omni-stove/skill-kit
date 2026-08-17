@@ -88,24 +88,16 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   grep -q "## a.txt" "$record"
 }
 
-@test "the record path carries a timestamp" {
-  : > story/a.txt
-  run mark_done story/a.txt
-  [[ "$output" =~ -[0-9]{10,}\.impressions\.md$ ]]
-}
-
-@test "a fresh run opens a new record and keeps the previous run's" {
+@test "a fresh run discards the previous run's impressions" {
   : > story/only.txt
   printf 'old take\nline two\nline three\n' | sh "$DONE" story/only.txt
-  old=$(cat out/read-through/*.record)
   sh "$NEXT" story/only.txt
-  sleep 1
   run sh "$NEXT" story/only.txt
   [[ "$output" == *"only.txt"* ]]
   run mark_done story/only.txt
-  [ "$output" != "$old" ]
   ! grep -q "old take" "$output"
-  grep -q "old take" "$old"
+  grep -q "impression of story/only.txt" "$output"
+  [ "$(ls out/read-through/*.impressions.md | wc -l)" -eq 1 ]
 }
 
 @test "next.sh prints ALL_DONE, clears state, and forgets the last impression" {

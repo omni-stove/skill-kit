@@ -5,15 +5,12 @@ description: Run dupcheck on all .txt files in the target directory in parallel 
 
 Run `.agents/skills/dupcheck-all/refs.sh`
 
-The user provides a target directory. Glob all `.txt` files in it (excluding synopsis) and sort them lexically. Launch one Agent per file in parallel.
+Run `.agents/skills/dupcheck-all/scripts/pairs.sh <the directory or file path the user gave>` — it prints one `file<TAB>next` line per target file, `-` as next for the last one.
 
-Each agent:
+Launch one Agent per printed line in parallel. Each agent's prompt contains its file, its next file (if not `-`), and the instruction to read `.agents/refs/dupcheck-rules.md` and follow it exactly. Each agent:
 
-- Reads its assigned file **and the next file** in the sorted list (if any).
-- Detects overlap within the assigned file (entire file).
-- Detects boundary-crossing overlap between the tail of the assigned file and the head of the next file.
-- Tags cross-file findings with the file name.
+- Reads both files in full, paginating if a read is partial.
+- Detects overlap within its file.
+- Detects boundary-crossing overlap between the tail of its file and the head of the next file, tagging those findings with the file names.
 
-Include in each agent's prompt the instruction to read `.agents/refs/dupcheck-rules.md` and follow it exactly.
-
-After all agents finish, aggregate reports and run the Fix Flow over the combined findings, applying the loaded rules exactly.
+Aggregate the reports in the printed order and ask which findings to fix per the loaded Fix Flow. Never edit the files yourself. Assign each selected finding to one file — for a cross-file pair, the side to rewrite — and launch one Agent per touched file in parallel. Each agent's prompt contains its `pairs.sh` line, the findings assigned to it, and the instruction to read `.agents/refs/dupcheck-rules.md` and carry out the Fix Flow's edit and re-check steps on its file. Report the agents' results.

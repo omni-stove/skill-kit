@@ -7,4 +7,4 @@ Run `.agents/skills/dupcheck/refs.sh`
 
 The user specifies one target file path. If no path is given, ask which file to check.
 
-Read the entire target file and detect expressions that overlap in meaning or action within close proximity, across the whole file — apply the loaded rules exactly, following their Detection Targets, Detection Rules, severity criteria, Output Format, and Fix Flow (ask the user whether to fix, then apply selected edits).
+Read the entire target file, paginating if a read is partial, and detect expressions that overlap in meaning or action within close proximity, across the whole file — apply the loaded rules exactly, following their Detection Targets, Detection Rules, severity criteria, Output Format, and Fix Flow (ask the user whether to fix, then apply selected edits).

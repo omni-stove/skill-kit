@@ -12,6 +12,7 @@ Detect semantic, action, and descriptive overlap, not mere lexical matches:
 
 ## Detection Rules
 
+- Quote each expression exactly as written in the file — a contiguous, unparaphrased substring
 - Distinguish dialogue from narration
 - Skip intentional repetition (emphasis, rhythm) and note it
 - Treat within-sentence repetition as rhetorical and ignore it
@@ -50,4 +51,6 @@ For cross-file pairs, prefix each line with its file name (e.g. `**010.txt L42**
 
 After output, ask via `AskUserQuestion`: 「修正する項目を選んでください」 — options (multiSelect, max 4): 「すべて修正（深刻度: 高・中）」 first, then the top 3 high-severity items in priority order.
 
-Edit the target file(s) to resolve each selected repetition: rewrite one side of the pair to remove the semantic overlap while preserving meaning.
+Edit with the whole target file read. Group the selected findings by the line they touch; a line named in several findings gets one rewrite that resolves all of them. Rewrite one side of each pair to remove the semantic overlap while preserving meaning and the surrounding rhythm. For a cross-file pair, rewrite only one side.
+
+After editing, run the detection again on every edited file (for a cross-file pair, both files) and fix any High or Medium finding that remains or is new — once. Then report what was fixed and what remains.

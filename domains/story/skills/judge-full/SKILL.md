@@ -14,6 +14,10 @@ Spawn the judge-count number of agents in parallel with the Agent tool. Each jud
 - The contest rules and any notes from this conversation, embedded verbatim
 - The task: as a final-round judge, decide **大賞 / 大賞ではない** and give the reasons, quoting the text. How to weigh the criteria is the judge's own call.
 
-Collect the results and output the vote count (N/M) with the overall verdict, each judge's verdict in one line, and where the judges agreed and where they split.
+Collect the results into a first-round tally: each judge's verdict in one line, and where the judges agreed and where they split — on the verdict and on individual points.
 
-Run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> '<that output>'`.
+If anything split, run a discussion round: send each judge, via SendMessage, the other judges' verdicts and reasoning on the split points, with the task to rebut or concede each point and restate their verdict — changing it is allowed. Run further rounds only while a verdict is still changing. Then run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> discussion '<each judge's statement per round, verbatim>'`.
+
+Output the first-round tally, then the final vote count (N/M) with the overall verdict, each judge's final verdict in one line noting any change, what the discussion settled, and what stayed split.
+
+Run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> report '<that output>'`.

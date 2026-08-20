@@ -6,15 +6,16 @@ setup() {
   cd "$BATS_TEST_TMPDIR"
 }
 
-@test "save.sh names the report after the manuscript, extension stripped" {
-  run sh "$SAVE" story/novel.txt "# report"
+@test "save.sh names the report after the manuscript and label, extension stripped" {
+  run sh "$SAVE" story/novel.txt report "# report"
   [ "$status" -eq 0 ]
-  [[ "$output" == out/novel-judge-full-*.md ]]
+  [[ "$output" == out/judge-full/novel-report-*.md ]]
 }
 
 @test "save.sh writes the report content to the printed path" {
-  path=$(sh "$SAVE" novel.md "# 最終審査結果
-大賞")
-  [ "$(cat "$path")" = "# 最終審査結果
-大賞" ]
+  path=$(sh "$SAVE" novel.md discussion "# 議論
+反論")
+  [ "$(cat "$path")" = "# 議論
+反論" ]
+  [[ "$path" == out/judge-full/novel-discussion-*.md ]]
 }

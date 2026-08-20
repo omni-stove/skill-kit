@@ -15,4 +15,4 @@ Judge each scene as an experienced fiction editor. Cover at least these angles, 
 
 Skip what reads as intentional style.
 
-Output the report and stop — no `AskUserQuestion`, no fixes.
+Output the report and stop — no `AskUserQuestion`; edit only on a follow-up instruction.

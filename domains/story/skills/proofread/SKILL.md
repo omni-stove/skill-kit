@@ -1,20 +1,17 @@
 ---
 name: proofread
-description: 通読しながら誤字脱字・時制の一貫性をチェックする。Use when the user asks to proofread a story file or directory for typos, tense consistency, or notation variance (e.g. "校正して", "proofread this file").
+description: Proofread story text for typos, tense confusion, and notation variance. Use when the user asks to proofread a file or directory (e.g. "校正して", "proofread this file").
 ---
 
-The user provides a file path or directory path. If a file path is given, target the entire directory containing that file.
+Run `.agents/skills/proofread/scripts/files.sh <the file or directory path the user gave>`
 
-Glob all `.txt` files in the target directory, sort naturally by filename, and launch parallel Agent tools for **ALL** files (one agent per file). Pass the file path and the check items below to each agent. Do NOT check only the specified file.
+Launch one Agent per printed file in parallel, passing the file path and the items below.
 
-チェック項目：
+- Typos — homophone conversion mistakes, okurigana errors, dropped or duplicated particles, missing or extra characters, misspelled katakana words
+- Tense confusion (narration only) — flashback or exposition indistinguishable from the present scene, event order unfollowable because of tense. Do not report mere mixing of た-form and る-form
+- Notation variance — the same word in both kanji and hiragana, inconsistent proper-noun spelling
+- Do not report intentional expression such as speech quirks or dialect
 
-- 誤字脱字 — 漢字の変換ミス（同音異義語の取り違え）、送り仮名の誤り、助詞の脱落・重複、文字の脱落・余分な文字、カタカナ語のスペルミス
-- 時制の一貫性 — 地の文の基本時制の統一、同一段落内での不自然な時制の揺れ、回想・説明と現在シーンの時制の使い分け
-- 表記揺れ — 同一語の漢字/ひらがな表記の混在、固有名詞の表記ブレ
+Run `.agents/skills/proofread/scripts/save.sh <the same path>` with the combined results on stdin.
 
-After all agents complete, display the combined results: 問題があった箇所のみ、行番号と引用つきで簡潔に指摘する。問題なしなら「問題なし」。問題が見つかった場合、修正するか確認する。
-
-- 意図的な表現（キャラクターの口調、方言、意図的な時制変化など）は報告しない
-- 会話文（「」内）の時制は自由。地の文のみチェック対象
-- 判断に迷う箇所は「要確認」として報告
+Ask whether to fix any problems.

@@ -1,9 +1,10 @@
 #!/usr/bin/env bats
-# next.sh / done.sh — progress-tracked sequential reads.
+# next.sh / done.sh / summary.sh — progress-tracked sequential reads.
 
 setup() {
   NEXT="$BATS_TEST_DIRNAME/next.sh"
   DONE="$BATS_TEST_DIRNAME/done.sh"
+  SUMMARY="$BATS_TEST_DIRNAME/summary.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story"
   cd "$work"
@@ -109,6 +110,29 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   run sh "$NEXT" story/only.txt
   [[ "$output" == *"only.txt"* ]]
   mark_done story/only.txt
+}
+
+@test "summary.sh appends the summary to the same record and prints its path" {
+  : > story/a.txt
+  mark_done story/a.txt
+  sh "$NEXT" story/a.txt
+  run sh "$SUMMARY" story/a.txt < <(printf 'overall take\n')
+  [ "$status" -eq 0 ]
+  record="$output"
+  [[ "$record" == *".impressions.md" ]]
+  grep -q "impression of story/a.txt" "$record"
+  grep -q "## Overall Summary" "$record"
+  grep -q "overall take" "$record"
+  [ "$(ls out/read-through/* | wc -l)" -eq 1 ]
+}
+
+@test "summary.sh rejects an empty summary and writes nothing" {
+  : > story/a.txt
+  mark_done story/a.txt
+  sh "$NEXT" story/a.txt
+  run sh "$SUMMARY" story/a.txt < /dev/null
+  [ "$status" -ne 0 ]
+  ! grep -q "Overall Summary" out/read-through/*.impressions.md
 }
 
 @test "progress is tracked per directory" {

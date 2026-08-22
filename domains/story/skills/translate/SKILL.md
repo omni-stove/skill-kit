@@ -15,7 +15,7 @@ Before translating a file, list its deliberately repeated words and images and h
 
 After translating each file, run a review agent over the loaded check rules with both files; apply its fixes, checking English-only ones against the source.
 
-Then run a second agent given only the English file; it reports each passage it stumbles on or misreads — line and its own reading, no fixes. Rewrite from the source wherever that reading diverges.
+Then run a second agent on the lowest available model, given only the English file; it reports each passage it stumbles on or misreads — line and its own reading, no fixes. Rewrite from the source wherever that reading diverges from the source's meaning.
 
 For a directory, run one agent per adjacent file pair to align shared expressions and motif renderings.
 

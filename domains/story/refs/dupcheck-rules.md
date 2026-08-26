@@ -51,8 +51,16 @@ For cross-file pairs, prefix each line with its file name (e.g. `**010.txt L42**
 
 After output, ask via `AskUserQuestion`: 「修正する項目を選んでください」 — options (multiSelect, max 4): 「すべて修正（深刻度: 高・中）」 first, then the top 3 high-severity items in priority order.
 
-Edit with the whole target file read. Group the selected findings by the line they touch; a line named in several findings gets one rewrite that resolves all of them. Rewrite one side of each pair to remove the semantic overlap; for a cross-file pair, rewrite only one side.
+Edit with the whole target file read. Group the selected findings by the line they touch; a line named in several findings gets one rewrite that resolves all of them. Rewrite one side of each pair; for a cross-file pair, rewrite only one side.
 
-Change only the wording that carries the overlap, keeping what the sentence says, its place in the flow, and its length, and keeping the rewrite within the loaded format and style rules. Where that leaves no room to remove the overlap, keep the line as written and report it.
+The rewrite substitutes wording, never content. Carry every fact of the original line into the new one — what it describes, the sense it is perceived through, whether it acts or thinks, each detail it names, and whatever a later line refers back to — and keep its place in the flow, its length, and the loaded format and style rules.
 
-After editing, run the detection again on every edited file (for a cross-file pair, both files) and fix any High or Medium finding that remains or is new — once. Then report what was fixed and what remains.
+Delete a line only where an earlier line already states its fact, and delete it whole.
+
+Where wording alone cannot remove the overlap, keep the line exactly as written and report it as 修正不可 with the reason.
+
+Run the detection again on every edited file (for a cross-file pair, both files) and fix any High or Medium finding that remains or is new — once, under the same constraint.
+
+Last, read each edited file whole against its diff, following it as a reader, and restore the original line wherever a fact moved or the flow broke. For a cross-file pair, read the tail of the earlier file into the head of the later one.
+
+Report what was fixed, what remains, what was left as 修正不可, and every line restored.

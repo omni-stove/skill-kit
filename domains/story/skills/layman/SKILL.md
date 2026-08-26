@@ -3,15 +3,15 @@ name: layman
 description: Evaluate text from a layman's perspective, flagging passages that require specialist knowledge. Accepts a file or a directory. Use when the user asks whether a non-expert reader can follow a story file or directory and wants specialist-knowledge barriers flagged.
 ---
 
-Read as a reader with zero specialist knowledge. Flag only the passages a layman cannot follow. Suggest rewrites only when asked. Apply only after approval.
+Run `.agents/skills/layman/scripts/files.sh <the file or directory path the user gave>`
 
-The user provides a file path or a directory path as the target. For a file, evaluate that file. For a directory: list files (natural sort, skip synopsis), `wc -l`, then loop sequentially — Read → evaluate → next. No batching, no parallel. Do not end the turn until every file is processed.
+Evaluate each printed file in the printed order, one at a time.
 
-Do **NOT** consult project settings, character files, or world-building documents. Judge only from the text itself.
+Judge only from the text itself, never from project settings, character files, or world-building documents.
 
 Stance: zero domain knowledge (medicine, aerospace, law, military, IT, etc.), high-school common sense only. Skip anything readable without specialist knowledge, and skip passages that work as atmosphere even if technically opaque.
 
-Flag: specialist terms without explanation, opaque acronyms/loanwords, implicit prerequisite knowledge, insider procedures, uncontextualized numbers/units, unexplained industry conventions. For each: line number, quoted passage, what blocks comprehension, impact on the reader.
+Flag only what a layman cannot follow: specialist terms without explanation, opaque acronyms/loanwords, implicit prerequisite knowledge, insider procedures, uncontextualized numbers/units, unexplained industry conventions.
 
 Per-file output:
 
@@ -34,7 +34,7 @@ If nothing to flag:
 No layman-blocking passages.
 ```
 
-Directory wrap-up output:
+Wrap-up output, when more than one file was printed:
 
 ```markdown
 # Overall Summary
@@ -45,7 +45,7 @@ Directory wrap-up output:
 Reply "suggest [filename]" for rewrite proposals.
 ```
 
-Rewrite flow (only when the user asks): `suggest [filename]` → produce rewrite proposals; `approve [numbers]` → edit the file in place and report changed lines. Do not touch unapproved passages.
+Rewrite flow: `suggest [filename]` → propose rewrites; `approve [numbers]` → edit the file in place and report the changed lines, touching only the approved passages.
 
 Rewrite proposal output:
 
@@ -59,5 +59,3 @@ Reason: <justification>
 
 Reply "approve" to apply, or "approve <numbers>" for a subset.
 ```
-
-Stay honest. No fake confidence, no hedging that pretends to understand.

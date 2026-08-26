@@ -48,7 +48,7 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   [[ "$output" == *"chapter.txt"* ]]
   mark_done story/chapter.txt
   run sh "$NEXT" story/chapter.txt
-  [ "$output" = "ALL_DONE" ]
+  [[ "$output" == ALL_DONE* ]]
 }
 
 @test "done.sh advances progress across runs" {
@@ -105,7 +105,7 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   : > story/only.txt
   mark_done story/only.txt
   run sh "$NEXT" story/only.txt
-  [ "$output" = "ALL_DONE" ]
+  [[ "$output" == ALL_DONE* ]]
   # state cleared -> the next run starts over and may reuse the same impression
   run sh "$NEXT" story/only.txt
   [[ "$output" == *"only.txt"* ]]
@@ -142,4 +142,20 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   mark_done story/a.txt
   run sh "$NEXT" other/a.txt
   [[ "$output" == *"other/a.txt"* ]]
+}
+
+@test "next.sh prints the read and done.sh action for the file" {
+  printf 'body\n' > story/a.txt
+  run sh "$NEXT" story/a.txt
+  [[ "$output" == *"a.txt"* ]]
+  [[ "$output" == *"Read that file whole into context"* ]]
+  [[ "$output" == *"done.sh"* ]]
+}
+
+@test "next.sh prints the summary.sh action alongside ALL_DONE" {
+  : > story/a.txt
+  mark_done story/a.txt
+  run sh "$NEXT" story/a.txt
+  [[ "$output" == ALL_DONE* ]]
+  [[ "$output" == *"summary.sh"* ]]
 }

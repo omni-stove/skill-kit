@@ -1,10 +1,12 @@
 ---
 name: format-check-all
-description: Run format-check on all .txt files in the target directory in parallel using Agent tools. Use when the user wants every .txt file in a directory checked against the Japanese web novel format rules at once.
+description: Check every .txt file in a directory against the Japanese web novel format rules and report the offending lines. Use when the user wants a whole directory format-checked at once.
 ---
 
-The user provides a target directory. Glob all `.txt` files in it and launch one Agent per file in parallel.
+Run `.agents/skills/format-check-all/refs.sh`
 
-Include in each agent's prompt the instruction to read `.agents/refs/japanese-web-novel-format.md`, check its file against all rules in it, and report only lines with issues — line number and short quote; if clean, "No issues found."
+Run `.agents/skills/format-check-all/scripts/files.sh <the directory or file path the user gave>`
 
-After all agents finish, display the combined results. If issues found, ask whether to fix.
+Launch one Agent per printed file in parallel. Each agent's prompt contains its file and the loaded rules, and has it report only the lines with issues — line number and short quote.
+
+Display the combined results in the printed order. If issues are found, ask whether to fix.

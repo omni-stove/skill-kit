@@ -51,13 +51,13 @@ For cross-file pairs, prefix each line with its file name (e.g. `**010.txt L42**
 
 After output, ask via `AskUserQuestion`: 「修正する項目を選んでください」 — options (multiSelect, max 4): 「すべて修正（深刻度: 高・中）」 first, then the top 3 high-severity items in priority order.
 
-Edit with the whole target file read. Group the selected findings by the line they touch; a line named in several findings gets one rewrite that resolves all of them. Rewrite the later line of each pair, never the earlier — a text leans forward on what it has already put on the page; for a cross-file pair, that is the later file.
+Edit with the whole target file read. Group the selected findings by the line they touch; a line named in several findings gets one rewrite that resolves all of them. Rewrite the later line of each pair, never the earlier; for a cross-file pair, the line in the later file.
 
 The rewrite substitutes wording, never content. Carry every fact of the original line into the new one — what it describes, the sense it is perceived through, whether it acts or thinks, each detail it names, and whatever a later line refers back to — and keep its place in the flow, its length, and the loaded format and style rules.
 
 Delete a line only where an earlier line already states its fact, and delete it whole.
 
-Where wording alone cannot remove the overlap — the repeated element is itself a fact the text states — keep the line exactly as written and report it as 修正不可 with the reason. A finding that ends here is the flow working: an intact text with findings left beats a fixed one that says something else.
+Where wording alone cannot remove the overlap — the repeated element is itself a fact the text states — keep the line exactly as written and report it as 修正不可 with the reason. An intact text with findings left beats a fixed one that says something else.
 
 Run the detection again on every edited file (for a cross-file pair, both files) and fix any High or Medium finding that remains or is new — once, under the same constraint.
 

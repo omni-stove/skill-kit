@@ -5,4 +5,4 @@ description: Detect semantically overlapping expressions within a single Japanes
 
 Run `.agents/skills/dupcheck/refs.sh`
 
-Read the file the user gave and detect expressions that overlap in meaning or action within close proximity, applying the loaded rules exactly.
+Read the file the user gave and detect its overlapping expressions.

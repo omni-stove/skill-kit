@@ -45,7 +45,7 @@ Severity criteria:
 - **Medium**: same meaning across different scenes; noticeable on attentive reading
 - **Low**: lower semantic similarity, or separated by significant distance
 
-For cross-file pairs, prefix each line with its file name (e.g. `**010.txt L42**`) and set Distance to `cross-file`.
+Where the target spans more than one file, prefix each reported line with its file name (e.g. `**010.txt L42**`); set Distance to `cross-file` for a pair that spans two.
 
 ## Fix Flow
 
@@ -61,6 +61,6 @@ Where none of this removes the overlap — the repeated element is itself a fact
 
 Run the detection again on every edited file (for a cross-file pair, both files) and fix any High or Medium finding that remains or is new — once, under the same constraint.
 
-Last, read each edited file whole against its diff, following it as a reader, and restore the original line wherever a fact moved or the flow broke. For a cross-file pair, read the tail of the earlier file into the head of the later one.
+Last, read each edited file whole against its diff, following it as a reader, and restore the original line wherever a fact moved or the flow broke.
 
 Report what was fixed, what remains, what was left as 修正不可, and every line restored.

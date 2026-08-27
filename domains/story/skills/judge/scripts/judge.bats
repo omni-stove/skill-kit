@@ -21,13 +21,30 @@ fill() { head -c "$2" /dev/zero | tr '\0' 'a' > "$1"; }
   [ "${lines[2]##*/}" = "10.txt" ]
 }
 
-@test "opening.sh stops after the file that crosses 15,000 chars" {
-  fill story/01.txt 8000
-  fill story/02.txt 8000
-  fill story/03.txt 8000
+@test "opening.sh stops on the total closest to 10,000 — undershooting" {
+  fill story/01.txt 6000
+  fill story/02.txt 3000
+  fill story/03.txt 6000
   run sh "$OPENING" story
   [ "${#lines[@]}" -eq 2 ]
   [ "${lines[1]##*/}" = "02.txt" ]
+}
+
+@test "opening.sh stops on the total closest to 10,000 — overshooting" {
+  fill story/01.txt 6000
+  fill story/02.txt 3000
+  fill story/03.txt 1500
+  run sh "$OPENING" story
+  [ "${#lines[@]}" -eq 3 ]
+  [ "${lines[2]##*/}" = "03.txt" ]
+}
+
+@test "opening.sh always prints the first file, however long" {
+  fill story/01.txt 50000
+  fill story/02.txt 100
+  run sh "$OPENING" story
+  [ "${#lines[@]}" -eq 1 ]
+  [ "${lines[0]##*/}" = "01.txt" ]
 }
 
 @test "opening.sh skips synopsis and dotfiles" {

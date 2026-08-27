@@ -22,7 +22,7 @@ State a verdict — **通過 / 当落 / 落選** — and your reasons, quoting t
 
 ## Step 2: 冒頭審査
 
-Run `.agents/skills/judge/scripts/opening.sh <manuscript-dir>` — it prints the manuscript's opening files, about 15,000 characters' worth. Read them in order.
+Run `.agents/skills/judge/scripts/opening.sh <manuscript-dir>` — it prints the manuscript's opening files, as close to 10,000 characters as the file boundaries allow. Read them in order.
 
 Judge whether this opening survives a first-round screening against hundreds of submissions. State a verdict — **通過 / 当落 / 落選** — and your reasons, quoting the text where you point at something specific.
 

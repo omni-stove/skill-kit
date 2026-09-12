@@ -7,7 +7,7 @@ Run `.agents/skills/translate-check/refs.sh`
 
 Run `.agents/refs/translation-pairs.sh <path>` on the user's path. List `source-only` and `en-only` lines in the report.
 
-Launch parallel Agent tools — one agent per `pair` line, each given both file paths, the glossary, and the loaded rules.
+Launch parallel Agent tools — one agent per `pair` line, each given both file paths, the file on its `plot` line, the glossary, and the loaded rules.
 
 For a directory, compare the agents' consistency findings and flag any term rendered differently across files.
 

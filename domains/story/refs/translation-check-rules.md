@@ -1,6 +1,6 @@
 # Translation Check Rules
 
-Check an English translation against its Japanese source on these dimensions. Read the English alone before opening the source.
+Check an English translation against its Japanese source on these dimensions. Read the English alone before opening the source. Read the plot for what the source means where its wording alone leaves it open.
 
 Skip `POV:` lines and 【】 markers entirely.
 

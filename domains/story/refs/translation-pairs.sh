@@ -5,6 +5,10 @@
 # Prints tab-separated lines:
 #   glossary <path> exists|missing
 #   pair|source-only|en-only <source> <translation>
+#   plot <source> <plot>            (only when the source has a plot)
+# A source's plot is the file its leading `Source:` line names, else the
+# plot/*.md beside it whose stem's leading number (whole stem when there is
+# none) equals the source's stem.
 # Directory listing: the directory's *.txt and *.md in natural sort order,
 # synopsis.* skipped; en-only lines cover en/ files whose source is gone.
 set -eu
@@ -18,6 +22,30 @@ status_of() {
 	if [ -f "$1" ] && [ -f "$2" ]; then echo pair
 	elif [ -f "$1" ]; then echo source-only
 	else echo en-only; fi
+}
+
+plot_of() {
+	_d=$(dirname -- "$1")
+	_s=$(basename -- "$1")
+	_s=${_s%.*}
+	_l=$(head -n 1 -- "$1" 2>/dev/null)
+	case $_l in
+		"Source: "*) _f=${_l#Source: }; [ -f "$_f" ] && { echo "$_f"; return; } ;;
+	esac
+	for _f in "$_d"/plot/*.md; do
+		[ -f "$_f" ] || continue
+		_ps=$(basename -- "$_f" .md)
+		_n=$(printf '%s' "$_ps" | sed -n 's/^\([0-9][0-9]*\).*/\1/p')
+		[ "${_n:-$_ps}" = "$_s" ] && { echo "$_f"; return; }
+	done
+	return 0
+}
+
+emit_source() {
+	emit "$(status_of "$1" "$2")" "$1" "$2"
+	_p=$(plot_of "$1")
+	[ -n "$_p" ] && emit plot "$1" "$_p"
+	return 0
 }
 
 if [ -d "$p" ]; then
@@ -38,7 +66,7 @@ g=$dir/en/glossary.md
 [ -f "$g" ] && emit glossary "$g" exists || emit glossary "$g" missing
 
 if [ -n "${src-}" ]; then
-	emit "$(status_of "$src" "$dir/en/$name")" "$src" "$dir/en/$name"
+	emit_source "$src" "$dir/en/$name"
 	exit 0
 fi
 
@@ -47,7 +75,7 @@ for f in "$dir"/*.txt "$dir"/*.md; do
 	case $(basename -- "$f") in synopsis.*) continue ;; esac
 	printf '%s\n' "$f"
 done | sort -V | while IFS= read -r f; do
-	emit "$(status_of "$f" "$dir/en/$(basename -- "$f")")" "$f" "$dir/en/$(basename -- "$f")"
+	emit_source "$f" "$dir/en/$(basename -- "$f")"
 done
 
 for f in "$dir"/en/*.txt "$dir"/en/*.md; do

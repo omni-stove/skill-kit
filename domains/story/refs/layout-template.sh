@@ -24,5 +24,4 @@ story_plot_file()       { echo "$(_base)/story/plot/$1.md"; }        # $1 = engl
 story_outline()         { echo "$(_base)/story/outline"; }
 story_synopsis()        { echo "$(_base)/story/synopsis.txt"; }
 story_timeline()        { echo "$(_base)/story/timeline.md"; }
-story_memo()            { echo "$(_base)/story/memo/$1.md"; }        # $1 = filename
 story_body_file()       { echo "$(_base)/story/$1.md"; }            # $1 = chapter

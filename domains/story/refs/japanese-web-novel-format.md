@@ -2,7 +2,7 @@
 
 - Plain text only; no markdown formatting
 - Separate scenes with `◇◇◇` on its own line; blank lines only there, one before and one after
-- Indent the first character of each narration paragraph with a full-width space; dialogue lines starting with 「 stay unindented
+- Indent the first character of each narration paragraph with a full-width space; lines starting with 「 or 『 stay unindented
 - Place dialogue at the beginning of a line, never embedded mid-sentence
 - Merge consecutive dialogue from the same speaker, or insert narration between
 - ……: forbidden — express silence through context
@@ -10,5 +10,5 @@
 - ！／？: add a full-width space after (may omit if obvious)
 - 『』: inner thoughts, book titles, emphasis
 - No period at the end of dialogue
-- Use kanji numerals
+- Use kanji numerals, with 〇 for zero and ・ as the decimal point (〇・五)
 - Ruby: `|単語《ルビ》`

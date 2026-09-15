@@ -1,15 +1,13 @@
 ---
 name: tachie
-description: Build an image-generation prompt for a character's standing art (立ち絵). Use when the user wants a tachie / standing-art prompt for a character, giving the character and optionally a project id.
+description: Build an image-generation prompt for a character's standing art (立ち絵). Use when the user wants a tachie / standing-art prompt for a character, giving the character.
 ---
 
 Run `.agents/skills/tachie/refs.sh`
 
-The user supplies the character and, when it belongs to a project, the project id. Without a project id, build the prompt from the description alone.
+The user supplies the character.
 
-Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `characters` (the dir).
-
-Find the character's file under the `characters` directory and read it; read the `readme` for era and dress conventions.
+When the character is from this project, read their file under `characters/` and `README.md` for era and dress conventions; otherwise build the prompt from the description alone.
 
 Framing is fixed: single character, full body from head to toe, standing, plain solid background. Take pose and expression from the character's settings; default to a neutral standing pose.
 

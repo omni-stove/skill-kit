@@ -5,11 +5,9 @@ description: Split a single source file into individual plot skeleton files per 
 
 Run `.agents/skills/split-plot/refs.sh`
 
-The user provides a project-id and a source file path (long plot draft, scenario memo, outline, etc.).
+The user provides a source file path (long plot draft, scenario memo, outline, etc.).
 
-Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `story_plot` (the output dir).
-
-Read the source file. If a project-id is given, also read the `readme` path for world context, plus existing character and setting files relevant to the source.
+Read the source file, then `README.md` for world context, plus existing character and setting files relevant to the source.
 
 Detect section boundaries — try the following splitters in order and pick the one that yields a meaningful structure:
 
@@ -21,7 +19,7 @@ Detect section boundaries — try the following splitters in order and pick the 
 
 For each detected segment, capture its index (sequential), title (first heading or first sentence as a short label), and body.
 
-Show the extracted segments to the user as a numbered list (index, title, brief body summary), and use AskUserQuestion to confirm: which splitter to use (if multiple are viable), segments to skip / merge / further split, the base name for files, and the output directory (suggest the `story_plot` directory).
+Show the extracted segments to the user as a numbered list (index, title, brief body summary), and use AskUserQuestion to confirm: which splitter to use (if multiple are viable), segments to skip / merge / further split, the base name for files, and the output directory (suggest `plot/`).
 
 For each confirmed segment, create a plot file.
 

@@ -1,15 +1,13 @@
 ---
 name: background
-description: Build an image-generation prompt for a background / scenery image. Use when the user wants a background-art prompt for a location or scene, giving the scene and optionally a project id.
+description: Build an image-generation prompt for a background / scenery image. Use when the user wants a background-art prompt for a location or scene, giving the scene.
 ---
 
 Run `.agents/skills/background/refs.sh`
 
-The user supplies the location or scene and, when it belongs to a project, the project id. Without a project id, build the prompt from the description alone.
+The user supplies the location or scene.
 
-Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `world`, `story_plot`.
-
-Read the `readme` and the `world` files that describe the location; for a scene from the story, read its plot file.
+When it is from this project's story, read `README.md` and the `world/` files that describe the location, and for a scene from the story its plot file under `plot/`; otherwise build the prompt from the description alone.
 
 Framing is fixed: scenery only, no people, wide shot. Take time of day, weather, and season from the scene; default to daylight and clear weather.
 

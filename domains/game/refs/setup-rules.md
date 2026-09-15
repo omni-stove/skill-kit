@@ -1,30 +1,21 @@
 # Game setup rules
 
-Read the kit defaults first — they are the contract you are adapting:
-`cat .agents/refs/engine.sh .agents/refs/layout.sh`. In both files the function NAMES are
-fixed; the values they echo are what you change for this repo.
+Read the kit default first — it is the contract you are adapting:
+`cat .agents/refs/engine.sh`. The function NAMES are fixed; the values they echo are what
+you change for this repo.
 
-This produces up to two **real** files in this repo, plus one per project that uses the
-shared setting skills:
-- `.agents/refs/engine.sh` — engine-specific facts (source root, log path, build/run
-  commands, compile/runtime/call-site grep patterns, and the optional engine-control MCP
-  prefix).
-- `.agents/refs/layout.sh` — where this repo keeps its game-design docs (gdd / mechanics /
-  balance / levels). It also carries the resolver the setting skills use; leave that part
-  alone.
-- `.agents/refs/layouts/<id>.sh` — one per project that uses `character` / `world` / `item`
-  / `timeline`, copied from `.agents/refs/layout-template.sh` and pointed at where that
-  project keeps its setting docs (anywhere on disk).
+This produces one **real** file in this repo: `.agents/refs/engine.sh` — engine-specific
+facts (source root, log path, build/run commands, compile/runtime/call-site grep patterns,
+and the optional engine-control MCP prefix).
 
 `skill-kit game sync` leaves real files untouched and keeps them git-tracked, so a real file
 overrides the kit's symlinked default. Do NOT edit a symlink target, and never
-hand-build engine facts or paths elsewhere — every value a skill uses comes from these
-functions.
+hand-build engine facts elsewhere — every value a skill uses comes from these functions.
 
 First, confirm the kit is synced: if `sh -c '. .agents/refs/engine.sh; engine_name'`
 errors, tell the user to run `skill-kit game sync` first and stop.
 
-## Detect the engine and layout — do not assume
+## Detect the engine — do not assume
 
 - Identify the engine from the repo: a `*.uproject` → Unreal; `project.godot` → Godot;
   `ProjectSettings/ProjectVersion.txt` or `Assets/` + `*.csproj` → Unity; a `Cargo.toml`
@@ -39,22 +30,13 @@ errors, tell the user to run `skill-kit game sync` first and stop.
   patterns must match THIS engine's format.
 - Find how the project builds and runs from the shell, or that it can't be scripted
   (editor-driven) — in which case the command function echoes a human instruction.
-- Find where design docs live (`docs/`, `design/`, none yet). Read the disk; ask when
-  empty.
 
 ## Generate the overrides
 
-Walk each default function with the user. For `engine.sh`, resolve at minimum:
-`engine_name`, `source_root`, `third_party`, `runtime_log`, `runtime_log_prev`,
-`build_log`, `compile_error_pattern`, `runtime_error_pattern`, `call_site_pattern`,
-`build_cmd`, `run_cmd`, `headless_cmd`, `recompile_hint`. For `layout.sh`: `design_root`,
-`gdd_file`, `mechanics`/`mechanic_file`, `balance`/`balance_file`, `levels`/`level_file`
-— the game's own design docs. Leave the `project_layout` / `load_project` resolver below
-them untouched.
-
-When the game uses the shared setting skills, generate a per-project layout file too: copy
-`.agents/refs/layout-template.sh` to `.agents/refs/layouts/<id>.sh`, point `_base` at where
-that project keeps its characters / world / items / timeline, and keep every function name.
+Walk each default function with the user. Resolve at minimum: `engine_name`,
+`source_root`, `third_party`, `runtime_log`, `runtime_log_prev`, `build_log`,
+`compile_error_pattern`, `runtime_error_pattern`, `call_site_pattern`, `build_cmd`,
+`run_cmd`, `headless_cmd`, `recompile_hint`.
 
 Pay special attention to `headless_cmd`: find this engine's batch/headless launch (Unity
 `-batchmode -nographics … -runTests / -executeMethod`, a Godot `--headless` invocation, a
@@ -66,7 +48,7 @@ Batch related functions into single `AskUserQuestion` calls (all logs together, 
 patterns together) rather than asking one at a time. If a default already fits this repo,
 keep it and say so.
 
-Constraints for each generated file:
+Constraints for the generated file:
 - Keep EVERY function name from the default, even ones left unchanged — skills depend on
   the full set existing. Never rename, drop, or add functions; only change what they echo.
 - Each function echoes exactly one value, nothing else. Paths are relative to the repo
@@ -74,18 +56,16 @@ Constraints for each generated file:
   `grep -E`/`-oE`.
 - Preserve the `$1`/argument convention and the `# $1 = ...` comments where the default
   has them.
-- Start each file with `#!/bin/sh` and a one-line comment noting it is this repo's
+- Start the file with `#!/bin/sh` and a one-line comment noting it is this repo's
   override of the kit default, naming the engine.
 
 ## Verify
 
-Write the files, overwriting the symlinks with real files. Then resolve a few values and
+Write the file, overwriting the symlink with a real file. Then resolve a few values and
 confirm they match reality:
 
 ```sh
 sh -c '. .agents/refs/engine.sh; runtime_log; echo "---"; compile_error_pattern'
-sh -c '. .agents/refs/layout.sh; gdd_file; mechanic_file demo'
-.agents/refs/path <id> characters_main テスト   # only if a per-project layout file was made
 ```
 
 Confirm the log path exists (`ls -l "$(sh -c '. .agents/refs/engine.sh; runtime_log')"`)
@@ -110,7 +90,7 @@ prefix. Don't fabricate an MCP server to fill it in.
 
 ## Verify & report
 
-Finally run `git status` and confirm the two `.agents/refs/*.sh` files show as real,
-tracked files (not ignored), and that nothing else changed. Tell the user the overrides
-are in place and will survive `skill-kit game sync` / `update`, and that the log fallback
+Finally run `git status` and confirm `.agents/refs/engine.sh` shows as a real, tracked
+file (not ignored), and that nothing else changed. Tell the user the override is in place
+and will survive `skill-kit game sync` / `update`, and that the log fallback
 is in use until an engine-control MCP is wired up.

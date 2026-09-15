@@ -162,6 +162,6 @@ make_git_kit() {
   env -u SKILL_KIT_HOME "$REPO_ROOT/bin/skill-kit" story sync
   [ -L .agents/skills/write ]
   [ "$(readlink .agents/skills/write)" = "$REPO_ROOT/domains/story/skills/write" ]
-  [ -L .agents/skills/setup ]
-  [ "$(readlink .agents/skills/setup)" = "$REPO_ROOT/shared/skills/setup" ]
+  [ -L .agents/skills/character ]
+  [ "$(readlink .agents/skills/character)" = "$REPO_ROOT/shared/skills/character" ]
 }

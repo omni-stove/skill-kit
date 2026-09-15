@@ -1,28 +1,32 @@
 #!/bin/sh
-# Usage: source.sh <project-id> <plot title | plot/<title>.md | <chapter>.md | file path>
-# Prints the resolved source path as a `Source:` line, the output file the
-# source is written to (<story dir>/<leading number of the source filename>.txt,
-# the whole stem when it has no leading number), and the action to take on
-# that output — read it and ask whether to resume when it already exists.
+# Usage: source.sh <file>   (a plot file, or the story file itself)
+# Prints the source as a `Source:` line, the output file it is written to, and the
+# action to take on that output. Output, from where the source sits: plot/<x>.md ->
+# ../story/<leading number of x, else x>.txt; plot.md -> index.txt beside it; another
+# .md -> <stem>.txt beside it; a .txt is the output itself and is revised in place.
 set -eu
-[ $# -eq 2 ] || { echo "usage: source.sh <project-id> <source>" >&2; exit 2; }
-pid=$1
-given=$2
-if [ -f "$given" ]; then src=$given
-else
-  name=$(basename -- "$given" .md)
-  case $given in
-    plot/*) src=$(.agents/refs/path "$pid" story_plot_file "$name") ;;
-    *.md)   src=$(.agents/refs/path "$pid" story_body_file "$name") ;;
-    *)      src=$(.agents/refs/path "$pid" story_plot_file "$name") ;;
-  esac
-fi
-[ -f "$src" ] || { echo "source: no such file: $src" >&2; exit 1; }
-stem=$(basename -- "$src")
+[ $# -eq 1 ] || { echo "usage: source.sh <file>" >&2; exit 2; }
+f=$1
+[ -f "$f" ] || { echo "source: no such file: $f" >&2; exit 1; }
+dir=$(dirname -- "$f")
+stem=$(basename -- "$f")
 stem=${stem%.*}
-num=$(printf '%s' "$stem" | sed -n 's/^\([0-9][0-9]*\).*/\1/p')
-out="$(.agents/refs/path "$pid" story)/${num:-$stem}.txt"
-echo "Source: $src"
+case $f in
+  *.txt)
+    echo "Output: $f"
+    echo "The output file is the input. Read it and revise it as the user says."
+    exit 0 ;;
+esac
+case $(basename -- "$dir") in
+  plot)
+    num=$(printf '%s' "$stem" | sed -n 's/^\([0-9][0-9]*\).*/\1/p')
+    out="$(dirname -- "$dir")/story/${num:-$stem}.txt" ;;
+  *)
+    [ "$stem" = plot ] && stem=index
+    out="$dir/$stem.txt" ;;
+esac
+out=${out#./}
+echo "Source: $f"
 echo "Output: $out"
 if [ -f "$out" ]; then
   echo "The output file exists. Read it, ask \"Continue from where you left off, or start over?\", and wait for the response."

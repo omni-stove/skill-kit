@@ -5,9 +5,7 @@ description: Check a story file for contradictions and inconsistencies across se
 
 The user specifies the target story file path to check.
 
-Get each path from `.agents/refs/path <project-id> <what>`; never hand-build one. `<what>`: `readme`, `characters` (the dir).
-
-Read the target file and determine its number (e.g., `005.txt` → 5). Extract the project ID from the path and read the `readme` path. Read the previous and next files if they exist — only the ending ~50 lines of the previous file and the opening ~50 lines of the next file are needed. Identify characters appearing in the target file and read their character files from the `characters` directory. If an architecture or trick file is referenced or exists for the current story arc, read it as well.
+Read the target file and determine its number (e.g., `005.txt` → 5). Read `README.md`. Read the previous and next files if they exist — only the ending ~50 lines of the previous file and the opening ~50 lines of the next file are needed. Identify characters appearing in the target file and read their files under `characters/`. If an architecture or trick file is referenced or exists for the current story arc, read it as well.
 
 Check the boundary between the previous file's ending and the target file's opening:
 

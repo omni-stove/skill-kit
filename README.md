@@ -31,8 +31,8 @@ skill-kit update        # git pull the kit, then re-sync this repo
 ```
 
 The first sync records the domain (so later `sync`/`update` need no domain argument) and
-seeds `AGENTS.md` / `CLAUDE.md` if missing. Then run the **`setup`** skill once in Claude
-Code — it adapts the kit to the repo via files under `.agents/refs/`.
+seeds `AGENTS.md` / `CLAUDE.md` if missing. In a game repo, then run the **`setup`** skill
+once in Claude Code — it adapts the kit to the engine via `.agents/refs/engine.sh`.
 
 To **override** a kit-provided skill or ref in one repo, drop a real file of the same name
 into the deployed dir — sync leaves real files untouched and keeps them git-tracked.
@@ -49,17 +49,17 @@ bin/               the skill-kit CLI
 .claude/skills/
   create-skill/    scaffold a new skill — the kit's own skill, never deployed
 shared/            everything both domains use verbatim
-  skills/          setup + setting skills (character, world, item, timeline)
-  refs/            path resolver, llm-instruction-rules.md
+  skills/          setting skills (character, world, item, timeline)
+  refs/            llm-instruction-rules.md, doc-rules.md, setting formats
   hooks/           llm-instruction-rules.sh
 domains/
-  game/            skills (gdd, mechanic, balance, run, …) + refs
+  game/            skills (gdd, mechanic, balance, setup, run, …) + refs
   story/           skills (write, plot, dupcheck, judge, …) + refs
 ```
 
-Shared skills are domain-agnostic: they never hardcode a repo fact or path. Everything
-repo-specific arrives through `.agents/refs/` (the `path` resolver, `layout.sh`,
-`engine.sh`, per-domain rules files), so one skill body serves both domains and any repo.
+Skills read and write fixed paths relative to the repo root (`README.md`, `characters/`,
+`world/`, `items/`, `plot/`, `story/`; game design docs under `docs/design/`). The only
+repo-specific facts are the game engine's, which arrive through `.agents/refs/engine.sh`.
 
 ## LLM-instruction-rules hook
 

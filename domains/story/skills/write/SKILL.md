@@ -18,3 +18,5 @@ Output the file and hand off:
 ```
 
 `y` → write the next Scene; anything else → revise the Scene as the input says, then hand off again.
+
+Run `.agents/skills/write/scripts/final-check.sh` once the last Scene is written.

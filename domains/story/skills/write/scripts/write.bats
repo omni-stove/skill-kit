@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# source.sh — deterministic resolution of the source and its output file.
+# source.sh — deterministic resolution of the source and its output file; final-check.sh — the whole-file checks.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
@@ -64,4 +64,10 @@ setup() {
 @test "source.sh fails on a missing source" {
   run sh "$SOURCE" plot/missing.md
   [ "$status" -eq 1 ]
+}
+
+@test "final-check.sh prints the four whole-file checks" {
+  run sh "$BATS_TEST_DIRNAME/final-check.sh"
+  [ "$status" -eq 0 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
 }

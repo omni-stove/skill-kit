@@ -66,8 +66,8 @@ setup() {
   [ "$status" -eq 1 ]
 }
 
-@test "scene-check.sh prints the four whole-file checks" {
+@test "scene-check.sh prints the five whole-file checks" {
   run sh "$BATS_TEST_DIRNAME/scene-check.sh"
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
 }

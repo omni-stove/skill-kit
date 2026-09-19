@@ -2,7 +2,7 @@
 # Usage: source.sh <file>   (a plot file, or the story file itself)
 # Prints the source as a `Source:` line, the output file it is written to, and the
 # action to take on that output. Output, from where the source sits: plot/<x>.md ->
-# ../story/<leading number of x, else x>.txt; plot.md -> index.txt beside it; another
+# ../<leading number of x, else x>.txt; plot.md -> index.txt beside it; another
 # .md -> <stem>.txt beside it; a .txt is the output itself and is revised in place.
 set -eu
 [ $# -eq 1 ] || { echo "usage: source.sh <file>" >&2; exit 2; }
@@ -20,7 +20,7 @@ esac
 case $(basename -- "$dir") in
   plot)
     num=$(printf '%s' "$stem" | sed -n 's/^\([0-9][0-9]*\).*/\1/p')
-    out="$(dirname -- "$dir")/story/${num:-$stem}.txt" ;;
+    out="$(dirname -- "$dir")/${num:-$stem}.txt" ;;
   *)
     [ "$stem" = plot ] && stem=index
     out="$dir/$stem.txt" ;;

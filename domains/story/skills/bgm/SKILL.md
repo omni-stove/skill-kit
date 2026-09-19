@@ -5,7 +5,7 @@ description: Build a Suno prompt for a BGM track from a story project's settings
 
 The user supplies what the track is for (a scene, an opening/ending, a character theme, a work-session loop, etc.) .
 
-When the subject is from this project's story, read only the setting files it needs: the story file under `story/` or the plot file under `plot/` for a specific scene, `README.md` and files under `world/` for era and technology level, the character's file under `characters/` for a character theme; otherwise build the prompt from the description alone. Extract the emotional arc, the pacing, and the moment the track should underscore.
+When the subject is from this project's story, read only the setting files it needs: the story file under `story/` or the plot file under `story/plot/` for a specific scene, `README.md` and files under `world/` for era and technology level, the character's file under `characters/` for a character theme; otherwise build the prompt from the description alone. Extract the emotional arc, the pacing, and the moment the track should underscore.
 
 Ask with a single `AskUserQuestion` call (one round maximum), only for what the request doesn't already imply:
 

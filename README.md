@@ -58,7 +58,7 @@ domains/
 ```
 
 Skills read and write fixed paths relative to the repo root (`README.md`, `characters/`,
-`world/`, `items/`, `plot/`, `story/`; game design docs under `docs/design/`). The only
+`world/`, `items/`, `story/`, `story/plot/`; game design docs under `docs/design/`). The only
 repo-specific facts are the game engine's, which arrive through `.agents/refs/engine.sh`.
 
 ## LLM-instruction-rules hook

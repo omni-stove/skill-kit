@@ -4,28 +4,28 @@
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
   work="$BATS_TEST_TMPDIR/work"
-  mkdir -p "$work/plot" "$work/story" "$work/sub/plot"
+  mkdir -p "$work/story/plot" "$work/sub/plot"
   cd "$work"
 }
 
-@test "source.sh writes plot/<x>.md to the story dir beside plot, named by the leading number" {
-  : > plot/010-co-arrival.md
-  run sh "$SOURCE" plot/010-co-arrival.md
+@test "source.sh writes plot/<x>.md to the dir holding plot, named by the leading number" {
+  : > story/plot/010-co-arrival.md
+  run sh "$SOURCE" story/plot/010-co-arrival.md
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Source: plot/010-co-arrival.md" ]
+  [ "${lines[0]}" = "Source: story/plot/010-co-arrival.md" ]
   [ "${lines[1]}" = "Output: story/010.txt" ]
 }
 
 @test "source.sh names the output after the whole stem when there is no leading number" {
-  : > plot/arrival.md
-  run sh "$SOURCE" plot/arrival.md
+  : > story/plot/arrival.md
+  run sh "$SOURCE" story/plot/arrival.md
   [ "${lines[1]}" = "Output: story/arrival.txt" ]
 }
 
 @test "source.sh keeps the plot dir's parent for a nested plot" {
   : > sub/plot/020.md
   run sh "$SOURCE" sub/plot/020.md
-  [ "${lines[1]}" = "Output: sub/story/020.txt" ]
+  [ "${lines[1]}" = "Output: sub/020.txt" ]
 }
 
 @test "source.sh writes plot.md to index.txt beside it" {
@@ -49,20 +49,20 @@ setup() {
 }
 
 @test "source.sh says to start fresh when the output is missing" {
-  : > plot/arrival.md
-  run sh "$SOURCE" plot/arrival.md
+  : > story/plot/arrival.md
+  run sh "$SOURCE" story/plot/arrival.md
   [[ "$output" == *"does not exist yet"* ]]
 }
 
 @test "source.sh says to read and ask when the output exists" {
-  : > plot/010-co-arrival.md
+  : > story/plot/010-co-arrival.md
   : > story/010.txt
-  run sh "$SOURCE" plot/010-co-arrival.md
+  run sh "$SOURCE" story/plot/010-co-arrival.md
   [[ "$output" == *"Read it, ask"* ]]
 }
 
 @test "source.sh fails on a missing source" {
-  run sh "$SOURCE" plot/missing.md
+  run sh "$SOURCE" story/plot/missing.md
   [ "$status" -eq 1 ]
 }
 

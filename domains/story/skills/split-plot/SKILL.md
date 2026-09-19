@@ -19,11 +19,9 @@ Detect section boundaries — try the following splitters in order and pick the 
 
 For each detected segment, capture its index (sequential), title (first heading or first sentence as a short label), and body.
 
-Show the extracted segments to the user as a numbered list (index, title, brief body summary), and use AskUserQuestion to confirm: which splitter to use (if multiple are viable), segments to skip / merge / further split, the base name for files, and the output directory (suggest `plot/`).
+Show the extracted segments to the user as a numbered list (index, title, brief body summary), and use AskUserQuestion to confirm: which splitter to use (if multiple are viable), segments to skip / merge / further split, and the base name for files.
 
-For each confirmed segment, create a plot file.
-
-Filename: `NNN-[base]-[english-title].md` — NNN is a sequential three-digit number incremented by 10 (010, 020, 030...) so scenes can be inserted between existing ones later (e.g. 015 between 010 and 020); if the output directory already has numbered files, continue from the next tens number. english-title is a short kebab-case English title derived from the segment content.
+Run `.agents/skills/split-plot/scripts/paths.sh <base> <title>...` with one short kebab-case English title per confirmed segment, in order — it prints each segment's output path. Create each plot file at its printed path.
 
 Content: rewrite the segment as a plot skeleton based on the loaded plot format, the project's world setting, and character information. Do NOT copy the source verbatim — restructure into the plot skeleton style. Preserve any concrete narrative or dialogue worth keeping in the 地の文 / 会話 sections, pulling those lines from the source file when present — do not invent new lines. Aim for 3-8 paragraphs per file depending on segment density. Cross-reference adjacent segments to ensure continuity (how the scene begins from the previous, how it leads to the next). For the plot body, 地の文, 会話, and 参照 sections, always apply the loaded plot format rules exactly.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# source.sh — deterministic resolution of the source and its output file; final-check.sh — the whole-file checks.
+# source.sh — deterministic resolution of the source and its output file; scene-check.sh — the checks before each hand-off.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
@@ -66,8 +66,8 @@ setup() {
   [ "$status" -eq 1 ]
 }
 
-@test "final-check.sh prints the four whole-file checks" {
-  run sh "$BATS_TEST_DIRNAME/final-check.sh"
+@test "scene-check.sh prints the four whole-file checks" {
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh"
   [ "$status" -eq 0 ]
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
 }

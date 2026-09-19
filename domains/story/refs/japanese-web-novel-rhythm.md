@@ -4,4 +4,5 @@
 - Alternate assertion（〜だった）with wavering（〜に違いない）; a wavering sets up a later reversal by events
 - After 2–3 dense paragraphs, one sparse paragraph: a settled fact, the next question, or a viewpoint-distance shift
 - Take beats, tension, and slack only from events, sensation, and the POV's judgment state; where they offer none, stay flat
-- Give the reader each fact once: cut whole any narration sentence whose content the lines around it already deliver, before or after, or that speaks of the text's course rather than the situation; where two sentences share content, keep one
+- Give the reader each fact once, counting everything they have read — earlier Scenes and earlier chapters included: cut whole any narration sentence that hands them neither a new fact nor a new judgment of the POV's, or that speaks of the text's course rather than the situation; where two sentences share content, keep one
+- In a recollection or comparison, point to the past event with a noun phrase and spend the sentence on the judgment the POV draws from it now

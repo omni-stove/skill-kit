@@ -1,12 +1,17 @@
 #!/bin/sh
 # Usage: scene-check.sh <output file>
-# Prints the checks to run over the output file before each hand-off, then the
-# narration lines with a negative sentence ending (ない。, なかった。) and the
-# lines whose sentences end on a look or voice (目だった, 顔だった, ...).
+# Fixes the output file's format through format.sh, then prints the checks
+# to run over the file before each hand-off, then the
+# narration lines with a negative sentence ending (ない。, なかった。), the
+# lines whose sentences end on a look or voice (目だった, 顔だった, ...), and
+# the lines format.sh finds against the format rules.
 set -eu
 [ $# -eq 1 ] || { echo "usage: scene-check.sh <output file>" >&2; exit 2; }
 f=$1
 [ -f "$f" ] || { echo "scene-check: no such file: $f" >&2; exit 1; }
+format=.agents/refs/format.sh
+[ -f "$format" ] || format=$(dirname -- "$0")/../../../refs/format.sh
+fmt=$(sh "$format" "$f")
 cat <<'EOF'
 Read the whole output file and fix each hit in place; you judge what is a hit.
 
@@ -31,4 +36,11 @@ if [ -n "$look" ]; then
 
 EOF
   printf '%s\n' "$look"
+fi
+if [ -n "$fmt" ]; then
+  cat <<'EOF'
+- Bring the lines listed below, under the format rule each breaks, within the loaded rules.
+
+EOF
+  printf '%s\n' "$fmt"
 fi

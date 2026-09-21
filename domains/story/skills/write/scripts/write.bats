@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# source.sh — deterministic resolution of the source and its output file; scene-check.sh — the checks before each hand-off.
+# source.sh — deterministic resolution of the source and its output file; scene-check.sh — the format fix and the checks before each hand-off.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
@@ -96,4 +96,13 @@ setup() {
 @test "scene-check.sh fails on a missing file" {
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/missing.txt
   [ "$status" -eq 1 ]
+}
+
+@test "scene-check.sh fixes the format and lists the lines that break a format rule" {
+  printf '彼は頷いた。\n「終わり。」\n　部屋は3つ。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
+  [ "$status" -eq 0 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [ "$(head -2 story/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
+  [[ "$output" == *"3:　部屋は3つ。"* ]]
 }

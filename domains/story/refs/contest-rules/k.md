@@ -1,28 +1,14 @@
-## $CONTEST_RULES:
+## $CONTEST_RULES
+
+ミステリであり、エンターテインメントである長編。中心の問いの形は問わず、謎解き、倫理的ジレンマ、心理サスペンス、SF・ファンタジーミステリ、社会や職業の探究、人物の謎を同列に扱う。
+
+作品が自ら選んだ形で判定する。読者参加型の推理やフェアな手がかり、論理的再構成による解明、謎解き場面での決着は、作品がそれを約束して果たせなかったときだけ減点する。
 
 ### Evaluation Criteria
-
-#### 1. Sharpness of Concept
-- **Logline**: Does a one-sentence summary stage an unexpected collision (vulnerability vs. detective role, special setting vs. classical puzzle, profession vs. ethical shadow)? Most common trait of recent winners.
-- **Niche subject / setting**: A profession, field, era, region, or community untrodden by existing mysteries — inseparable from the mystery via its domain logic, ethics, and atmosphere, not mere decoration.
-
-#### 2. Structural Backbone as Mystery + Entertainment
-
-**The form of the central question is unrestricted.** All forms are evaluated as equals — none is privileged:
-whodunit / howdunit / whydunit · ethical dilemma · psychological suspense · SF or fantasy mystery · social or professional inquiry · character mystery.
-
-**Do NOT apply orthodox (本格) criteria as a default rubric.** The following are NOT in themselves grounds for deduction — penalize only if the work itself promises and fails to deliver them:
-- absence of reader-participatory deduction or fair-play clueing
-- truth revealed by intuition / dialogue / observation rather than logical reconstruction
-- climax resolved by action, emotion, or operation rather than denouement
-
-Judge by the form the work itself adopts.
-
-Then evaluate:
-- **Pull of the central question**: Does the core question — in whatever form — pull readers through to the end?
-- **Protagonist hook**: A sharply distinctive flaw, quirk, or circumstance beyond mere likability.
-- **Page-turnability**: Opening grips within dozens of pages; momentum sustained to the finale.
-
-#### 3. Freshness and Appeal
-- **Genre crossover**: Hybridization (legal × romance, everyday mystery × emotional drama, orthodox × fantasy).
-- **Commercial / adaptation potential**: Selling points fit for a book band; settings and characters with visual presence.
+- 一文の要約の中に意外な衝突があるか。近年の受賞作に最も共通する。
+- 既存のミステリが踏んでいない職業・分野・時代・地域・共同体を扱い、その論理・倫理・空気が謎と不可分か。
+- 中心の問いが最後まで読者を引っ張るか。
+- 主人公に、好感度を超えた際立つ欠点・癖・事情があるか。
+- 冒頭数十ページで掴み、結末まで勢いが続くか。
+- ジャンルの掛け合わせがあるか。
+- 帯に書ける売りがあり、設定と人物が絵になるか。

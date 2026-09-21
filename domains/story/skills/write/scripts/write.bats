@@ -82,6 +82,17 @@ setup() {
   [[ "$output" == *"5:"*"声だった。"* ]]
 }
 
+@test "scene-check.sh lists negative narration sentences, not dialogue or thoughts" {
+  printf '　返事はなかった。\n「知らない。帰れ」\n　廊下には誰もいない。\n『来ない。』\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
+  [ "$status" -eq 0 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [[ "$output" == *"1:"*"返事はなかった。"* ]]
+  [[ "$output" == *"3:"*"誰もいない。"* ]]
+  [[ "$output" != *"知らない"* ]]
+  [[ "$output" != *"来ない"* ]]
+}
+
 @test "scene-check.sh fails on a missing file" {
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/missing.txt
   [ "$status" -eq 1 ]

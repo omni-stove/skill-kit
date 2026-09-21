@@ -67,7 +67,22 @@ setup() {
 }
 
 @test "scene-check.sh prints the five whole-file checks" {
-  run sh "$BATS_TEST_DIRNAME/scene-check.sh"
+  printf '　彼は頷いた。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
   [ "$status" -eq 0 ]
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
+}
+
+@test "scene-check.sh lists look-or-voice sentence endings" {
+  printf '　彼は頷いた。覚悟を決めた目だった。\n\n◇◇◇\n\n　静かな声だった。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
+  [ "$status" -eq 0 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [[ "$output" == *"1:"*"目だった。"* ]]
+  [[ "$output" == *"5:"*"声だった。"* ]]
+}
+
+@test "scene-check.sh fails on a missing file" {
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/missing.txt
+  [ "$status" -eq 1 ]
 }

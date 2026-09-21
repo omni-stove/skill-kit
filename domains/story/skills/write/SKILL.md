@@ -13,7 +13,7 @@ Launch one Agent on the source file to report what it must stay consistent with 
 
 Write 1 Scene by the loaded rules, with the printed `Source:` line at the top and, only if the project specifies a POV character, a `POV:` line after it. Open another file only for a fact the report lacks; the source file leads. Deliver its プロットの意図 through events alone. Given the story file itself, revise it as the user says instead.
 
-Output the file. Run `.agents/skills/write/scripts/scene-check.sh` — it prints the checks to run over the file — then hand off:
+Output the file. Run `.agents/skills/write/scripts/scene-check.sh <output file>` — it prints the checks to run over the file — then hand off:
 
 ```
 [Scene name] complete. Reply y for the next Scene, or say what to revise.

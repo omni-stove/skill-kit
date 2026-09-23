@@ -21,6 +21,13 @@ setup() {
   [ "$(cat "$f")" = "$(printf 'Source: story/plot/010-a.md\n\n　彼は頷いた。\n「字下げ」\n　二重。\n　半角。\n　正しい。\n\n◇◇◇\n\n『思考』\n')" ]
 }
 
+@test "format.sh strips the indent from lines opening with （, 【, 〖, 〔, ［, 〈 or 《" {
+  printf '　（まさか）\n　【警告】\n〖称号〗\n　〔注〕\n　［選択］\n　〈声〉\n　《念話》\n' > "$f"
+  run sh "$FORMAT" "$f"
+  [ "$status" -eq 0 ]
+  [ "$(cat "$f")" = "$(printf '（まさか）\n【警告】\n〖称号〗\n〔注〕\n［選択］\n〈声〉\n《念話》\n')" ]
+}
+
 @test "format.sh leaves a correctly indented file untouched" {
   printf '　一。\n「二」\n' > "$f"
   before=$(ls -li "$f"; cat "$f")
@@ -43,11 +50,11 @@ setup() {
 }
 
 @test "format.sh fixes …… to ――, drops the period closing dialogue, and spaces ！／？" {
-  printf '　次は……だ。\n「終わり。」\n　だめ！次へ。嘘？ 本当。\n「本当！？　嘘だ！」\n「なに？――」\n　（まさか！）叫んだ！\n' > "$f"
+  printf '　次は……だ。\n「終わり。」\n　だめ！次へ。嘘？ 本当。\n「本当！？　嘘だ！」\n「なに？――」\n（まさか！）叫んだ！\n' > "$f"
   run sh "$FORMAT" "$f"
   [ "$status" -eq 0 ]
   [ "$output" = "format: fixed 3 line(s) of $f" ]
-  [ "$(cat "$f")" = "$(printf '　次は――だ。\n「終わり」\n　だめ！　次へ。嘘？　本当。\n「本当！？　嘘だ！」\n「なに？――」\n　（まさか！）叫んだ！\n')" ]
+  [ "$(cat "$f")" = "$(printf '　次は――だ。\n「終わり」\n　だめ！　次へ。嘘？　本当。\n「本当！？　嘘だ！」\n「なに？――」\n（まさか！）叫んだ！\n')" ]
 }
 
 @test "format.sh lists an unpaired ―" {

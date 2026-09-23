@@ -1,11 +1,11 @@
 #!/bin/sh
 # Usage: format.sh <story file>
 # Fixes in place, noting the count on stderr: indentation — one full-width space
-# opens each narration line; lines opening with 「 or 『 and the ◇◇◇ separator get
-# none; …… becomes ――; 。」 loses its period; ！／？ gets a full-width space after
-# it unless 」, 』, ）, ― or the line end follows. Then lists the lines that break
-# the other mechanical rules of japanese-web-novel-format.md, grouped by rule as
-# `<line number>:<line>`; prints nothing when there are none.
+# opens each narration line; lines opening with 「, 『, （, 【, 〖, 〔, ［, 〈 or 《 and
+# the ◇◇◇ separator get none; …… becomes ――; 。」 loses its period; ！／？ gets a
+# full-width space after it unless 」, 』, ）, ― or the line end follows. Then lists
+# the lines that break the other mechanical rules of japanese-web-novel-format.md,
+# grouped by rule as `<line number>:<line>`; prints nothing when there are none.
 # A leading `Source:` / `POV:` header and one blank line after it are skipped.
 # Same-speaker dialogue runs and the use of 『』 stay with the reader.
 # Patterns use alternation, never a multibyte bracket, so any locale works.
@@ -19,7 +19,7 @@ awk '
 BEGIN { hdr = 1 }
 hdr && /^(Source|POV): / { print; next }
 { hdr = 0; sub(/^(　| |\t)+/, "") }
-$0 != "" && $0 !~ /^(「|『|◇)/ { $0 = "　" $0 }
+$0 != "" && $0 !~ /^(「|『|（|【|〖|〔|［|〈|《|◇)/ { $0 = "　" $0 }
 {
   gsub(/(…)+/, "――")
   gsub(/。」/, "」")

@@ -6,7 +6,7 @@ argument-hint: <synopsis-path> <manuscript-dir>
 
 Arguments, in order: the synopsis file path, then the manuscript directory.
 
-Judge by the contest rules provided in this conversation. How to weigh the criteria and what to say about the work is your call as a judge.
+Judge by the contest rules provided in this conversation. How to weigh the criteria and what to say about the work is your call as a judge. Judge criteria that need the whole work from what the synopsis promises.
 
 Complete each step and output its verdict before opening anything the next step reads.
 

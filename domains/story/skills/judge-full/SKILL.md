@@ -11,6 +11,7 @@ Never read the synopsis or manuscript yourself; pass only the file paths to the 
 Spawn judge-count agents in parallel with the Agent tool, each on a different model, strongest first. Each judge's prompt contains:
 
 - The synopsis and manuscript file paths, with the instruction to read both in full
+- The tool limit: use only Read
 - The contest rules and any notes from this conversation, embedded verbatim
 - The task: as a final-round judge, decide **大賞 / 大賞ではない** and give the reasons, quoting the text. How to weigh the criteria is the judge's own call.
 

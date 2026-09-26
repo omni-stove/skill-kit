@@ -73,13 +73,15 @@ setup() {
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
 }
 
-@test "scene-check.sh lists look-or-voice sentence endings" {
-  printf '　彼は頷いた。覚悟を決めた目だった。\n\n◇◇◇\n\n　静かな声だった。\n' > story/010.txt
+@test "scene-check.sh lists narration sentences ending on the copula, not dialogue" {
+  printf '　彼は頷いた。覚悟を決めた目だった。\n「嘘だった」\n　静かな夜だった。\n　鍵は古い真鍮のようだった。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
   [ "$status" -eq 0 ]
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
   [[ "$output" == *"1:"*"目だった。"* ]]
-  [[ "$output" == *"5:"*"声だった。"* ]]
+  [[ "$output" == *"3:"*"夜だった。"* ]]
+  [[ "$output" == *"4:"*"ようだった。"* ]]
+  [[ "$output" != *"嘘だった"* ]]
 }
 
 @test "scene-check.sh lists negative narration sentences, not dialogue or thoughts" {

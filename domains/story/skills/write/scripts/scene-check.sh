@@ -3,8 +3,8 @@
 # Fixes the output file's format through format.sh, then prints the checks
 # to run over the file before each hand-off, then the
 # narration lines with a negative sentence ending (ない。, なかった。), the
-# lines whose sentences end on a look or voice (目だった, 顔だった, ...), and
-# the lines format.sh finds against the format rules.
+# narration lines with a sentence ending on だった。, and the lines format.sh
+# finds against the format rules.
 set -eu
 [ $# -eq 1 ] || { echo "usage: scene-check.sh <output file>" >&2; exit 2; }
 f=$1
@@ -29,13 +29,13 @@ if [ -n "$neg" ]; then
 EOF
   printf '%s\n' "$neg"
 fi
-look=$(grep -nE '(目|顔|表情|声|口調)だった。' "$f" || true)
-if [ -n "$look" ]; then
+datta=$(grep -n 'だった。' "$f" | grep -vE '^[0-9]+:[「『]' || true)
+if [ -n "$datta" ]; then
   cat <<'EOF'
-- Bring the sentences that rest on a look or voice, listed below, within the loaded rules' limit.
+- Bring the sentences ending on だった, listed below, within the loaded rules' limits.
 
 EOF
-  printf '%s\n' "$look"
+  printf '%s\n' "$datta"
 fi
 if [ -n "$fmt" ]; then
   cat <<'EOF'

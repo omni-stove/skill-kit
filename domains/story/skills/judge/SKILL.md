@@ -14,7 +14,7 @@ Complete each step and output its verdict before opening anything the next step 
 
 Read the synopsis.
 
-A synopsis exists to prove the story is worth reading in full. Judge the story it describes — brevity and compression are its nature, so do not critique it as prose.
+A synopsis exists to prove, in a few thousand characters at most, that the story is worth reading in full. Judge the story it describes — not its prose, and not what it leaves out unless the gap leaves the story's appeal unproven.
 
 Output a 梗概審査 verdict — **通過 / 当落 / 落選** — and your reasons, quoting the synopsis where you point at something specific.
 

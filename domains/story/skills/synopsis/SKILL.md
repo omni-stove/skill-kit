@@ -9,7 +9,7 @@ Align on direction with a single `AskUserQuestion` call: length (400字以内 / 
 
 Draft the 梗概:
 
-- キャッチコピー or ジャンル情報 → 導入 → 展開 → 結末 の順に構成する
+- Structure it as tagline or genre → setup → development → ending, revealing the ending; within each part, order events freely rather than chronologically
 - State the protagonist, their goal, and the central conflict early
 - Connect events through character decisions
 - Keep one through-line; include the key turning points and cut episodes that don't serve it

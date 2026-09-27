@@ -1,16 +1,19 @@
 ---
 name: judge-full
 description: Full manuscript review as a contest final judge. Evaluate whether this work deserves the grand prize. Use when the user asks for a full-manuscript final-round judgment of a complete work.
-argument-hint: <synopsis-path> <manuscript-path> [judges]
+argument-hint: <synopsis-path> <synopsis-limit> <manuscript-path> [judges]
 ---
 
-Arguments, in order: the synopsis file path, the manuscript file path, and optionally the number of judges (default: 3).
+Arguments, in order: the synopsis file path, the synopsis character limit, the manuscript file path, and optionally the number of judges (default: 3).
 
-Never read the synopsis or manuscript yourself; pass only the file paths to the judges.
+Never read the manuscript yourself; pass only its file path to the judges.
+
+Run `.agents/refs/synopsis.sh <synopsis-path> <synopsis-limit>`.
 
 Spawn judge-count agents in parallel with the Agent tool, each on a different model, strongest first. Each judge's prompt contains:
 
-- The synopsis and manuscript file paths, with the instruction to read both in full
+- The synopsis.sh output, embedded verbatim
+- The manuscript file path, with the instruction to read it in full
 - The tool limit: use only Read
 - The contest rules and any notes from this conversation, embedded verbatim
 - The task: as a final-round judge, decide **大賞 / 大賞ではない** and give the reasons, quoting the text. How to weigh the criteria is the judge's own call.

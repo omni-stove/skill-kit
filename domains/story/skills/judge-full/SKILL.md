@@ -8,6 +8,8 @@ Arguments, in order: the synopsis file path, the synopsis character limit, the m
 
 Never read the manuscript yourself.
 
+Feed every save.sh call its report on stdin through a quoted heredoc (`<<'EOF'`).
+
 Run `.agents/refs/synopsis.sh <synopsis-path> <synopsis-limit>`.
 
 Spawn judge-count agents in parallel, each on a different model, strongest first, labeled Judge A, B, C… in that order. Each judge's prompt contains:
@@ -18,8 +20,8 @@ Spawn judge-count agents in parallel, each on a different model, strongest first
 - The contest rules and any notes from this conversation, embedded verbatim
 - The task: as a final-round judge of a contest that awards the 大賞 alone, decide **大賞** or **大賞ではない**, never a conditional or middle verdict, and give the reasons, quoting the text. How to weigh the criteria where the rules leave it open is the judge's own call.
 
-Collect the results into a first-round tally: each judge's label and verdict in one line, and where the judges agreed and split — on the verdict and on individual points. Output the tally and run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> first-round '<the tally>'`.
+Collect the results into a first-round tally: each judge's label and verdict in one line, and where the judges agreed and split — on the verdict and on individual points. Output the tally and run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> first-round` with the tally.
 
-If anything split, run a discussion round: send each judge, via SendMessage, the other judges' verdicts and reasoning on the split points, attributed by label only, never by model, with the task to rebut or concede each point and restate their verdict — changing it is allowed. After each round, output the verdicts and what moved and run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> discussion-<round number> '<each judge's statement, verbatim>'`. Run further rounds only while a verdict is still changing.
+If anything split, run a discussion round: send each judge, via SendMessage, the other judges' verdicts and reasoning on the split points, attributed by label only, never by model, with the task to rebut or concede each point and restate their verdict — changing it is allowed. After each round, output the verdicts and what moved and run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> discussion-<round number>` with each judge's statement, verbatim. Run further rounds only while a verdict is still changing.
 
-Output the final vote count (N/M) with the overall verdict — 大賞 when more than half the judges vote 大賞, otherwise 大賞ではない — each judge's label and final verdict in one line noting any change, what the discussion settled, and what stayed split, and run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> report '<that output>'`.
+Output the final vote count (N/M) with the overall verdict — 大賞 when more than half the judges vote 大賞, otherwise 大賞ではない — each judge's label and final verdict in one line noting any change, what the discussion settled, and what stayed split, and run `.agents/skills/judge-full/scripts/save.sh <manuscript-path> report` with that output.

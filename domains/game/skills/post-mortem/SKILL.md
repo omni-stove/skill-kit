@@ -7,7 +7,7 @@ Run `.agents/skills/post-mortem/refs.sh`
 
 The user provides the milestone and what happened, or the change they want.
 
-Determine the milestone, a lowercase-dashed slug, and the period it covers. Run `.agents/skills/post-mortem/scripts/commits.sh <since> [<until>]` for the period's commits.
+Determine the milestone, a kebab-case English slug, and the period it covers. Run `.agents/skills/post-mortem/scripts/commits.sh <since> [<until>]` for the period's commits.
 
 List `docs/design/post-mortems/`; read the earlier post-mortems and `docs/design/gdd.md`.
 

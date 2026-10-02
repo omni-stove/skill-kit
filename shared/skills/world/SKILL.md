@@ -9,6 +9,6 @@ The user provides an optional overview of the world-setting element.
 
 Read `README.md` and list `world/`.
 
-From the overview, determine the element's name and category (physical laws, magic system, race, history, society, culture, technology, geography), and how it relates to the existing world settings.
+From the overview, determine the element's name, a kebab-case English slug, and category (physical laws, magic system, race, history, society, culture, technology, geography), and how it relates to the existing world settings.
 
-Draft following the loaded rules and format, and write under `world/`.
+Draft following the loaded rules and format, and write to `world/<slug>.md`.

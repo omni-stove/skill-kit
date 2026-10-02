@@ -9,6 +9,6 @@ The user provides an optional item overview.
 
 Read `README.md` and list `items/`.
 
-From the overview, determine the item name (Japanese, English) and type, and how it relates to existing items and characters.
+From the overview, determine the item name (Japanese, English), a kebab-case English slug, and type, and how it relates to existing items and characters.
 
-Draft following the loaded rules and format, and write under `items/`.
+Draft following the loaded rules and format, and write to `items/<slug>.md`.

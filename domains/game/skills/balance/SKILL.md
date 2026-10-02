@@ -7,7 +7,7 @@ Run `.agents/skills/balance/refs.sh`
 
 The user provides the system to balance and, optionally, the values they have in mind.
 
-Determine the system and a lowercase-dashed slug.
+Determine the system and a kebab-case English slug.
 
 List `docs/design/balance/`; read the docs under `docs/design/mechanics/` this balance governs, and `docs/design/gdd.md`.
 

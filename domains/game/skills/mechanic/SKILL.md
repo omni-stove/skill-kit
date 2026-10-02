@@ -7,7 +7,7 @@ Run `.agents/skills/mechanic/refs.sh`
 
 The user provides the mechanic and, optionally, what they know about it.
 
-Determine the mechanic name and a lowercase-dashed slug.
+Determine the mechanic name and a kebab-case English slug.
 
 List `docs/design/mechanics/` and read `docs/design/gdd.md`.
 

@@ -23,18 +23,39 @@ setup() {
   [ "${#lines[@]}" -eq 2 ]
 }
 
-@test "path.sh resolves a slug under story/plot/" {
+@test "path.sh numbers a new plot 010 in an empty or missing story/plot/" {
   run sh "$PATHSH" first-contact
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Output: story/plot/first-contact.md" ]
+  [ "${lines[0]}" = "Output: story/plot/010-first-contact.md" ]
   [[ "$output" == *"does not exist yet"* ]]
 }
 
-@test "path.sh says to confirm the overwrite when the plot exists" {
+@test "path.sh numbers a new plot at the next ten after the highest number" {
   mkdir -p story/plot
-  : > story/plot/first-contact.md
+  : > story/plot/010-arrival.md; : > story/plot/085-detour.md; : > story/plot/memo.md
+  run sh "$PATHSH" return
+  [ "${lines[0]}" = "Output: story/plot/090-return.md" ]
+  : > story/plot/090-return.md
+  run sh "$PATHSH" epilogue
+  [ "${lines[0]}" = "Output: story/plot/100-epilogue.md" ]
+}
+
+@test "path.sh says to confirm the overwrite when the plot exists, numbered or not" {
+  mkdir -p story/plot
+  : > story/plot/020-first-contact.md; : > story/plot/memo.md
   run sh "$PATHSH" first-contact
+  [ "${lines[0]}" = "Output: story/plot/020-first-contact.md" ]
   [[ "$output" == *"Confirm the overwrite"* ]]
+  run sh "$PATHSH" memo
+  [ "${lines[0]}" = "Output: story/plot/memo.md" ]
+  [[ "$output" == *"Confirm the overwrite"* ]]
+}
+
+@test "path.sh does not take a longer slug ending in the same words for the plot" {
+  mkdir -p story/plot
+  : > story/plot/010-the-first-contact.md
+  run sh "$PATHSH" first-contact
+  [ "${lines[0]}" = "Output: story/plot/020-first-contact.md" ]
 }
 
 @test "path.sh rejects a slug that is not kebab-case or starts with a number" {

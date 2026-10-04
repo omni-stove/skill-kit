@@ -10,12 +10,8 @@ Read what the engine printed at runtime — log/print output and runtime excepti
 Get the recent output. With an engine-control MCP
 (`sh -c '. .agents/refs/engine.sh; control_mcp'` non-empty), read the live console through
 its tools for structured, per-message entries. For a session that already ended, or with
-no MCP, run `.agents/skills/logs/scripts/tail.sh` — recent call-site messages (deduped by
-frequency), then runtime exceptions, scoped to the current run. Pass a log path as `$1`
-for a prior session:
+no MCP, run `.agents/skills/logs/scripts/tail.sh`, or for a prior session
 `.agents/skills/logs/scripts/tail.sh "$(sh -c '. .agents/refs/engine.sh; runtime_log_prev')"`.
-If it can't find `.agents/refs/engine.sh`, the kit isn't synced into this repo — tell the
-user to run `skill-kit game sync`, then stop.
 
 The log is append-only, often huge, updates live, and repeats a message logged every
 frame. This project's own frames point into

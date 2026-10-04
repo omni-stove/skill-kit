@@ -5,7 +5,7 @@ description: Translate an existing Japanese manuscript into English. Accepts a f
 
 Run `.agents/skills/translate/refs.sh`
 
-Run `.agents/refs/translation-pairs.sh <path>`
+Run `.agents/refs/translation-pairs.sh <the path the user gave>`
 
 If the glossary is missing, settle the work-wide decisions with a single `AskUserQuestion` call: name romanization scheme, honorifics (keep as-is / drop / adapt), and register (web-novel casual / literary).
 

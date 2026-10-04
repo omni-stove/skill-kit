@@ -26,8 +26,7 @@ setup() {
 @test "path.sh numbers a new plot 010 in an empty or missing story/plot/" {
   run sh "$PATHSH" first-contact
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Output: story/plot/010-first-contact.md" ]
-  [[ "$output" == *"does not exist yet"* ]]
+  [ "$output" = "Output: story/plot/010-first-contact.md" ]
 }
 
 @test "path.sh numbers a new plot at the next ten after the highest number" {

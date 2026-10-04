@@ -5,7 +5,7 @@ description: Cross-check an existing English translation against its Japanese so
 
 Run `.agents/skills/translate-check/refs.sh`
 
-Run `.agents/refs/translation-pairs.sh <path>` on the user's path. List `source-only` and `en-only` lines in the report.
+Run `.agents/refs/translation-pairs.sh <the path the user gave>`. List `source-only` and `en-only` lines in the report.
 
 Launch parallel Agent tools — one agent per `pair` line, each given both file paths, the file on its `plot` line, the glossary, and the loaded rules.
 

@@ -12,9 +12,6 @@ and the optional engine-control MCP prefix).
 overrides the kit's symlinked default. Do NOT edit a symlink target, and never
 hand-build engine facts elsewhere — every value a skill uses comes from these functions.
 
-First, confirm the kit is synced: if `sh -c '. .agents/refs/engine.sh; engine_name'`
-errors, tell the user to run `skill-kit game sync` first and stop.
-
 ## Detect the engine — do not assume
 
 - Identify the engine from the repo: a `*.uproject` → Unreal; `project.godot` → Godot;

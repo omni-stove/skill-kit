@@ -16,10 +16,8 @@ well-known one they name.
 
 ## Preconditions
 
-- Confirm the kit is synced: `sh -c '. .agents/refs/engine.sh; engine_name'` must resolve.
-  If not, tell the user to run `skill-kit game sync` first, then stop.
-- Know the engine — read `sh -c '. .agents/refs/engine.sh; engine_name'`. The right MCP
-  bridge depends on it (a Unity Editor bridge, a Godot bridge, etc.).
+Run `.agents/skills/setup-mcp/scripts/engine.sh`. The right MCP bridge depends on the
+printed engine (a Unity Editor bridge, a Godot bridge, etc.).
 
 ## Steps
 

@@ -5,8 +5,8 @@ description: Detect semantically overlapping expressions across every .txt file 
 
 Run `.agents/skills/dupcheck-all/refs.sh`
 
-Run `.agents/skills/dupcheck-all/scripts/bundle.sh <the directory or file path the user gave>` — it writes every target file into one bundle, each line carrying its source file and line number, and prints the bundle path with its line count.
+Run `.agents/skills/dupcheck-all/scripts/bundle.sh <the directory or file path the user gave>`
 
-Read the bundle through to the line count it printed, continuing from where each read stops. Detect the overlap across the whole of it — within one file and between any two, however far apart — quoting each expression without its line prefix.
+Read the printed bundle through to its printed line count, continuing from where each read stops. Detect the overlap across the whole of it — within one file and between any two, however far apart — quoting each expression without its line prefix.
 
 Apply the loaded fix flow with the whole bundle still in view, editing the source files the prefixes name.

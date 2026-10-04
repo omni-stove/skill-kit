@@ -2,7 +2,7 @@
 # Usage: path.sh [<slug>]
 # No argument: prints the existing plot files under story/plot/, one per line, in
 # natural sort order. <slug> (kebab-case English title, no leading number): prints the
-# plot's `Output:` path and the action to take on it. The path is the existing plot
+# plot's `Output:` path, with the action to take when it already exists. The path is the existing plot
 # with that slug, or else story/plot/NNN-<slug>.md, where NNN is three digits: the
 # highest leading number already in story/plot/ rounded up to the next ten (010 when
 # there is none).
@@ -31,5 +31,4 @@ if [ -n "$out" ]; then
   echo "The output file exists. Confirm the overwrite with the author before editing it."
 else
   printf 'Output: %s/%03d-%s.md\n' "$dir" $(( (max / 10 + 1) * 10 )) "$1"
-  echo "The output file does not exist yet."
 fi

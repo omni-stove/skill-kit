@@ -68,11 +68,11 @@ mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
   [[ "$output" == *"a.txt"* ]]
 }
 
-@test "done.sh appends the digest to the run's record and prints its path" {
+@test "done.sh appends the digest to the run's record, printing nothing" {
   : > story/a.txt; : > story/b.txt
   run mark_done story/a.txt
-  record="$output"
-  [[ "$record" == *"out/digest-through/"* ]]
+  [ -z "$output" ]
+  record=$(echo out/digest-through/*.md)
   mark_done story/b.txt
   grep -q "digest of story/a.txt" "$record"
   grep -q "digest of story/b.txt" "$record"
@@ -85,9 +85,10 @@ mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
   sh "$NEXT" story/only.txt
   run sh "$NEXT" story/only.txt
   [[ "$output" == *"only.txt"* ]]
-  run mark_done story/only.txt
-  ! grep -q "old take" "$output"
-  grep -q "digest of story/only.txt" "$output"
+  mark_done story/only.txt
+  record=$(echo out/digest-through/*.md)
+  ! grep -q "old take" "$record"
+  grep -q "digest of story/only.txt" "$record"
 }
 
 @test "next.sh prints ALL_DONE and clears state" {

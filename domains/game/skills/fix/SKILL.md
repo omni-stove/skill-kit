@@ -12,9 +12,7 @@ code, following the loaded rules.
 
 Get the current errors. With an engine-control MCP
 (`sh -c '. .agents/refs/engine.sh; control_mcp'` non-empty), read them from its structured
-console. Otherwise run `.agents/skills/fix/scripts/errors.sh`. If that can't find
-`.agents/refs/engine.sh`, the kit isn't synced into this repo — tell the user to run
-`skill-kit game sync`, then stop.
+console. Otherwise run `.agents/skills/fix/scripts/errors.sh`.
 
 Fix errors before warnings.
 

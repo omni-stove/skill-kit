@@ -9,9 +9,7 @@ Run `.agents/skills/run/refs.sh`
 
 Launch or build the game, then observe that it works, following the loaded rules.
 
-Run `.agents/skills/run/scripts/commands.sh` for this repo's control / build / run /
-headless commands. If it can't find `.agents/refs/engine.sh`, the kit isn't synced into
-this repo — tell the user to run `skill-kit game sync`, then stop.
+Run `.agents/skills/run/scripts/commands.sh`
 
 Make the project do something by the highest-preference path available:
 

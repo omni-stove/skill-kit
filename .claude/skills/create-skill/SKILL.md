@@ -7,8 +7,7 @@ This is the kit repo's own skill — new skills are authored here and reach cons
 repos on their next `skill-kit <domain> sync`.
 
 Decide the domain the skill belongs to (game or story; ask if unclear), then run
-`.claude/skills/create-skill/refs.sh <domain>` — it prints that domain's create-skill
-conventions and the house rules for writing LLM-facing instructions. Follow all of them;
+`.claude/skills/create-skill/refs.sh <domain>` and follow everything it prints;
 the domain conventions are "the loaded rules".
 
 The skill lives at `domains/<domain>/skills/<name>/`; use `shared/skills/<name>/` only

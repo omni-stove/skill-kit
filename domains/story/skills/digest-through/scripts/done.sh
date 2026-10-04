@@ -1,7 +1,7 @@
 #!/bin/sh
 # Usage: done.sh <file>  (digest text on stdin)
 # Appends the digest to this directory's record, out/digest-through/<dir
-# key>.md, records the file as digested, and prints the record path. Rejects an
+# key>.md, and records the file as digested. Rejects an
 # empty digest, so a file can only be marked done together with a digest
 # written for it.
 set -eu
@@ -18,4 +18,3 @@ if [ -z "$(printf '%s' "$digest" | tr -d '[:space:]')" ]; then
 fi
 printf '## %s\n\n%s\n\n' "$(basename -- "$1")" "$digest" >> "$record"
 basename -- "$1" >> "$state"
-echo "$record"

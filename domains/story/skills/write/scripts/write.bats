@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# source.sh — deterministic resolution of the source and its output file; scene-check.sh — the format fix and the checks before each hand-off.
+# source.sh — deterministic resolution of the source and its output file; others.sh — the other files to read, one per number; scene-check.sh — the format fix and the checks before each hand-off.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
@@ -12,33 +12,31 @@ setup() {
   : > story/plot/010-co-arrival.md
   run sh "$SOURCE" story/plot/010-co-arrival.md
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Source: story/plot/010-co-arrival.md" ]
-  [ "${lines[1]}" = "Output: story/010.txt" ]
+  [ "${lines[0]}" = "Output: story/010.txt" ]
 }
 
 @test "source.sh names the output after the whole stem when there is no leading number" {
   : > story/plot/arrival.md
   run sh "$SOURCE" story/plot/arrival.md
-  [ "${lines[1]}" = "Output: story/arrival.txt" ]
+  [ "${lines[0]}" = "Output: story/arrival.txt" ]
 }
 
 @test "source.sh keeps the plot dir's parent for a nested plot" {
   : > sub/plot/020.md
   run sh "$SOURCE" sub/plot/020.md
-  [ "${lines[1]}" = "Output: sub/020.txt" ]
+  [ "${lines[0]}" = "Output: sub/020.txt" ]
 }
 
 @test "source.sh writes plot.md to index.txt beside it" {
   : > sub/plot.md
   run sh "$SOURCE" sub/plot.md
-  [ "${lines[0]}" = "Source: sub/plot.md" ]
-  [ "${lines[1]}" = "Output: sub/index.txt" ]
+  [ "${lines[0]}" = "Output: sub/index.txt" ]
 }
 
 @test "source.sh writes another .md to <stem>.txt beside it" {
   : > story/03.md
   run sh "$SOURCE" story/03.md
-  [ "${lines[1]}" = "Output: story/03.txt" ]
+  [ "${lines[0]}" = "Output: story/03.txt" ]
 }
 
 @test "source.sh revises a .txt in place" {
@@ -107,4 +105,34 @@ setup() {
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
   [ "$(head -2 story/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
   [[ "$output" == *"3:　部屋は3つ。"* ]]
+}
+
+@test "others.sh prints the story file where a number has both, else the plot file" {
+  : > story/plot/010-co-arrival.md
+  : > story/010.txt
+  : > story/plot/020-night.md
+  : > story/plot/030-dawn.md
+  : > story/plot/040-end.md
+  run sh "$BATS_TEST_DIRNAME/others.sh" story/plot/030-dawn.md
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "story/010.txt" ]
+  [ "${lines[1]}" = "story/plot/020-night.md" ]
+  [ "${lines[2]}" = "story/plot/040-end.md" ]
+  [ "${#lines[@]}" -eq 3 ]
+}
+
+@test "others.sh leaves out the source's own pair" {
+  : > story/plot/010-co-arrival.md
+  : > story/010.txt
+  : > story/plot/020-night.md
+  : > story/020.txt
+  run sh "$BATS_TEST_DIRNAME/others.sh" story/plot/020-night.md
+  [ "$output" = "story/010.txt" ]
+  run sh "$BATS_TEST_DIRNAME/others.sh" story/020.txt
+  [ "$output" = "story/010.txt" ]
+}
+
+@test "others.sh fails on a missing source" {
+  run sh "$BATS_TEST_DIRNAME/others.sh" story/plot/missing.md
+  [ "$status" -eq 1 ]
 }

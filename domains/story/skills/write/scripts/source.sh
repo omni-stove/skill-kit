@@ -1,9 +1,9 @@
 #!/bin/sh
 # Usage: source.sh <file>   (a plot file, or the story file itself)
-# Prints the source as a `Source:` line, the output file it is written to, and the
-# action to take on that output. Output, from where the source sits: plot/<x>.md ->
-# ../<leading number of x, else x>.txt; plot.md -> index.txt beside it; another
-# .md -> <stem>.txt beside it; a .txt is the output itself and is revised in place.
+# Prints the output file the source is written to and the action to take on it.
+# Output, from where the source sits: plot/<x>.md -> ../<leading number of x,
+# else x>.txt; plot.md -> index.txt beside it; another .md -> <stem>.txt beside
+# it; a .txt is the output itself and is revised in place.
 set -eu
 [ $# -eq 1 ] || { echo "usage: source.sh <file>" >&2; exit 2; }
 f=$1
@@ -26,7 +26,6 @@ case $(basename -- "$dir") in
     out="$dir/$stem.txt" ;;
 esac
 out=${out#./}
-echo "Source: $f"
 echo "Output: $out"
 if [ -f "$out" ]; then
   echo "The output file exists. Read it, ask \"Continue from where you left off, or start over?\", and wait for the response."

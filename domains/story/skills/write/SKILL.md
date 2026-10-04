@@ -13,7 +13,7 @@ Launch one Agent on the source file to report what it must stay consistent with 
 
 Write 1 Scene by the loaded rules. Open another file only for a fact the report lacks; the source file leads. Deliver its プロットの意図 through events alone. Given the story file itself, revise it as the user says instead.
 
-Output the file. Run `.agents/skills/write/scripts/scene-check.sh <output file>`, then hand off:
+Save the Scene to the output file. Run `.agents/skills/write/scripts/scene-check.sh <output file>`, then reply with the hand-off alone:
 
 ```
 [Scene name] complete. Reply y for the next Scene, or say what to revise.

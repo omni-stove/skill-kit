@@ -1,5 +1,6 @@
 #!/bin/sh
 # Usage: next.sh <file>
+# <file> may be a file:// URL; it is turned into the plain path first.
 # Prints the next unprocessed .txt file in <file>'s directory with its line
 # count and the action to take on it — natural sort, synopsis and dotfiles
 # excluded. A fresh run empties this directory's record,
@@ -8,6 +9,9 @@
 # ALL_DONE with the closing action, and clears the progress record so the next
 # run starts fresh.
 here=$(dirname "$0")
+case "$1" in file://*)
+  set -- "$(printf '%s' "$1" | sed 's|^file://[^/]*||' | perl -pe 's/%([0-9A-Fa-f]{2})/chr(hex($1))/ge')" ;;
+esac
 dir=$(cd "$(dirname "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
 state="out/read-through/$key.state"

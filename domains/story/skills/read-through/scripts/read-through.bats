@@ -20,6 +20,18 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   [[ "$output" == *"2"* && "$output" == *"01.txt"* ]]
 }
 
+@test "next.sh accepts a file:// URL, percent-encoded or with a host" {
+  mkdir -p "story/第 1章"
+  printf 'body\n' > "story/第 1章/a.txt"
+  run sh "$NEXT" "file://$PWD/story/%E7%AC%AC%201%E7%AB%A0/a.txt"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"第 1章/a.txt"* && "$output" == *"done.sh"* ]]
+  mark_done "story/第 1章/a.txt"
+  run sh "$NEXT" "file://localhost$PWD/story/%E7%AC%AC%201%E7%AB%A0/a.txt"
+  [[ "$output" == ALL_DONE* ]]
+  [[ "$output" == *"summary.sh \"$PWD/story/第 1章/a.txt\""* ]]
+}
+
 @test "next.sh sorts naturally (2 before 10)" {
   : > story/1.txt; : > story/2.txt; : > story/10.txt
   run sh "$NEXT" story/1.txt

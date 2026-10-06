@@ -5,6 +5,8 @@
 # Rejects an impression under 3 lines or identical
 # to the previous file's, so a file can only be marked done together with a
 # review written for it.
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 dir=$(cd "$(dirname "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
 state="out/read-through/$key.state"

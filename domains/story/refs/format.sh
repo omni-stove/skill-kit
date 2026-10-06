@@ -11,6 +11,8 @@
 # Patterns use alternation, never a multibyte bracket, so any locale works.
 set -eu
 [ $# -eq 1 ] || { echo "usage: format.sh <story file>" >&2; exit 2; }
+. "$(dirname -- "$0")/local-path.sh"
+set -- "$(local_path "$1")"
 f=$1
 [ -f "$f" ] || { echo "format: no such file: $f" >&2; exit 1; }
 tmp=$(mktemp)

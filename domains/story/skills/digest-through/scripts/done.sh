@@ -6,6 +6,8 @@
 # written for it.
 set -eu
 [ $# -eq 1 ] || { echo "usage: done.sh <file>  (digest on stdin)" >&2; exit 2; }
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 dir=$(cd "$(dirname -- "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
 state="out/digest-through/$key.state"

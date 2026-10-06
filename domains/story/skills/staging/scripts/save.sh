@@ -4,6 +4,8 @@
 # keeping only the latest run's report, and prints the record path.
 set -eu
 [ $# -eq 1 ] || { echo "usage: save.sh <file>  (report on stdin)" >&2; exit 2; }
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 [ -f "$1" ] || { echo "save: no such file: $1" >&2; exit 1; }
 path=$(cd "$(dirname -- "$1")" && pwd)/$(basename -- "$1")
 key=$(echo "$path" | tr '/' '_')

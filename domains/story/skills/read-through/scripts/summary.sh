@@ -3,6 +3,8 @@
 # Appends the summary to this directory's record,
 # out/read-through/<dir key>.impressions.md, under "## Overall Summary",
 # and prints the record path. Rejects an empty summary.
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 dir=$(cd "$(dirname "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
 record="out/read-through/$key.impressions.md"

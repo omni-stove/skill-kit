@@ -8,6 +8,8 @@
 # the next run starts fresh.
 set -eu
 [ $# -eq 1 ] || { echo "usage: next.sh <directory | file>" >&2; exit 2; }
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 if [ -d "$1" ]; then dir=$(cd "$1" && pwd)
 elif [ -f "$1" ]; then dir=$(cd "$(dirname -- "$1")" && pwd)
 else echo "next: no such file or directory: $1" >&2; exit 1; fi

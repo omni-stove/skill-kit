@@ -6,6 +6,8 @@
 # number of x, else x>.txt. The source and its own pair are left out.
 set -eu
 [ $# -eq 1 ] || { echo "usage: others.sh <file>" >&2; exit 2; }
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 f=$1
 [ -f "$f" ] || { echo "others: no such file: $f" >&2; exit 1; }
 dir=$(dirname -- "$f")

@@ -7,6 +7,8 @@
 # finds against the format rules.
 set -eu
 [ $# -eq 1 ] || { echo "usage: scene-check.sh <output file>" >&2; exit 2; }
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 f=$1
 [ -f "$f" ] || { echo "scene-check: no such file: $f" >&2; exit 1; }
 format=.agents/refs/format.sh

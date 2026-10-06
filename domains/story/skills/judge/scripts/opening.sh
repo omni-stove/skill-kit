@@ -3,6 +3,8 @@
 # Prints the manuscript's opening files in natural sort order — synopsis and
 # dotfiles excluded — stopping at whichever running character total lands
 # closest to 10,000.
+. "$(dirname -- "$0")/../../../refs/local-path.sh"
+set -- "$(local_path "$1")"
 total=0
 find "$1" -maxdepth 1 -type f ! -name 'synopsis*' ! -name '.*' | sort -V |
 while IFS= read -r f; do

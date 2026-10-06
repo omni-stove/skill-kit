@@ -14,6 +14,8 @@
 set -eu
 
 [ $# -eq 1 ] || { echo "usage: translation-pairs.sh <source-file | en-file | directory>" >&2; exit 2; }
+. "$(dirname -- "$0")/local-path.sh"
+set -- "$(local_path "$1")"
 p=$1
 
 emit() { printf '%s\t%s\t%s\n' "$1" "$2" "$3"; }

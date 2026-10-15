@@ -1,0 +1,6 @@
+Ask via AskUserQuestion which findings to fix — options (multiSelect): 「すべて修正」 first,
+then the top 3 findings in priority order. For each touched file that a checking agent
+holds, send it via SendMessage its selected findings and the instruction to edit its file,
+re-check the edited scenes against the loaded rules once, and report what was fixed and
+what remains; a file you checked yourself, edit and re-check the same way. Report the
+results.

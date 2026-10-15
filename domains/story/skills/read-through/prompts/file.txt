@@ -1,0 +1,3 @@
+Read that file whole into context — only that file. Then run
+{done} "{file}"
+with your impression of it, written applying the loaded rules, on stdin.

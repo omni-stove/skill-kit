@@ -5,6 +5,7 @@
 # A multi-line section is one argument with real newlines ($'line 1\nline 2'); a literal \n
 # stays as text.
 set -euo pipefail
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 
 usage() {
   cat >&2 <<'USAGE'
@@ -52,4 +53,4 @@ ${5:-特になし}
 MARKDOWN
 
 gh pr create --base "$base" --title "$title" --assignee @me --body-file "$body_file" ${flags[@]+"${flags[@]}"}
-echo "==> next: report the PR URL above and the change in one line" >&2
+prompt opened >&2

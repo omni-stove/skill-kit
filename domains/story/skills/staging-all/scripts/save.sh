@@ -5,6 +5,7 @@
 set -eu
 [ $# -eq 1 ] || { echo "usage: save.sh <directory | file>  (report on stdin)" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 if [ -d "$1" ]; then dir=$(cd "$1" && pwd)
 elif [ -f "$1" ]; then dir=$(cd "$(dirname -- "$1")" && pwd)
@@ -14,11 +15,4 @@ mkdir -p out/staging-all
 record="out/staging-all/$key.md"
 cat > "$record"
 echo "$record"
-cat <<'NEXT'
-Ask via AskUserQuestion which findings to fix — options (multiSelect): 「すべて修正」 first,
-then the top 3 findings in priority order. For each touched file that a checking agent
-holds, send it via SendMessage its selected findings and the instruction to edit its file,
-re-check the edited scenes against the loaded rules once, and report what was fixed and
-what remains; a file you checked yourself, edit and re-check the same way. Report the
-results.
-NEXT
+prompt saved

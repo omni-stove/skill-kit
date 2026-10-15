@@ -1,0 +1,1 @@
+Read the current compile errors and warnings through the {mcp} tools (structured console)

@@ -1,0 +1,1 @@
+Build with the build command when a build step applies, then run with the run command.

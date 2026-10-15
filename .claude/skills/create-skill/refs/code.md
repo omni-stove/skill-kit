@@ -9,6 +9,10 @@ Conventions the existing code skills establish — follow them when scaffolding 
 - **Push deterministic work into `scripts/*.sh`** under the skill dir, called from the body in one
   line. The script ends with what to do next, so the body stays at the `Run` lines; its error
   message says what to do when it fails.
+- **Keep what a script says to the reader in `prompts/<step>.txt`** beside `scripts/`, one file per
+  message. The script sources `. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"` and
+  prints a file with `prompt <step> key=value...`; `{key}` in the file is the value the script
+  fills in. `review-loop` is a working example.
 - **Load the mise/make rules** through a `` Run `.agents/skills/<name>/refs.sh` `` line right after
   the frontmatter when the skill writes a task, adds a tool, or touches the Makefile; `refs.sh` cats
   `.agents/refs/mise-rules.md`. `chmod +x` the refs.sh. The shared `init` skill is a working example.

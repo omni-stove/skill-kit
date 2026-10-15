@@ -5,6 +5,7 @@
 set -eu
 [ $# -eq 1 ] || { echo "usage: files.sh <directory | file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 if [ -d "$1" ]; then dir=$(cd "$1" && pwd)
 elif [ -f "$1" ]; then dir=$(cd "$(dirname -- "$1")" && pwd)
@@ -12,15 +13,7 @@ else echo "files: no such file or directory: $1" >&2; exit 1; fi
 files=$(find "$dir" -maxdepth 1 -type f -name '*.txt' ! -name 'synopsis*' ! -name '.*' | sort -V)
 printf '%s\n' "$files" | grep . || true
 if [ "$(printf '%s\n' "$files" | grep -c .)" -eq 1 ]; then
-  cat <<NEXT
-One file: read it and apply the loaded rules to it yourself, then run
-$(dirname -- "$0")/save.sh "$1" with the report on stdin.
-NEXT
+  prompt one save="$(dirname -- "$0")/save.sh" target="$1"
 else
-  cat <<NEXT
-Launch one Agent per file above in parallel. Each agent's prompt holds its file path and
-the instruction to run .agents/skills/staging-all/refs.sh and apply the loaded rules to its
-file alone. Aggregate the reports in the order above, grouped by file, and run
-$(dirname -- "$0")/save.sh "$1" with the aggregated report on stdin.
-NEXT
+  prompt many save="$(dirname -- "$0")/save.sh" target="$1"
 fi

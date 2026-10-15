@@ -4,10 +4,11 @@
 # marked `covers`: such an issue replaces an item of the split.
 # usage: similar.sh <keyword>...
 set -euo pipefail
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 
 [ "$#" -ge 1 ] || { echo "usage: similar.sh <keyword>...   (words from the task)" >&2; exit 2; }
 "${GH_CMD:-gh}" issue list --search "$*" --state open --limit 30 --json number,title,labels,url \
   --jq '.[] | ([.labels[].name] | join(",")) as $l
          | (if ($l | test("(^|,)(bug|prototype|implementation)(,|$)")) then "covers" else "similar" end) as $k
          | "\($k)\t\(.number)\t\($l)\t\(.title)\t\(.url)"' | sort -t "$(printf '\t')" -k1,1 -k2,2n
-echo "==> next: a covers line that already covers an item replaces that item (name it in the report); link the similar lines from the parent's body. Then run .agents/skills/remote-issue/scripts/parent.sh" >&2
+prompt similar >&2

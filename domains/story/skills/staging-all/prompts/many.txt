@@ -1,0 +1,4 @@
+Launch one Agent per file above in parallel. Each agent's prompt holds its file path and
+the instruction to run .agents/skills/staging-all/refs.sh and apply the loaded rules to its
+file alone. Aggregate the reports in the order above, grouped by file, and run
+{save} "{target}" with the aggregated report on stdin.

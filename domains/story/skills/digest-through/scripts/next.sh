@@ -9,6 +9,7 @@
 set -eu
 [ $# -eq 1 ] || { echo "usage: next.sh <directory | file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 if [ -d "$1" ]; then dir=$(cd "$1" && pwd)
 elif [ -f "$1" ]; then dir=$(cd "$(dirname -- "$1")" && pwd)
@@ -27,20 +28,8 @@ next=$(find "$dir" -maxdepth 1 -type f -name '*.txt' ! -name 'synopsis*' ! -name
   done)
 if [ -n "$next" ]; then
   wc -l "$next"
-  cat <<EOF
-Read that file whole into context — only that file. Then run
-$here/done.sh "$next"
-with its digest on stdin: who, what happens, and the ending state — prose only, no
-evaluation, from what the file itself shows. Where it reveals an earlier digest was wrong,
-add a one-line correction naming the earlier file and what changed; leave the earlier
-digest as written.
-EOF
+  prompt file done="$here/done.sh" file="$next"
 else
   rm -f "$state"
-  cat <<EOF
-ALL_DONE
-Run $here/summary.sh "$dir" with an overall understanding of the directory on
-stdin: the through-line, the main characters, and what the story is doing,
-reflecting any corrections.
-EOF
+  prompt all-done summary="$here/summary.sh" dir="$dir"
 fi

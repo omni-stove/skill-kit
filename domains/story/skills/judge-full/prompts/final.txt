@@ -1,0 +1,4 @@
+Otherwise output the final vote count (N/M) with the overall verdict — 大賞 when more than
+half the judges vote 大賞, otherwise 大賞ではない — each judge's label and final verdict in
+one line noting any change, what the discussion settled, and what stayed split, and run
+{self} "{manuscript}" report with that output.

@@ -1,0 +1,1 @@
+If a pulled commit strays from the PR's intent, show it and ask the user before fixing

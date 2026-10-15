@@ -1,0 +1,4 @@
+Launch one Agent per file above in parallel. Each agent's prompt holds its file and the
+loaded rules, and has it run .agents/refs/format.sh <file>, check the file from the listed
+lines on, and report only the lines with issues — line number and short quote. Display
+the combined results in the order above. If issues are found, ask whether to fix.

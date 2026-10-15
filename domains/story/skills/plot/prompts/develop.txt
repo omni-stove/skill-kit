@@ -1,0 +1,4 @@
+Read README.md for world setting and constraints, the plots above for context, and the
+character and world/setting files relevant to the plot. Summarize what you found, then
+develop the plot with the author by the loaded dialogue rules. Then run
+{self} <kebab-case English title>

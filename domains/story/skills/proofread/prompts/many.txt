@@ -1,0 +1,1 @@
+Launch one Agent per file above in parallel, passing the file path and these items:

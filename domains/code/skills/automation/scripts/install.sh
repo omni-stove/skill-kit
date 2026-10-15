@@ -3,6 +3,7 @@
 # create the labels the issue worker fires on, list what the user must set by hand, and
 # say what to do next.
 set -eu
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 src=.agents/refs/workflows
 [ -d "$src" ] || { echo "install: $src not found — the kit isn't synced into this repo. Tell the user to run \`skill-kit code sync\`, then stop." >&2; exit 1; }
 [ -f .mise/tasks.toml ] || { echo "install: .mise/tasks.toml not found — the workflows run \`mise run install\`, \`make lint\` and \`make test\`. Run the init skill first, then stop." >&2; exit 1; }
@@ -44,4 +45,4 @@ for f in .github/workflows/*.yml; do
 	git check-ignore -q "$f" 2>/dev/null && echo "warning	$f is ignored by git — unignore it so the workflow runs"
 done
 
-echo "==> next: hand the user the todo and warning lines above as theirs to do; the rest is in place" >&2
+prompt next >&2

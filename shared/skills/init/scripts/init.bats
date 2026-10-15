@@ -94,7 +94,7 @@ setup() {
   "$INIT" >/dev/null
   run "$INIT"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"==> next:"* ]]
+  [[ "$output" == *"Then run make setup, then mise tasks."* ]]
   [[ "$output" != *"warning"* ]]
   [[ "$output" == *"kept	Makefile"* ]]
   [[ "$output" == *"kept	mise.toml"* ]]

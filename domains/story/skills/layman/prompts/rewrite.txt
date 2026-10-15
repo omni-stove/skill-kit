@@ -1,0 +1,13 @@
+Reply "suggest [filename]" for rewrite proposals.
+
+Rewrite flow: "suggest [filename]" → propose rewrites as below; "approve [numbers]" → edit
+the file in place, touching only the approved passages, and report the changed lines.
+
+## Rewrite proposals — <filename>
+
+### <n>. L<line>
+Original: 「<quoted passage>」
+Proposal: 「<rewritten passage>」
+Reason: <justification>
+
+Reply "approve" to apply, or "approve <numbers>" for a subset.

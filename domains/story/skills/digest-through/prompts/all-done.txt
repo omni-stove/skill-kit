@@ -1,0 +1,4 @@
+ALL_DONE
+Run {summary} "{dir}" with an overall understanding of the directory on
+stdin: the through-line, the main characters, and what the story is doing,
+reflecting any corrections.

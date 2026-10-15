@@ -4,6 +4,7 @@
 # dotfiles excluded — stopping at whichever running character total lands
 # closest to 10,000 — then the screening to run on them.
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 total=0
 find "$1" -maxdepth 1 -type f ! -name 'synopsis*' ! -name '.*' | sort -V |
@@ -15,7 +16,4 @@ while IFS= read -r f; do
   printf '%s\n' "$f"
   total=$next
 done
-cat <<'NEXT'
-Read the opening files above. Pass the opening if it survives a first-round screening
-against hundreds of submissions.
-NEXT
+prompt next

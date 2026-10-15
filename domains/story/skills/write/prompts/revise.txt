@@ -1,0 +1,2 @@
+The output file is the input. Read it and revise it as the user says, by the loaded rules.
+Save it, then run {scene_check} "{file}"

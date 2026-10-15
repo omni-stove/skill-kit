@@ -5,6 +5,7 @@
 #   parent.sh --issue <number> <body>       use an existing open issue; the body is added as a comment
 # The parent carries no worker label, so the issue worker leaves it alone.
 set -euo pipefail
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 
 usage() { echo "usage: parent.sh <title> <body> | parent.sh --issue <number> <body>" >&2; exit 2; }
 if [ "${1:-}" = "--issue" ]; then
@@ -19,4 +20,4 @@ else
   parent="${url##*/}"
 fi
 echo "$parent"
-echo "==> next: run .agents/skills/remote-issue/scripts/create.sh --parent $parent <bug|prototype|implementation> \"<title>\" \"<body>\" per issue, then .agents/skills/remote-issue/scripts/report.sh $parent" >&2
+prompt parent parent="$parent" >&2

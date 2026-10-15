@@ -4,6 +4,7 @@
 # one path given as `path`.
 # usage: targets.sh <dir> [all|pages|components|<path-under-dir>]   (default: all)
 set -euo pipefail
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 
 usage() { echo "usage: targets.sh <dir> [all|pages|components|<path-under-dir>]   (<dir>: the app's directory; . for the repo)" >&2; exit 2; }
 [ "$#" -ge 1 ] && [ "$#" -le 2 ] && [ -d "$1" ] || usage
@@ -34,4 +35,4 @@ find "$dir" \( -name node_modules -o -name generated \) -prune -o -path '*/src/*
         done
       fi
     done
-echo "==> next: go through the listed targets one file at a time. Where @feature exists, check it against the implementation and revise it; where it is missing, add it to the files the loaded rules mark as subjects. With many files, propose splitting the run by subdirectory." >&2
+prompt next >&2

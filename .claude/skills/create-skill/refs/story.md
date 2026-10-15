@@ -9,6 +9,10 @@ Conventions the existing story skills establish — follow them when scaffolding
 - **Push deterministic work into `scripts/*.sh`** under the skill dir, called from the body in one
   line. The script ends with what to do next, so the body stays at the `Run` lines. Resolve refs
   inside the script.
+- **Keep what a script says to the reader in `prompts/<step>.txt`** beside `scripts/`, one file per
+  message. The script sources `. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"` and
+  prints a file with `prompt <step> key=value...`; `{key}` in the file is the value the script
+  fills in. `digest-through` is a working example.
 - **Extract a shared rule set when it's reused.** If the skill's rule set is shared with other
   skills (detection criteria, output format, fix flow), pull it into `.agents/refs/<topic>-rules.md`
   and load it via a `` Run `.agents/skills/<name>/refs.sh` `` line right after the frontmatter,

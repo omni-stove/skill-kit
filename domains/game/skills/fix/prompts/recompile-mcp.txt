@@ -1,0 +1,1 @@
+Then trigger the recompile through the {mcp} tools and re-read the errors to confirm they are gone.

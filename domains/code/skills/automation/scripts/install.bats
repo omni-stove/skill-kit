@@ -49,7 +49,7 @@ setup() {
   run "$INSTALL"
   [ "$status" -eq 0 ]
   [[ "$output" == *'todo	.github/workflows/ci-auto-fix.yml — workflows: ["Build"]'* ]]
-  [[ "$output" == *"==> next:"* ]]
+  [[ "$output" == *"hand the user the todo and warning lines above"* ]]
   printf 'on:\n  workflow_run:\n    workflows: ["CI"]\n' > .agents/refs/workflows/ci-auto-fix.yml
   rm .github/workflows/ci-auto-fix.yml
   run "$INSTALL"

@@ -37,6 +37,15 @@ hook_with_path() {
   [ -n "$output" ]
 }
 
+@test "a skill's prompts/*.txt matches in the kit's own tree" {
+  run hook_with_path "/kit/domains/story/skills/write/prompts/scene.txt"
+  [ -n "$output" ]
+  run hook_with_path "/kit/shared/skills/init/prompts/next.txt"
+  [ -n "$output" ]
+  run hook_with_path "/kit/domains/story/skills/write/scripts/source.sh"
+  [ -z "$output" ]
+}
+
 @test "an ordinary file exits 0 with no output" {
   run hook_with_path "/repo/src/co/story/01.md"
   [ "$status" -eq 0 ]

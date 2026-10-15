@@ -4,10 +4,10 @@
 # committed first, as resolved. Ends with what to do next.
 # usage: commit-push.sh [file...]
 set -euo pipefail
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 
 next() {
-  pr="$(gh pr view --json number -q .number 2>/dev/null || echo '<pr>')"
-  echo "==> next: reply to each thread you addressed or skipped and resolve it: .agents/refs/reply-review-thread.sh $pr <thread-id> <comment_id> \"<what you did, or why you skipped it>\" (ids from the thread listing)" >&2
+  prompt pushed pr="$(gh pr view --json number -q .number 2>/dev/null || echo '<pr>')" >&2
 }
 check() {
   make lint || { echo "commit-push: make lint failed — fix it, then rerun" >&2; exit 1; }

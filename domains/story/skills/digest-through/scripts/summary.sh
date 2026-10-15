@@ -6,6 +6,7 @@
 set -eu
 [ $# -eq 1 ] || { echo "usage: summary.sh <directory | file>  (summary on stdin)" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 if [ -d "$1" ]; then dir=$(cd "$1" && pwd)
 elif [ -f "$1" ]; then dir=$(cd "$(dirname -- "$1")" && pwd)
@@ -20,4 +21,4 @@ if [ -z "$(printf '%s' "$summary" | tr -d '[:space:]')" ]; then
 fi
 printf '## Overall\n\n%s\n' "$summary" >> "$record"
 echo "$record"
-echo "Output that record path and the overall understanding."
+prompt summary

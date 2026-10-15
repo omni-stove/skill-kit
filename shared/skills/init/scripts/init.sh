@@ -7,6 +7,7 @@
 # as [tools] lines, and an install task that disagrees with the manifest — then the steps
 # left to init. What a person wrote is never changed.
 set -eu
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { git init -q && echo "created	.git"; }
 domain=$(cat .agents/refs/domain 2>/dev/null || true)
 [ -f .agents/refs/mise-rules.md ] && [ -n "$domain" ] || { echo "init: the kit isn't synced into this repo. Tell the user to run \`skill-kit {game|story|code} sync\`, then stop." >&2; exit 1; }
@@ -275,7 +276,5 @@ for f in Makefile mise.toml .mise/tasks.toml .claude/settings.json; do
 	git check-ignore -q "$f" 2>/dev/null && echo "warning	$f is ignored by git — unignore it"
 done
 
-cat <<'NEXT'
-==> next: propose the whole [tools] block in one AskUserQuestion — the tool lines above as they stand, plus every other tool the repo runs at its latest major (mise latest <tool>), each with one line on what it is for; ask only whether the block goes in as proposed, and a reply naming changes applies to those tools alone — and write the result in mise.toml. Turn each target line into a task with a description, keeping the names people already type; polish the description of each added task; name the lint and test entry points lint and test. When a foreign Makefile is listed, delete it after its targets are tasks and run this script again. Resolve each line above that names something to fix. Then run make setup, then mise tasks.
-NEXT
+prompt next
 exit 0

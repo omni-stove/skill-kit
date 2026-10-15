@@ -54,7 +54,7 @@ STUB
   [[ "$output" == *"==> head abc1234567"* ]]
   [[ "$output" == *"branch feat at head, worktree clean"* ]]
   [[ "$output" == *"OPEN MERGEABLE CLEAN"* ]]
-  [[ "$stderr" == *"==> next: done when the local state above is clean"* ]]
+  [[ "$stderr" == *"Done when the local state above is clean"* ]]
   [[ "$stderr" != *"Audit the batch"* ]]
 }
 

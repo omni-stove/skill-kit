@@ -9,6 +9,7 @@
 # run starts fresh.
 here=$(dirname "$0")
 . "$here/../../../refs/local-path.sh"
+. "$here/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 dir=$(cd "$(dirname "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
@@ -25,16 +26,8 @@ next=$(find "$dir" -maxdepth 1 -type f -name '*.txt' ! -name 'synopsis*' ! -name
   done)
 if [ -n "$next" ]; then
   wc -l "$next"
-  cat <<EOF
-Read that file whole into context — only that file. Then run
-$here/done.sh "$next"
-with your impression of it, written applying the loaded rules, on stdin.
-EOF
+  prompt file done="$here/done.sh" file="$next"
 else
   rm -f "$state" "$last"
-  cat <<EOF
-ALL_DONE
-Run $here/summary.sh "$1" with an overall summary, written without restating
-the per-file impressions, on stdin.
-EOF
+  prompt all-done summary="$here/summary.sh" file="$1"
 fi

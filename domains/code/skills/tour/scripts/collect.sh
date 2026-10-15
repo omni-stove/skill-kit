@@ -3,6 +3,7 @@
 # feature map of the app.
 # usage: collect.sh <dir>   (the app's directory; . for the repo)
 set -euo pipefail
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 
 [ "$#" -eq 1 ] && [ -d "$1" ] || { echo "usage: collect.sh <dir>   (an existing directory; . for the repo)" >&2; exit 2; }
 dir="${1%/}"
@@ -16,4 +17,4 @@ printf '%s\n' "$files" | sort | while IFS= read -r f; do
   awk '/@feature/{p=1} p{print} p&&/\*\//{p=0}' "$f"
   echo
 done
-echo "==> next: group the features into sections and outline the tour. Present the whole picture first — what the app is for and its feature groups — then walk the groups one at a time in plain words. After each group, ask whether to go on, go deeper, take a question, or skip. For a deeper look, read the component and explain from its implementation." >&2
+prompt next >&2

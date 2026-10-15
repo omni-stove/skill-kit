@@ -1,0 +1,7 @@
+Pick the splitter above whose segments form a meaningful structure (a count of 1 means it
+found no split). Read the source file, README.md for world context, and the character and
+setting files relevant to it. Show the segments as a numbered list — index, title, a
+brief summary of the body — and confirm with AskUserQuestion: the splitter (when several
+are viable), segments to skip / merge / further split, and the base name for the files.
+Then run .agents/skills/split-plot/scripts/paths.sh <base name> <short kebab-case English
+title of each confirmed segment, in order>...

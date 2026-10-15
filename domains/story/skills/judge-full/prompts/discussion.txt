@@ -1,0 +1,5 @@
+If a verdict or a point is still split{changed}, run a discussion round: send each judge, via
+SendMessage, the other judges' verdicts and reasoning on the split points, attributed by
+label only, never by model, with the task to rebut or concede each point and restate
+their verdict — changing it is allowed. Output the verdicts and what moved, and run
+{self} "{manuscript}" discussion-{n} with each judge's statement, verbatim.

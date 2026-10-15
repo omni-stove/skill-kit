@@ -1,0 +1,1 @@
+The kit is back to log-scraping; run claude mcp remove --scope project <name> if the server is still configured, and tell the user.

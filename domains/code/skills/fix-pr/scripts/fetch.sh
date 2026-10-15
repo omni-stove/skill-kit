@@ -3,6 +3,7 @@
 # print the PR's state, active review threads, checks and changed files, and say what to do next.
 # usage: fetch.sh [pr-number-or-url-or-branch]   (none: the current branch's PR)
 set -euo pipefail
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 
 [ "$#" -le 1 ] || { echo "usage: fetch.sh [pr-number-or-url-or-branch]" >&2; exit 2; }
 if [ "$#" -eq 0 ]; then
@@ -31,7 +32,7 @@ pulled="$(git log --format='%h %an %s' "${before}..HEAD")"
 if [ -n "$pulled" ]; then
   echo "==> commits pulled from the remote head"
   printf '%s\n' "$pulled"
-  echo "==> next: if a pulled commit strays from the PR's intent, show it and ask the user before fixing" >&2
+  prompt pulled >&2
 fi
 
 echo "==> merge latest origin/${base_ref}"
@@ -46,4 +47,4 @@ gh pr checks "$pr" || true
 echo "==> changed files"
 gh pr diff "$pr" --name-only
 
-echo "==> next: fix the active threads, the failing checks and any conflict with the smallest change that holds the root cause; leave a test's assertions and unrelated code as they are; skip a finding that is wrong or outside the PR's scope and say why in your reply to it. Then run .agents/skills/fix-pr/scripts/commit-push.sh <changed files> (no arguments when nothing changed)" >&2
+prompt fetched >&2

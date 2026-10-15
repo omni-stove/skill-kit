@@ -1,0 +1,5 @@
+- Typos — homophone conversion mistakes, okurigana errors, dropped or duplicated particles, missing or extra characters, misspelled katakana words
+- Tense confusion (narration only) — flashback or exposition indistinguishable from the present scene, event order unfollowable because of tense. Do not report mere mixing of た-form and る-form
+- Notation variance — the same word in both kanji and hiragana, inconsistent proper-noun spelling
+- Do not report intentional expression such as speech quirks or dialect
+Then run {save} "{target}" with the results on stdin.

@@ -1,0 +1,1 @@
+Go through the listed targets one file at a time. Where @feature exists, check it against the implementation and revise it; where it is missing, add it to the files the loaded rules mark as subjects. With many files, propose splitting the run by subdirectory.

@@ -7,6 +7,7 @@
 set -eu
 [ $# -eq 1 ] || { echo "usage: done.sh <file>  (digest on stdin)" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 dir=$(cd "$(dirname -- "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
@@ -20,4 +21,4 @@ if [ -z "$(printf '%s' "$digest" | tr -d '[:space:]')" ]; then
 fi
 printf '## %s\n\n%s\n\n' "$(basename -- "$1")" "$digest" >> "$record"
 basename -- "$1" >> "$state"
-echo "Run $(dirname -- "$0")/next.sh \"$1\" for the next file."
+prompt done next="$(dirname -- "$0")/next.sh" file="$1"

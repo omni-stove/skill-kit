@@ -7,6 +7,7 @@
 set -eu
 [ $# -eq 1 ] || { echo "usage: source.sh <file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 f=$1
 [ -f "$f" ] || { echo "source: no such file: $f" >&2; exit 1; }
@@ -16,8 +17,7 @@ stem=${stem%.*}
 case $f in
   *.txt)
     echo "Output: $f"
-    echo "The output file is the input. Read it and revise it as the user says, by the loaded rules."
-    echo "Save it, then run $(dirname -- "$0")/scene-check.sh \"$f\""
+    prompt revise scene_check="$(dirname -- "$0")/scene-check.sh" file="$f"
     exit 0 ;;
 esac
 case $(basename -- "$dir") in
@@ -31,14 +31,8 @@ esac
 out=${out#./}
 echo "Output: $out"
 if [ -f "$out" ]; then
-  echo "The output file exists. Read it, ask \"Continue from where you left off, or start over?\", and wait for the response."
+  prompt exists
 else
-  echo "The output file does not exist yet. Start from the first Scene."
+  prompt new
 fi
-cat <<NEXT
-Launch one Agent on the source file to report what it must stay consistent with and what
-of it the reader already has; the Agent runs $(dirname -- "$0")/others.sh "$f".
-Write 1 Scene by the loaded rules: the source file leads, open another file only for a
-fact the report lacks, and deliver its プロットの意図 through events alone. Save the Scene
-to the output file, then run $(dirname -- "$0")/scene-check.sh "$out"
-NEXT
+prompt scene others="$(dirname -- "$0")/others.sh" file="$f" scene_check="$(dirname -- "$0")/scene-check.sh" out="$out"

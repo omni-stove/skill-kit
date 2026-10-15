@@ -1,0 +1,1 @@
+An engine-control MCP is wired up: the {mcp} tools read the live console as structured, per-message entries; below is the same output scraped from the log

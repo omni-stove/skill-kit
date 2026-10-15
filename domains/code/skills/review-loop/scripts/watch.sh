@@ -6,6 +6,7 @@
 # Settled means no check is pending and the head has not moved across two polls.
 # usage: watch.sh <pr-number-or-url> [--interval <seconds>] [--timeout <minutes>]
 set -euo pipefail
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 
 usage() { echo "usage: watch.sh <pr-number-or-url> [--interval <seconds>] [--timeout <minutes>]" >&2; exit 2; }
 pr=""; interval=45; timeout=40
@@ -99,11 +100,7 @@ if [ "$lgtm" -eq 1 ] && [ "$failing" -eq 0 ] && [ "$active" -eq 0 ] && [ -z "$un
   [ -z "$(git status --porcelain)" ] || { echo "worktree not clean — commit or discard the changes"; local_ok=0; }
   [ "$local_ok" -eq 1 ] && echo "branch $branch at head, worktree clean"
   gh pr view "$pr" --json state,mergeable,mergeStateStatus,url --jq '"\(.state) \(.mergeable) \(.mergeStateStatus) \(.url)"'
-  cat >&2 <<EOF
-==> next: done when the local state above is clean; fix what it names first. Report the head SHA, the batches audited, what was accepted and reverted, and the PR state above.
-EOF
+  prompt clear >&2
 else
-  cat >&2 <<EOF
-==> next: read the issue and design documents the PR cites before judging any change. Audit the batch that settled: the automated diff above, every active thread above, every failed check (gh run view --log-failed), and every thread resolved without a reply. Sort each finding and each automated change into: a valid defect fix; overengineering or a needless abstraction; a departure from the agreed design or a public contract; wrong against the code, the tests or an authoritative source; or not actionable here. Revert an automated change that silently rewrote a canonical document, weakened authorization, altered an API contract, added an implicit limit, or hand-edited a generated file. Revert the drift and fix the valid findings in one focused batch, then run .agents/skills/review-loop/scripts/commit-push.sh <changed files>. Reply to every thread you addressed or rejected with the pushed commit or the evidence, which also resolves it: .agents/refs/reply-review-thread.sh $pr <thread-id> <comment_id> "<reply>" — a rejection names the design document, issue or decision it rests on; keep an accepted design against a reviewer who proposes another one. Then run this script again. When nothing needed a push and a reply settled every thread, this script reports the clear head on its next run; when findings stay open that you will not act on, stop and hand them to the user with your reasons.
-EOF
+  prompt fix pr="$pr" >&2
 fi

@@ -6,7 +6,7 @@ Skills for Claude Code, in three domains that share one core:
 - **story** — language-agnostic authoring skills (any surrounding project).
 - **code** — skills for a software repo (any language).
 
-Plain markdown (`SKILL.md`) + POSIX `sh` — no Node, no npm.
+Plain markdown (`SKILL.md`) + POSIX `sh` + plain text (`prompts/*.txt`) — no Node, no npm.
 
 Prerequisites, on every machine: `git`, an authenticated [GitHub CLI](https://cli.github.com)
 (`gh auth login`), and [mise](https://mise.jdx.dev). The target is always a git repository
@@ -60,7 +60,7 @@ shared/            everything every domain uses verbatim
   skills/          init, task (mise + make), cap, create-pr, and the setting skills
                    (character, world, item, timeline)
   refs/            llm-instruction-rules.md, doc-rules.md, mise-rules.md, push-with-merge.sh,
-                   setting formats
+                   prompt.sh, setting formats
   hooks/           llm-instruction-rules.sh
 domains/
   game/            skills (gdd, mechanic, balance, setup, run, …) + refs
@@ -69,6 +69,11 @@ domains/
                    analyze-repository) + refs (workflow templates, PR thread scripts,
                    feature-jsdoc rules)
 ```
+
+A skill is a `SKILL.md` that runs `scripts/*.sh`; what a script says to the LLM — the next
+step, the judgment to make — lives in `prompts/<step>.txt` beside it, printed through
+`shared/refs/prompt.sh` with the script's values filled into `{key}` placeholders. So the
+words are read and edited as prose, and the scripts stay code.
 
 Skills read and write fixed paths relative to the repo root (`README.md`, `characters/`,
 `world/`, `items/`, `story/`, `story/plot/`; game design docs under `docs/design/`). The only

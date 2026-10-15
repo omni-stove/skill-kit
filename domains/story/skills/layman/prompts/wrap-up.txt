@@ -1,0 +1,7 @@
+Wrap-up output after the last file:
+
+# Overall Summary
+- Hardest files: <list>
+- Recurring opaque terms: <list>
+- Cross-file patterns: <list>
+

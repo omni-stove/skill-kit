@@ -18,9 +18,11 @@ base="$(basename "$path")"
 #   SKILL.md / AGENTS.md / CLAUDE.md (any dir)
 #   anything under .claude/commands/ or .agents/skills/
 #   workflow defs under .claude/workflows/
+#   a skill's prompts/ (what its scripts print for the LLM), in the kit's own tree too
 case "$base:$path" in
   SKILL.md:*|AGENTS.md:*|CLAUDE.md:*) match=1 ;;
   *:*/.claude/commands/*|*:*/.agents/skills/*|*:*/.claude/workflows/*) match=1 ;;
+  *:*/skills/*/prompts/*) match=1 ;;
   *) match=0 ;;
 esac
 [ "$match" -eq 0 ] && exit 0

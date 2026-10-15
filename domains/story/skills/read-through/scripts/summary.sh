@@ -4,6 +4,7 @@
 # out/read-through/<dir key>.impressions.md, under "## Overall Summary",
 # and prints the record path and the closing action. Rejects an empty summary.
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 set -- "$(local_path "$1")"
 dir=$(cd "$(dirname "$1")" && pwd)
 key=$(echo "$dir" | tr '/' '_')
@@ -16,4 +17,4 @@ if [ -z "$(printf '%s' "$summary" | tr -d '[:space:]')" ]; then
 fi
 printf '## Overall Summary\n\n%s\n' "$summary" >> "$record"
 echo "$record"
-echo "Output that record path and the summary."
+prompt summary

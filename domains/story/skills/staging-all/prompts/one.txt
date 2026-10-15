@@ -1,0 +1,2 @@
+One file: read it and apply the loaded rules to it yourself, then run
+{save} "{target}" with the report on stdin.

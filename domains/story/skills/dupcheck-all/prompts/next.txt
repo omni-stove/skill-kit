@@ -1,0 +1,4 @@
+Read the bundle through to that line count, continuing from where each read stops.
+Detect the overlap across the whole of it — within one file and between any two,
+however far apart — quoting each expression without its line prefix. Apply the loaded
+fix flow with the whole bundle still in view, editing the source files the prefixes name.

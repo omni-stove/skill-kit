@@ -4,9 +4,10 @@
 # some other reason and stays out.
 # usage: regenerate.sh
 set -euo pipefail
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 
 next() {
-  echo "==> next: git add your changes and the generated files listed above, commit, then run .agents/skills/create-pr/scripts/push.sh" >&2
+  prompt regenerated >&2
 }
 
 [ "$#" -eq 0 ] || { echo "usage: regenerate.sh" >&2; exit 2; }

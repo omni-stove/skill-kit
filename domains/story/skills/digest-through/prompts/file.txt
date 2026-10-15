@@ -1,0 +1,6 @@
+Read that file whole into context — only that file. Then run
+{done} "{file}"
+with its digest on stdin: who, what happens, and the ending state — prose only, no
+evaluation, from what the file itself shows. Where it reveals an earlier digest was wrong,
+add a one-line correction naming the earlier file and what changed; leave the earlier
+digest as written.

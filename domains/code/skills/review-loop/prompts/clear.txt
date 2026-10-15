@@ -1,0 +1,1 @@
+Done when the local state above is clean; fix what it names first. Report the head SHA, the batches audited, what was accepted and reverted, and the PR state above.

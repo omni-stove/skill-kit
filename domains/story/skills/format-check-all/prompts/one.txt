@@ -1,0 +1,3 @@
+One file: run .agents/refs/format.sh "{file}", check the file from the listed lines on by
+the loaded rules, and report only the lines with issues — line number and short quote. If
+issues are found, ask whether to fix.

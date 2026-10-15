@@ -1,0 +1,3 @@
+ALL_DONE
+Run {summary} "{file}" with an overall summary, written without restating
+the per-file impressions, on stdin.

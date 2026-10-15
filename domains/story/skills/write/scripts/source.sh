@@ -1,6 +1,6 @@
 #!/bin/sh
 # Usage: source.sh <file>   (a plot file, or the story file itself)
-# Prints the output file the source is written to and the action to take on it.
+# Prints the output file the source is written to and the steps to write a Scene into it.
 # Output, from where the source sits: plot/<x>.md -> ../<leading number of x,
 # else x>.txt; plot.md -> index.txt beside it; another .md -> <stem>.txt beside
 # it; a .txt is the output itself and is revised in place.
@@ -16,7 +16,8 @@ stem=${stem%.*}
 case $f in
   *.txt)
     echo "Output: $f"
-    echo "The output file is the input. Read it and revise it as the user says."
+    echo "The output file is the input. Read it and revise it as the user says, by the loaded rules."
+    echo "Save it, then run $(dirname -- "$0")/scene-check.sh \"$f\""
     exit 0 ;;
 esac
 case $(basename -- "$dir") in
@@ -34,3 +35,10 @@ if [ -f "$out" ]; then
 else
   echo "The output file does not exist yet. Start from the first Scene."
 fi
+cat <<NEXT
+Launch one Agent on the source file to report what it must stay consistent with and what
+of it the reader already has; the Agent runs $(dirname -- "$0")/others.sh "$f".
+Write 1 Scene by the loaded rules: the source file leads, open another file only for a
+fact the report lacks, and deliver its プロットの意図 through events alone. Save the Scene
+to the output file, then run $(dirname -- "$0")/scene-check.sh "$out"
+NEXT

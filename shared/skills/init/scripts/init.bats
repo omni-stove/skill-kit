@@ -94,6 +94,8 @@ setup() {
   "$INIT" >/dev/null
   run "$INIT"
   [ "$status" -eq 0 ]
+  [[ "$output" == *"==> next:"* ]]
+  [[ "$output" != *"warning"* ]]
   [[ "$output" == *"kept	Makefile"* ]]
   [[ "$output" == *"kept	mise.toml"* ]]
   [[ "$output" == *"kept	.mise/tasks.toml"* ]]
@@ -135,6 +137,53 @@ JSON
   [[ "$output" == *"script	lint	biome check ."* ]]
   [[ "$output" == *"install	pnpm install --frozen-lockfile"* ]]
   grep -q '^run = "pnpm install --frozen-lockfile"' .mise/tasks.toml
+  [[ "$output" == *"tool	node = \"22\""* ]]
+  [[ "$output" == *"tool	pnpm = \"10\""* ]]
+  [ "$(grep -c 'tool	node' <<< "$output")" -eq 1 ]
+  [[ "$output" == *"added	task test — pnpm run test"* ]]
+  [[ "$output" == *"added	task lint — pnpm run lint"* ]]
+  grep -q '^\[test\]' .mise/tasks.toml
+  grep -q '^description = "vitest run"' .mise/tasks.toml
+  grep -q '^run = "pnpm run lint"' .mise/tasks.toml
+  run "$INIT"
+  [[ "$output" != *"added	task"* ]]
+  [ "$(grep -c '^\[test\]' .mise/tasks.toml)" -eq 1 ]
+}
+
+@test "escapes quotes in a script body, and leaves an unnameable script to the user" {
+  cat > package.json <<'JSON'
+{ "scripts": { "say": "echo \"hi\"", "Build:Web": "x" } }
+JSON
+  run "$INIT"
+  grep -q '^description = "echo \\"hi\\""' .mise/tasks.toml
+  grep -q '^run = "npm run say"' .mise/tasks.toml
+  [[ "$output" == *"todo	script Build:Web"* ]]
+  ! grep -q 'Build:Web' .mise/tasks.toml
+}
+
+@test "lists tool lines from .tool-versions and a go pin" {
+  printf 'terraform 1.9.2\nnodejs 20.1.0\n' > .tool-versions
+  echo 1.22.3 > .go-version
+  run "$INIT"
+  [[ "$output" == *"tool	terraform = \"1\""* ]]
+  [[ "$output" == *"tool	nodejs = \"20\""* ]]
+  [[ "$output" == *"tool	go = \"1\""* ]]
+}
+
+@test "flags an install task that disagrees with the manifest" {
+  : > go.mod
+  mkdir .mise && printf '[install]\nrun = "make deps"\n' > .mise/tasks.toml
+  run "$INIT"
+  [[ "$output" == *'todo	.mise/tasks.toml — [install] runs "make deps"; the manifest calls for "go mod download"'* ]]
+  grep -q '^run = "make deps"' .mise/tasks.toml
+}
+
+@test "says to delete a foreign Makefile once every target is a task" {
+  printf 'build:\n\tgo build\n' > Makefile
+  mkdir .mise && printf '[build]\nrun = "go build"\n' > .mise/tasks.toml
+  run "$INIT"
+  [[ "$output" == *"foreign	Makefile — every target is a task now"* ]]
+  [[ "$output" != *"target	build"* ]]
 }
 
 @test "picks the install command from the lockfile present" {
@@ -178,4 +227,49 @@ JSON
   run "$INIT"
   [ "$(cat AGENTS.md)" = "existing" ]
   [[ "$output" != *"AGENTS.md"* ]]
+}
+
+@test "creates .claude/settings.json registering the hook, and keeps it after" {
+  mkdir -p .claude/hooks && : > .claude/hooks/llm-instruction-rules.sh
+  run "$INIT"
+  [[ "$output" == *"created	.claude/settings.json"* ]]
+  [ "$(jq -r '.hooks.PreToolUse[0].matcher' .claude/settings.json)" = "Write|Edit" ]
+  [ "$(jq -r '.hooks.PreToolUse[0].hooks[0].command' .claude/settings.json)" = '"$CLAUDE_PROJECT_DIR/.claude/hooks/llm-instruction-rules.sh"' ]
+  run "$INIT"
+  [[ "$output" == *"kept	.claude/settings.json"* ]]
+}
+
+@test "adds the hook to an existing settings.json without touching the rest" {
+  mkdir -p .claude/hooks && : > .claude/hooks/llm-instruction-rules.sh
+  echo '{"permissions":{"allow":["Bash(ls)"]},"hooks":{"PreToolUse":[{"matcher":"Read","hooks":[]}]}}' > .claude/settings.json
+  run "$INIT"
+  [[ "$output" == *"updated	.claude/settings.json"* ]]
+  [ "$(jq -r '.permissions.allow[0]' .claude/settings.json)" = "Bash(ls)" ]
+  [ "$(jq -r '.hooks.PreToolUse | length' .claude/settings.json)" -eq 2 ]
+  [ "$(jq -r '.hooks.PreToolUse[0].matcher' .claude/settings.json)" = "Read" ]
+  [[ "$(jq -r '.hooks.PreToolUse[1].hooks[0].command' .claude/settings.json)" == *llm-instruction-rules.sh* ]]
+}
+
+@test "prints the entry to add when settings.json cannot be merged" {
+  mkdir -p .claude/hooks && : > .claude/hooks/llm-instruction-rules.sh
+  echo 'not json' > .claude/settings.json
+  run "$INIT"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"todo	.claude/settings.json"* ]]
+  [[ "$output" == *'"matcher": "Write|Edit"'* ]]
+  [ "$(cat .claude/settings.json)" = "not json" ]
+}
+
+@test "leaves settings.json alone when the hook is not deployed" {
+  run "$INIT"
+  [ ! -e .claude/settings.json ]
+}
+
+@test "warns about a symlinked or ignored kit file" {
+  "$INIT" >/dev/null
+  rm mise.toml && ln -s /dev/null mise.toml
+  echo Makefile > .gitignore
+  run "$INIT"
+  [[ "$output" == *"warning	mise.toml is a symlink"* ]]
+  [[ "$output" == *"warning	Makefile is ignored by git"* ]]
 }

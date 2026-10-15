@@ -7,8 +7,7 @@ This is the kit repo's own skill — new skills are authored here and reach cons
 repos on their next `skill-kit <domain> sync`.
 
 Decide the domain the skill belongs to (game, story or code; ask if unclear), then run
-`.claude/skills/create-skill/refs.sh <domain>` and follow everything it prints;
-the domain conventions are "the loaded rules".
+`.claude/skills/create-skill/refs.sh <domain>`; the domain conventions are "the loaded rules".
 
 The skill lives at `domains/<domain>/skills/<name>/`; use `shared/skills/<name>/` only
 when it is genuinely useful to every domain. List the target dir; if a similar skill

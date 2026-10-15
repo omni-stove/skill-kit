@@ -44,12 +44,15 @@ setup() {
   run sh "$SOURCE" story/010.txt
   [ "${lines[0]}" = "Output: story/010.txt" ]
   [[ "$output" == *"revise it"* ]]
+  [[ "$output" == *'scene-check.sh "story/010.txt"'* ]]
 }
 
 @test "source.sh says to start fresh when the output is missing" {
   : > story/plot/arrival.md
   run sh "$SOURCE" story/plot/arrival.md
   [[ "$output" == *"does not exist yet"* ]]
+  [[ "$output" == *'others.sh "story/plot/arrival.md"'* ]]
+  [[ "$output" == *'scene-check.sh "story/arrival.txt"'* ]]
 }
 
 @test "source.sh says to read and ask when the output exists" {
@@ -69,6 +72,7 @@ setup() {
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
   [ "$status" -eq 0 ]
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
+  [[ "$output" == *"[Scene name] complete."* ]]
 }
 
 @test "scene-check.sh lists narration sentences ending on the copula, not dialogue" {

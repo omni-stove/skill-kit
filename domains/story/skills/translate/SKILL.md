@@ -9,7 +9,7 @@ Run `.agents/refs/translation-pairs.sh <the path the user gave>`
 
 If the glossary is missing, settle the work-wide decisions with a single `AskUserQuestion` call: name romanization scheme, honorifics (keep as-is / drop / adapt), and register (web-novel casual / literary).
 
-Translate each printed source to its printed translation path — for a directory, one parallel Agent per source, each given both paths, the glossary, and the loaded rules. Never modify the source. Where the source leaves a subject genuinely ambiguous, pick the most likely reading and flag it.
+Translate each source to its translation path — for a directory, one parallel Agent per source, each given both paths, the glossary, and the loaded rules. Never modify the source. Where the source leaves a subject genuinely ambiguous, pick the most likely reading and flag it.
 
 After each file, run a review agent over the loaded check rules with both files; apply its fixes, checking English-only ones against the source.
 

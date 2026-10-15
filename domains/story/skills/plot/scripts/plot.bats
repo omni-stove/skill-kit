@@ -8,10 +8,11 @@ setup() {
   cd "$work"
 }
 
-@test "path.sh prints nothing when story/plot/ is missing" {
+@test "path.sh lists no plot when story/plot/ is missing, and says what to read" {
   run sh "$PATHSH"
   [ "$status" -eq 0 ]
-  [ -z "$output" ]
+  [[ "${lines[0]}" == "Read README.md"* ]]
+  [[ "$output" == *"<kebab-case English title>"* ]]
 }
 
 @test "path.sh lists the plot files in natural sort order" {
@@ -20,13 +21,14 @@ setup() {
   run sh "$PATHSH"
   [ "${lines[0]}" = "story/plot/a.md" ]
   [ "${lines[1]}" = "story/plot/b.md" ]
-  [ "${#lines[@]}" -eq 2 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^story/plot/')" -eq 2 ]
 }
 
 @test "path.sh numbers a new plot 010 in an empty or missing story/plot/" {
   run sh "$PATHSH" first-contact
   [ "$status" -eq 0 ]
-  [ "$output" = "Output: story/plot/010-first-contact.md" ]
+  [ "${lines[0]}" = "Output: story/plot/010-first-contact.md" ]
+  [[ "${lines[1]}" == "Confirm the path and content"* ]]
 }
 
 @test "path.sh numbers a new plot at the next ten after the highest number" {
@@ -62,4 +64,14 @@ setup() {
   [ "$status" -eq 1 ]
   run sh "$PATHSH" 010-first-contact
   [ "$status" -eq 1 ]
+}
+
+@test "path.sh switches to the check when the argument is an existing plot file" {
+  mkdir -p story/plot
+  : > story/plot/010-arrival.md
+  run sh "$PATHSH" story/plot/010-arrival.md
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "Check: story/plot/010-arrival.md" ]
+  [[ "$output" == *"against the loaded rules"* ]]
+  [[ "$output" != *"Output:"* ]]
 }

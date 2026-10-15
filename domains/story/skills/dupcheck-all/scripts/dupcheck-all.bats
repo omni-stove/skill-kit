@@ -21,8 +21,9 @@ setup() {
 @test "bundle.sh prints the bundle path and its line count" {
   printf 'a\nb\nc\n' > story/only.txt
   run sh "$BUNDLE" story
-  [ "$(printf '%s' "$output" | cut -f2)" = "3 lines" ]
-  [[ "$(printf '%s' "$output" | cut -f1)" == out/dupcheck-all/*_story.txt ]]
+  [ "$(printf '%s' "${lines[0]}" | cut -f2)" = "3 lines" ]
+  [[ "$(printf '%s' "${lines[0]}" | cut -f1)" == out/dupcheck-all/*_story.txt ]]
+  [[ "$output" == *"Read the bundle through"* ]]
 }
 
 @test "bundle.sh accepts a file inside the directory" {

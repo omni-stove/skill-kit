@@ -6,7 +6,3 @@ description: Check every .txt file in a directory against the Japanese web novel
 Run `.agents/skills/format-check-all/refs.sh`
 
 Run `.agents/skills/format-check-all/scripts/files.sh <the directory or file path the user gave>`
-
-Launch one Agent per printed file in parallel. Each agent's prompt contains its file and the loaded rules, and has it run `.agents/refs/format.sh <file>`, check the file from the listed lines on, and report only the lines with issues — line number and short quote.
-
-Display the combined results in the printed order. If issues are found, ask whether to fix.

@@ -2,7 +2,7 @@
 # Usage: opening.sh <story-dir>
 # Prints the manuscript's opening files in natural sort order — synopsis and
 # dotfiles excluded — stopping at whichever running character total lands
-# closest to 10,000.
+# closest to 10,000 — then the screening to run on them.
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
 set -- "$(local_path "$1")"
 total=0
@@ -15,3 +15,7 @@ while IFS= read -r f; do
   printf '%s\n' "$f"
   total=$next
 done
+cat <<'NEXT'
+Read the opening files above. Pass the opening if it survives a first-round screening
+against hundreds of submissions.
+NEXT

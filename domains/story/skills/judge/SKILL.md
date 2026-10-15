@@ -20,6 +20,4 @@ On 落選, stop here.
 
 ## 冒頭審査
 
-Run `.agents/skills/judge/scripts/opening.sh <manuscript-dir>` and read the opening files it lists.
-
-Pass the opening if it survives a first-round screening against hundreds of submissions.
+Run `.agents/skills/judge/scripts/opening.sh <manuscript-dir>`

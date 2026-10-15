@@ -43,3 +43,15 @@ setup() {
   [[ "$output" == *"todo	gh auth login"* ]]
   [[ "$output" == *"todo	gh secret set ANTHROPIC_API_KEY"* ]]
 }
+
+@test "flags a ci-auto-fix.yml whose workflows: name matches no workflow" {
+  printf 'on:\n  workflow_run:\n    workflows: ["Build"]\n' > .agents/refs/workflows/ci-auto-fix.yml
+  run "$INSTALL"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'todo	.github/workflows/ci-auto-fix.yml — workflows: ["Build"]'* ]]
+  [[ "$output" == *"==> next:"* ]]
+  printf 'on:\n  workflow_run:\n    workflows: ["CI"]\n' > .agents/refs/workflows/ci-auto-fix.yml
+  rm .github/workflows/ci-auto-fix.yml
+  run "$INSTALL"
+  [[ "$output" != *"names no workflow"* ]]
+}

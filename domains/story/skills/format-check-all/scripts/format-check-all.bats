@@ -12,7 +12,7 @@ setup() {
   : > story/1.txt; : > story/2.txt; : > story/10.txt
   run sh "$FILES" story
   [ "$status" -eq 0 ]
-  [ "${#lines[@]}" -eq 3 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^/')" -eq 3 ]
   [[ "${lines[0]}" == *"/1.txt" ]]
   [[ "${lines[1]}" == *"/2.txt" ]]
   [[ "${lines[2]}" == *"/10.txt" ]]
@@ -24,14 +24,17 @@ setup() {
   : > story/notes.md
   : > story/chapter.txt
   run sh "$FILES" story
-  [ "${#lines[@]}" -eq 1 ]
-  [[ "$output" == *"chapter.txt" ]]
+  [ "$(printf '%s\n' "$output" | grep -c '^/')" -eq 1 ]
+  [[ "${lines[0]}" == *"chapter.txt" ]]
+  [[ "$output" == *"One file: run .agents/refs/format.sh"* ]]
+  [[ "$output" != *"Launch one Agent"* ]]
 }
 
 @test "files.sh accepts a file in the directory" {
   : > story/a.txt; : > story/b.txt
   run sh "$FILES" story/a.txt
-  [ "${#lines[@]}" -eq 2 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^/')" -eq 2 ]
+  [[ "$output" == *"Launch one Agent per file"* ]]
 }
 
 @test "files.sh prints absolute paths" {

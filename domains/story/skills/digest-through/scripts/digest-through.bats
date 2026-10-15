@@ -20,6 +20,7 @@ mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
   [[ "$output" == *"2"* && "$output" == *"01.txt"* ]]
   [[ "$output" == *"Read that file whole into context"* ]]
   [[ "$output" == *"done.sh"* ]]
+  [[ "$output" == *"who, what happens, and the ending state"* ]]
 }
 
 @test "next.sh accepts the directory itself" {
@@ -68,10 +69,10 @@ mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
   [[ "$output" == *"a.txt"* ]]
 }
 
-@test "done.sh appends the digest to the run's record, printing nothing" {
+@test "done.sh appends the digest to the run's record and points at next.sh" {
   : > story/a.txt; : > story/b.txt
   run mark_done story/a.txt
-  [ -z "$output" ]
+  [[ "$output" == *"next.sh \"story/a.txt\""* ]]
   record=$(echo out/digest-through/*.md)
   mark_done story/b.txt
   grep -q "digest of story/a.txt" "$record"
@@ -106,7 +107,8 @@ mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
   sh "$NEXT" story/a.txt
   run sh "$SUMMARY" story < <(printf 'overall take\n')
   [ "$status" -eq 0 ]
-  record="$output"
+  record="${lines[0]}"
+  [[ "${lines[1]}" == *"Output that record path"* ]]
   grep -q "digest of story/a.txt" "$record"
   grep -q "## Overall" "$record"
   grep -q "overall take" "$record"

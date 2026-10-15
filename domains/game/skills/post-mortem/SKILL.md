@@ -5,12 +5,4 @@ description: Write or edit a post-mortem for a game milestone — what was plann
 
 Run `.agents/skills/post-mortem/refs.sh`
 
-The user provides the milestone and what happened, or the change they want.
-
-Determine the milestone, a kebab-case English slug, and the period it covers. Run `.agents/skills/post-mortem/scripts/commits.sh <the period's start date> [<its end date>]`.
-
-List `docs/design/post-mortems/`; read the earlier post-mortems and `docs/design/gdd.md`.
-
-Separate what happened from why: push each wrong item to its root cause, and each lesson to a rule the next milestone can follow. Flag a lesson an earlier post-mortem already drew.
-
-Draft following the loaded rules and format, and write to `docs/design/post-mortems/<slug>.md`.
+Determine the milestone, its kebab-case English slug, and the period it covers from what the user gave. Run `.agents/skills/post-mortem/scripts/commits.sh <slug> <start date> [<end date>]`

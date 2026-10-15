@@ -4,7 +4,7 @@
 # out/read-through/<dir key>.impressions.md, and records the file as processed.
 # Rejects an impression under 3 lines or identical
 # to the previous file's, so a file can only be marked done together with a
-# review written for it.
+# review written for it. Prints the next.sh call for the next file.
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
 set -- "$(local_path "$1")"
 dir=$(cd "$(dirname "$1")" && pwd)
@@ -25,3 +25,4 @@ fi
 printf '%s' "$impression" > "$last"
 printf '## %s\n\n%s\n\n' "$(basename "$1")" "$impression" >> "$record"
 basename "$1" >> "$state"
+echo "Run $(dirname -- "$0")/next.sh \"$1\" for the next file."

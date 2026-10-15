@@ -19,5 +19,5 @@ Hold only what the LLM must judge.
 - Keep each skill self-contained: never reference another skill from a skill body. Share overlapping behavior through the refs mechanism; cut "for X, use the Y skill" notes.
 - Push deterministic work into `scripts/*.sh` the skill calls in one line.
 - Merge consecutive deterministic scripts; split only across an LLM judgment.
-- Write a command the skill runs as the command and its arguments alone. The script prints whatever else the reader needs to act on its output, its error message says what to do when it fails, and it prints nothing more.
+- Write a command the skill runs as the command and its arguments alone, with no account of what the script does. The script prints whatever else the reader needs to act on its output — the judgment to make and the next command to run — its error message says what to do when it fails, and it prints nothing more.
 - Keep rule sets shared across skills in `.agents/refs/<name>-rules.md`. Load them with a `` Run `.agents/skills/<name>/refs.sh` `` line directly after the frontmatter, where `refs.sh` cats the refs file — not the Claude-only `` !`command` `` injection. In the body say "the loaded rules", never the refs path.

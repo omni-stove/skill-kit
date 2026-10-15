@@ -5,6 +5,4 @@ description: Read all .txt files in the same directory as the specified file, on
 
 Run `.agents/skills/read-through/refs.sh`
 
-Run `.agents/skills/read-through/scripts/next.sh <the file path the user gave>` and carry out the action it prints. Repeat until it prints `ALL_DONE`.
-
-Output the record path and the summary.
+Run `.agents/skills/read-through/scripts/next.sh <the file path the user gave>`

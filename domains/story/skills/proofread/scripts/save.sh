@@ -1,7 +1,7 @@
 #!/bin/sh
 # Usage: save.sh <directory | file in it>  (report text on stdin)
 # Writes the report to this directory's record, out/proofread/<dir key>.md,
-# keeping only the latest run's report, and prints the record path.
+# keeping only the latest run's report, and prints the record path and the closing step.
 set -eu
 [ $# -eq 1 ] || { echo "usage: save.sh <directory | file>  (report on stdin)" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -14,3 +14,4 @@ mkdir -p out/proofread
 record="out/proofread/$key.md"
 cat > "$record"
 echo "$record"
+echo "Ask whether to fix any problems."

@@ -26,7 +26,7 @@ fill() { head -c "$2" /dev/zero | tr '\0' 'a' > "$1"; }
   fill story/02.txt 3000
   fill story/03.txt 6000
   run sh "$OPENING" story
-  [ "${#lines[@]}" -eq 2 ]
+  [ "$(printf '%s\n' "$output" | grep -c '\.txt$')" -eq 2 ]
   [ "${lines[1]##*/}" = "02.txt" ]
 }
 
@@ -35,7 +35,7 @@ fill() { head -c "$2" /dev/zero | tr '\0' 'a' > "$1"; }
   fill story/02.txt 3000
   fill story/03.txt 1500
   run sh "$OPENING" story
-  [ "${#lines[@]}" -eq 3 ]
+  [ "$(printf '%s\n' "$output" | grep -c '\.txt$')" -eq 3 ]
   [ "${lines[2]##*/}" = "03.txt" ]
 }
 
@@ -43,7 +43,7 @@ fill() { head -c "$2" /dev/zero | tr '\0' 'a' > "$1"; }
   fill story/01.txt 50000
   fill story/02.txt 100
   run sh "$OPENING" story
-  [ "${#lines[@]}" -eq 1 ]
+  [ "$(printf '%s\n' "$output" | grep -c '\.txt$')" -eq 1 ]
   [ "${lines[0]##*/}" = "01.txt" ]
 }
 
@@ -52,6 +52,7 @@ fill() { head -c "$2" /dev/zero | tr '\0' 'a' > "$1"; }
   fill story/.hidden 10
   fill story/chapter.txt 10
   run sh "$OPENING" story
-  [ "${#lines[@]}" -eq 1 ]
+  [ "$(printf '%s\n' "$output" | grep -c '\.txt$')" -eq 1 ]
   [ "${lines[0]##*/}" = "chapter.txt" ]
+  [[ "$output" == *"first-round screening"* ]]
 }

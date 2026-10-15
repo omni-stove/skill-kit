@@ -30,13 +30,17 @@ if [ -n "$next" ]; then
   cat <<EOF
 Read that file whole into context — only that file. Then run
 $here/done.sh "$next"
-with its digest on stdin.
+with its digest on stdin: who, what happens, and the ending state — prose only, no
+evaluation, from what the file itself shows. Where it reveals an earlier digest was wrong,
+add a one-line correction naming the earlier file and what changed; leave the earlier
+digest as written.
 EOF
 else
   rm -f "$state"
   cat <<EOF
 ALL_DONE
 Run $here/summary.sh "$dir" with an overall understanding of the directory on
-stdin.
+stdin: the through-line, the main characters, and what the story is doing,
+reflecting any corrections.
 EOF
 fi

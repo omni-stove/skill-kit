@@ -3,7 +3,7 @@
 # Writes the directory's .txt files — natural sort order, synopsis and dotfiles
 # excluded — into one bundle at out/dupcheck-all/<dir key>.txt, every line
 # prefixed "<filename>:<line number><TAB>", replacing the previous run's bundle.
-# Prints the bundle path and its line count.
+# Prints the bundle path and its line count, then how to check it.
 set -eu
 [ $# -eq 1 ] || { echo "usage: bundle.sh <directory | file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -20,3 +20,9 @@ while IFS= read -r f; do
   awk -v n="$(basename -- "$f")" '{ printf "%s:%d\t%s\n", n, FNR, $0 }' "$f" >> "$bundle"
 done
 printf '%s\t%s lines\n' "$bundle" "$(wc -l < "$bundle" | tr -d ' ')"
+cat <<'NEXT'
+Read the bundle through to that line count, continuing from where each read stops.
+Detect the overlap across the whole of it — within one file and between any two,
+however far apart — quoting each expression without its line prefix. Apply the loaded
+fix flow with the whole bundle still in view, editing the source files the prefixes name.
+NEXT

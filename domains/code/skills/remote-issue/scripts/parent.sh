@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Prepare the parent issue that groups one remote-issue run's children, and print its number.
+# Prepare the parent issue that groups one remote-issue run's children, print its number, and
+# say what to do next.
 #   parent.sh <title> <body>                create a new, unlabeled parent
 #   parent.sh --issue <number> <body>       use an existing open issue; the body is added as a comment
 # The parent carries no worker label, so the issue worker leaves it alone.
@@ -11,9 +12,11 @@ if [ "${1:-}" = "--issue" ]; then
   state="$("${GH_CMD:-gh}" issue view "$2" --json state --jq .state)"
   [ "$state" = "OPEN" ] || { echo "parent: #$2 is $state and cannot be the parent" >&2; exit 1; }
   "${GH_CMD:-gh}" issue comment "$2" --body "$3" >/dev/null
-  echo "$2"
+  parent="$2"
 else
   [ $# -eq 2 ] || usage
   url="$("${GH_CMD:-gh}" issue create --title "$1" --body "$2")"
-  echo "${url##*/}"
+  parent="${url##*/}"
 fi
+echo "$parent"
+echo "==> next: run .agents/skills/remote-issue/scripts/create.sh --parent $parent <bug|prototype|implementation> \"<title>\" \"<body>\" per issue, then .agents/skills/remote-issue/scripts/report.sh $parent" >&2

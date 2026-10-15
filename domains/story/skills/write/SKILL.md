@@ -5,18 +5,4 @@ description: Write story content from a plot file, or revise a story file. Use w
 
 Run `.agents/skills/write/refs.sh`
 
-The user provides a file: a plot, or the story file itself.
-
-Run `.agents/skills/write/scripts/source.sh <file>`
-
-Launch one Agent on the source file to report what it must stay consistent with and what of it the reader already has. The Agent runs `.agents/skills/write/scripts/others.sh <file>`.
-
-Write 1 Scene by the loaded rules. Open another file only for a fact the report lacks; the source file leads. Deliver its プロットの意図 through events alone. Given the story file itself, revise it as the user says instead.
-
-Save the Scene to the output file. Run `.agents/skills/write/scripts/scene-check.sh <output file>`, then reply with the hand-off alone:
-
-```
-[Scene name] complete. Reply y for the next Scene, or say what to revise.
-```
-
-`y` → write the next Scene; anything else → revise the Scene as the input says, then check and hand off again.
+Run `.agents/skills/write/scripts/source.sh <the plot file, or the story file itself>`

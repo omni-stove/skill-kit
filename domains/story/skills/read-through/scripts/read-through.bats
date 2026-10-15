@@ -90,10 +90,10 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   [[ "$output" == *"b.txt"* ]]
 }
 
-@test "done.sh appends the impression to the run's record, printing nothing" {
+@test "done.sh appends the impression to the run's record and points at next.sh" {
   : > story/a.txt; : > story/b.txt
   run mark_done story/a.txt
-  [ -z "$output" ]
+  [[ "$output" == *"next.sh \"story/a.txt\""* ]]
   record=$(echo out/read-through/*.impressions.md)
   mark_done story/b.txt
   grep -q "impression of story/a.txt" "$record"
@@ -131,7 +131,8 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   sh "$NEXT" story/a.txt
   run sh "$SUMMARY" story/a.txt < <(printf 'overall take\n')
   [ "$status" -eq 0 ]
-  record="$output"
+  record="${lines[0]}"
+  [[ "${lines[1]}" == *"Output that record path"* ]]
   [[ "$record" == *".impressions.md" ]]
   grep -q "impression of story/a.txt" "$record"
   grep -q "## Overall Summary" "$record"

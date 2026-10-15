@@ -1,6 +1,7 @@
 #!/bin/sh
 # Copy the kit's workflow templates into .github/workflows (existing files are kept),
-# create the labels the issue worker fires on, and list what the user must set by hand.
+# create the labels the issue worker fires on, list what the user must set by hand, and
+# say what to do next.
 set -eu
 src=.agents/refs/workflows
 [ -d "$src" ] || { echo "install: $src not found — the kit isn't synced into this repo. Tell the user to run \`skill-kit code sync\`, then stop." >&2; exit 1; }
@@ -34,3 +35,13 @@ todo	gh secret set ANTHROPIC_API_KEY
 todo	Repository Settings > Actions > General > Workflow permissions: "Read and write" and "Allow GitHub Actions to create and approve pull requests"
 todo	optional: gh secret set AGENT_GITHUB_TOKEN with a PAT or GitHub App token (contents + pull-requests write) so PRs and pushes made by the agent trigger CI and PR Review
 TODO
+
+ci_ref=$(sed -n 's/^ *workflows: *\[ *"\([^"]*\)" *\].*/\1/p' .github/workflows/ci-auto-fix.yml 2>/dev/null | head -1)
+if [ -n "$ci_ref" ] && ! grep -qsx "name: $ci_ref" .github/workflows/*.yml; then
+	echo "todo	.github/workflows/ci-auto-fix.yml — workflows: [\"$ci_ref\"] names no workflow in .github/workflows; set it to the CI workflow's name:"
+fi
+for f in .github/workflows/*.yml; do
+	git check-ignore -q "$f" 2>/dev/null && echo "warning	$f is ignored by git — unignore it so the workflow runs"
+done
+
+echo "==> next: hand the user the todo and warning lines above as theirs to do; the rest is in place" >&2

@@ -12,7 +12,7 @@ setup() {
   : > story/1.txt; : > story/2.txt; : > story/10.txt
   run sh "$FILES" story
   [ "$status" -eq 0 ]
-  [ "${#lines[@]}" -eq 3 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^/')" -eq 3 ]
   [[ "${lines[0]}" == *"/1.txt" ]]
   [[ "${lines[1]}" == *"/2.txt" ]]
   [[ "${lines[2]}" == *"/10.txt" ]]
@@ -24,21 +24,25 @@ setup() {
   : > story/notes.md
   : > story/chapter.txt
   run sh "$FILES" story
-  [ "${#lines[@]}" -eq 1 ]
-  [[ "$output" == *"chapter.txt" ]]
+  [ "$(printf '%s\n' "$output" | grep -c '^/')" -eq 1 ]
+  [[ "${lines[0]}" == *"chapter.txt" ]]
 }
 
 @test "files.sh prints a single file alone, not its siblings" {
   : > story/a.txt; : > story/b.txt
   run sh "$FILES" story/a.txt
-  [ "${#lines[@]}" -eq 1 ]
-  [[ "$output" == *"/a.txt" ]]
+  [ "$(printf '%s\n' "$output" | grep -c '^/')" -eq 1 ]
+  [[ "${lines[0]}" == *"/a.txt" ]]
+  [[ "$output" == *"Layman Evaluation"* ]]
+  [[ "$output" != *"Overall Summary"* ]]
+  run sh "$FILES" story
+  [[ "$output" == *"Overall Summary"* ]]
 }
 
 @test "files.sh prints a named file whatever its extension" {
   : > story/notes.md
   run sh "$FILES" story/notes.md
-  [[ "$output" == *"/notes.md" ]]
+  [[ "${lines[0]}" == *"/notes.md" ]]
 }
 
 @test "files.sh prints absolute paths" {

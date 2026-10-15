@@ -3,8 +3,8 @@
 # Fixes the output file's format through format.sh, then prints the checks
 # to run over the file before each hand-off, then the
 # narration lines with a negative sentence ending (ない。, なかった。), the
-# narration lines with a sentence ending on だった。, and the lines format.sh
-# finds against the format rules.
+# narration lines with a sentence ending on だった。, the lines format.sh
+# finds against the format rules, and the hand-off to reply with.
 set -eu
 [ $# -eq 1 ] || { echo "usage: scene-check.sh <output file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -46,3 +46,10 @@ if [ -n "$fmt" ]; then
 EOF
   printf '%s\n' "$fmt"
 fi
+cat <<'NEXT'
+
+Then reply with the hand-off alone:
+[Scene name] complete. Reply y for the next Scene, or say what to revise.
+y: write the next Scene and run this script on it. Anything else: revise the Scene as the
+input says, then run this script again.
+NEXT

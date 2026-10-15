@@ -2,7 +2,7 @@
 # Usage: summary.sh <directory | file in it>  (overall understanding on stdin)
 # Appends the overall understanding to this directory's record,
 # out/digest-through/<dir key>.md, under "## Overall", and prints the record
-# path. Rejects an empty summary.
+# path and the closing action. Rejects an empty summary.
 set -eu
 [ $# -eq 1 ] || { echo "usage: summary.sh <directory | file>  (summary on stdin)" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -20,3 +20,4 @@ if [ -z "$(printf '%s' "$summary" | tr -d '[:space:]')" ]; then
 fi
 printf '## Overall\n\n%s\n' "$summary" >> "$record"
 echo "$record"
+echo "Output that record path and the overall understanding."

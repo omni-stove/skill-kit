@@ -59,13 +59,15 @@ bin/               the skill-kit CLI
 shared/            everything every domain uses verbatim
   skills/          init, task (mise + make), cap, create-pr, and the setting skills
                    (character, world, item, timeline)
-  refs/            llm-instruction-rules.md, doc-rules.md, mise-rules.md, setting formats
+  refs/            llm-instruction-rules.md, doc-rules.md, mise-rules.md, push-with-merge.sh,
+                   setting formats
   hooks/           llm-instruction-rules.sh
 domains/
   game/            skills (gdd, mechanic, balance, setup, run, …) + refs
   story/           skills (write, plot, dupcheck, judge, …) + refs
-  code/            skills (automation, remote-issue, fix-pr, review-loop, analyze-repository) + refs
-                   (workflow templates, PR thread scripts)
+  code/            skills (automation, remote-issue, fix-pr, review-loop, tour, feature-jsdoc,
+                   analyze-repository) + refs (workflow templates, PR thread scripts,
+                   feature-jsdoc rules)
 ```
 
 Skills read and write fixed paths relative to the repo root (`README.md`, `characters/`,
@@ -110,6 +112,11 @@ dependency install, then the same `make <task>` commands — never `make setup`.
 The `task` skill adds a command as a task; the rules both skills follow are in
 `shared/refs/mise-rules.md`.
 
+`create-pr` opens a PR from the current branch: it reads the branch's PR state, runs the
+repo's `generate` task (when there is one) and lists the generated files that belong in the
+commit, pushes with `shared/refs/push-with-merge.sh` (a rejected push merges the remote and
+retries), and opens the PR with a body of 目的 / 実装方針 / 確認方法 / 見て欲しいポイント.
+
 ## Code domain: agent automation
 
 The `automation` skill copies four GitHub Actions workflows from `domains/code/refs/workflows/`
@@ -136,12 +143,17 @@ labeled issues under a parent so the worker implements them in parallel, `fix-pr
 PR's review threads and CI failures locally, and `review-loop` waits for the automation to
 settle, audits what it pushed, fixes what remains, and repeats until LGTM.
 
+Two skills keep a frontend's feature catalog: `feature-jsdoc` adds or audits the `@feature`
+JSDoc on UI components by the rules in `domains/code/refs/feature-jsdoc-rules.md`, and `tour`
+walks a new member through the app from those blocks.
+
 ## LLM-instruction-rules hook
 
-`shared/hooks/llm-instruction-rules.sh` is a PreToolUse hook that injects the house rules
-when a Write/Edit targets an LLM-facing instruction file. `sync` deploys the script, but
-Claude Code only fires hooks registered in settings — add this once to the repo's
-`.claude/settings.json`:
+`shared/hooks/llm-instruction-rules.sh` is a PreToolUse hook that injects the house rules for
+writing anything an LLM reads (SKILL.md, AGENTS.md, prompts, workflow defs) when a Write/Edit
+targets such a file. `sync` deploys the script and `init` registers it in the repo's
+`.claude/settings.json` — creating the file, or merging this entry into an existing one with
+`jq` (without `jq`, `init` prints the entry to add by hand):
 
 ```json
 {
@@ -150,7 +162,7 @@ Claude Code only fires hooks registered in settings — add this once to the rep
       {
         "matcher": "Write|Edit",
         "hooks": [
-          { "type": "command", "command": ".claude/hooks/llm-instruction-rules.sh" }
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/llm-instruction-rules.sh\"" }
         ]
       }
     ]

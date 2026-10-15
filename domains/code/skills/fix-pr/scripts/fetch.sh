@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Check out a PR's branch with the remote's latest commits merged in, merge the base branch,
-# and print the PR's state, active review threads, checks and changed files.
+# print the PR's state, active review threads, checks and changed files, and say what to do next.
 # usage: fetch.sh [pr-number-or-url-or-branch]   (none: the current branch's PR)
 set -euo pipefail
 
@@ -45,3 +45,5 @@ gh pr checks "$pr" || true
 
 echo "==> changed files"
 gh pr diff "$pr" --name-only
+
+echo "==> next: fix the active threads, the failing checks and any conflict with the smallest change that holds the root cause; leave a test's assertions and unrelated code as they are; skip a finding that is wrong or outside the PR's scope and say why in your reply to it. Then run .agents/skills/fix-pr/scripts/commit-push.sh <changed files> (no arguments when nothing changed)" >&2

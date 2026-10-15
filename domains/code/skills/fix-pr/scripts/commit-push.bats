@@ -1,13 +1,14 @@
 #!/usr/bin/env bats
-# commit-push.sh with a git stub: add + commit + push, the empty commit with no files, the
-# retry through push-with-merge when the remote is ahead, and finishing an in-progress merge.
+# commit-push.sh with git and make stubs: lint + test, add + commit + push, the empty commit
+# with no files, the retry through push-with-merge when the remote is ahead, and finishing an
+# in-progress merge.
 
 setup() {
   SCRIPT="$BATS_TEST_DIRNAME/commit-push.sh"
   KIT="$(cd "$BATS_TEST_DIRNAME/../../../../.." && pwd)"
   repo="$BATS_TEST_TMPDIR/repo"
   mkdir -p "$repo/.agents/refs" "$repo/bin"
-  ln -s "$KIT/domains/code/refs/push-with-merge.sh" "$repo/.agents/refs/push-with-merge.sh"
+  ln -s "$KIT/shared/refs/push-with-merge.sh" "$repo/.agents/refs/push-with-merge.sh"
   CALLS="$BATS_TEST_TMPDIR/calls"
   : > "$CALLS"
   echo 0 > "$BATS_TEST_TMPDIR/pushes"
@@ -27,23 +28,46 @@ if [ "\$1" = "push" ]; then
 fi
 exit 0
 STUB
-  chmod +x "$repo/bin/git"
+  cat > "$repo/bin/make" <<STUB
+#!/usr/bin/env bash
+echo "make \$*" >> "$CALLS"
+[ "\$1" = "\${MAKE_FAIL:-}" ] && exit 1
+exit 0
+STUB
+  cat > "$repo/bin/gh" <<'STUB'
+#!/usr/bin/env bash
+echo 12
+STUB
+  chmod +x "$repo/bin/git" "$repo/bin/make" "$repo/bin/gh"
   PATH="$repo/bin:$PATH"
   cd "$repo"
 }
 
-@test "adds the given files, commits and pushes" {
+@test "lints, tests, adds the given files, commits and pushes, then points at the replies" {
   run "$SCRIPT" a.ts b.ts
   [ "$status" -eq 0 ]
+  grep -q '^make lint$' "$CALLS"
+  grep -q '^make test$' "$CALLS"
+  [ "$(grep -n '^make test$' "$CALLS" | cut -d: -f1)" -lt "$(grep -n '^git add' "$CALLS" | cut -d: -f1)" ]
+  [[ "$output" == *"reply-review-thread.sh 12 <thread-id>"* ]]
   grep -q '^git add a.ts b.ts$' "$CALLS"
   grep -q 'git commit --no-verify -m' "$CALLS"
   grep -q '^git push$' "$CALLS"
   ! grep -q 'git pull' "$CALLS"
 }
 
-@test "with no files pushes an empty commit only" {
+@test "stops before committing when lint or test fails" {
+  MAKE_FAIL=test run "$SCRIPT" a.ts
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"make test failed"* ]]
+  ! grep -q '^git add' "$CALLS"
+  ! grep -q '^git commit' "$CALLS"
+}
+
+@test "with no files pushes an empty commit only, without lint or test" {
   run "$SCRIPT"
   [ "$status" -eq 0 ]
+  ! grep -q '^make' "$CALLS"
   ! grep -q '^git add' "$CALLS"
   grep -q 'commit --allow-empty --only' "$CALLS"
 }
@@ -58,6 +82,7 @@ STUB
 @test "finishes an in-progress merge instead of committing files" {
   GIT_MERGE_IN_PROGRESS=1 run "$SCRIPT" a.ts
   [ "$status" -eq 0 ]
+  grep -q '^make test$' "$CALLS"
   grep -q '^git add -A$' "$CALLS"
   grep -q 'commit --no-edit' "$CALLS"
   ! grep -q '^git add a.ts' "$CALLS"

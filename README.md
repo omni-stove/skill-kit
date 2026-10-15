@@ -50,25 +50,7 @@ into the deployed dir — sync leaves real files untouched and keeps them git-tr
 Run `skill-kit game sync` (or `story` / `code`) from inside this repo — the CLI self-detects the
 checkout and syncs it into its own `.claude/` / `.agents/` (git-ignored).
 
-## Layout
-
-```
-bin/               the skill-kit CLI
-.claude/skills/
-  create-skill/    scaffold a new skill — the kit's own skill, never deployed
-shared/            everything every domain uses verbatim
-  skills/          init, task (mise + make), cap, create-pr, and the setting skills
-                   (character, world, item, timeline)
-  refs/            llm-instruction-rules.md, doc-rules.md, mise-rules.md, push-with-merge.sh,
-                   prompt.sh, setting formats
-  hooks/           llm-instruction-rules.sh
-domains/
-  game/            skills (gdd, mechanic, balance, setup, run, …) + refs
-  story/           skills (write, plot, dupcheck, judge, …) + refs
-  code/            skills (automation, remote-issue, fix-pr, review-loop, tour, feature-jsdoc,
-                   analyze-repository) + refs (workflow templates, PR thread scripts,
-                   feature-jsdoc rules)
-```
+## Skills
 
 A skill is a `SKILL.md` that runs `scripts/*.sh`; what a script says to the LLM — the next
 step, the judgment to make — lives in `prompts/<step>.txt` beside it, printed through
@@ -111,42 +93,30 @@ mise tasks              # list what the repo can do
 
 A tool with its own binary (runtime, package manager, `biome`, `rust`, `terraform`) goes in
 `[tools]`; a tool that runs on the runtime or loads npm plugins (`vitest`, `turbo`, `vite`) goes
-in the package manager's dev dependencies. CI uses `jdx/mise-action` for the tools, a frozen
-dependency install, then the same `make <task>` commands — never `make setup`.
+in the package manager's dev dependencies.
 
 The `task` skill adds a command as a task; the rules both skills follow are in
 `shared/refs/mise-rules.md`.
 
-`create-pr` opens a PR from the current branch: it reads the branch's PR state, runs the
-repo's `generate` task (when there is one) and lists the generated files that belong in the
-commit, pushes with `shared/refs/push-with-merge.sh` (a rejected push merges the remote and
-retries), and opens the PR with a body of 目的 / 実装方針 / 確認方法 / 見て欲しいポイント.
+## Code domain: the org's shared automation
 
-## Code domain: agent automation
-
-The `automation` skill copies four GitHub Actions workflows from `domains/code/refs/workflows/`
-into the repo and creates the labels they fire on:
-
-- `ci.yml` — mise-action, `mise run install`, `make lint`, `make test`.
-- `issue-worker.yml` — an issue labeled `bug`, `prototype` or `implementation` is implemented
-  by Claude, which pushes a branch and opens a PR (a draft for prototypes).
-- `pr-review.yml` — Claude reviews every non-draft PR with inline comments and a
-  `Verdict: changes requested` / `Verdict: LGTM` summary, then a second job fixes the
-  unresolved threads on the PR branch with one `[agent-fix]` commit.
-- `ci-auto-fix.yml` — when CI fails on a PR, Claude fixes the cause from the failed job logs.
-
-Needs the `ANTHROPIC_API_KEY` secret. PRs and pushes made with `GITHUB_TOKEN` do not trigger
-other workflows, so set `AGENT_GITHUB_TOKEN` (a PAT or GitHub App token) when agent PRs should
-get CI and review too. Three consecutive `[agent-fix]` commits stop the fix jobs.
+The kit ships no CI of its own. The `automation` skill adopts what the org already shares:
+`scan.sh` lists the repos of the org behind `origin` (or `--org`), marks each one that holds
+composite actions (`action.yml` at the root or under `actions/`), reusable workflows
+(`workflow_call`), workflow templates or a template repo, or whose description says shared,
+and prints that repo's README — the install instructions are the repo's own — followed by
+this repo's current workflows (with their `uses:` lines) and mise tasks. A repo named on the
+command line is listed whether or not it looks shared. The skill then installs what applies
+the way each README says, with the inputs filled from the repo's tasks, and hands the user
+what the README leaves to them: secrets, labels, rulesets, App installs.
 
 `init` also copies `domains/code/refs/code-rules.md` (comments say only why-not, generated
-files are never hand-edited) into the repo's `AGENTS.md`, so local sessions and the CI agents
-follow the same rules.
+files are never hand-edited) into the repo's `AGENTS.md`, so local sessions and agents that
+run in CI follow the same rules.
 
-Around them, three skills for the person driving the work: `remote-issue` splits a task into
-labeled issues under a parent so the worker implements them in parallel, `fix-pr` addresses a
-PR's review threads and CI failures locally, and `review-loop` waits for the automation to
-settle, audits what it pushed, fixes what remains, and repeats until LGTM.
+Two skills for the person driving the work against that automation: `remote-issue` splits
+a task into labeled issues under a parent so an issue worker implements them in parallel, and
+`fix-pr` addresses a PR's review threads and CI failures locally.
 
 Two skills keep a frontend's feature catalog: `feature-jsdoc` adds or audits the `@feature`
 JSDoc on UI components by the rules in `domains/code/refs/feature-jsdoc-rules.md`, and `tour`

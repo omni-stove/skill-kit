@@ -8,6 +8,4 @@ Every command a person or agent runs in the repo is a mise task in `.mise/tasks.
 
 `make <task> [args]` is `mise run <task> [args]`: the Makefile forwards its first goal as the task name and the remaining goals as arguments, and `ARGS="--flag"` carries anything that begins with `-`. The Makefile owns one target, `setup`, which runs `mise trust`, `mise install`, then `mise run setup`. Write every other command as a task, never as a Makefile target.
 
-The `install` task installs the repo's dependencies. The `setup` task depends on it, then installs skill-kit and runs `skill-kit <domain> sync` for this repo's domain. The `update` task runs `skill-kit <domain> update`. The `lint` and `test` tasks are the entry points CI and the agent workflows call.
-
-CI installs the tools with `jdx/mise-action`, runs `mise run install`, then `make lint` and `make test`; `make setup` stays with a developer's clone.
+The `install` task installs the repo's dependencies. The `setup` task depends on it, then installs skill-kit and runs `skill-kit <domain> sync` for this repo's domain. The `update` task runs `skill-kit <domain> update`. The `lint` and `test` tasks are the entry points CI calls.

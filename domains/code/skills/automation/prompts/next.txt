@@ -1,1 +1,1 @@
-Hand the user the todo and warning lines above as theirs to do; the rest is in place
+Pick what this repo takes from the shared list: a workflow or action for what the repo runs, a package or template for a tool or shape the repo has; a workflow above that already calls it is in place. Install each the way its README says, with the inputs filled from this repo's tasks and tools, and hand the user what the README leaves to them — secrets, labels, rulesets, App installs — as theirs to do.

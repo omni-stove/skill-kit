@@ -1,7 +1,6 @@
-Reply "suggest [filename]" for rewrite proposals.
-
-Rewrite flow: "suggest [filename]" → propose rewrites as below; "approve [numbers]" → edit
-the file in place, touching only the approved passages, and report the changed lines.
+End each evaluation with the line: Reply "suggest <filename>" for rewrite proposals.
+On "suggest <filename>", propose rewrites as below; on an approve reply, edit the file in
+place, touching only the approved passages, and report the changed lines.
 
 ## Rewrite proposals — <filename>
 

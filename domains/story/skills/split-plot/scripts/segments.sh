@@ -3,7 +3,8 @@
 # Tries each splitter on the source — Markdown headings, horizontal rules, top-level bullet
 # items, blank-line-separated blocks, explicit scene markers — and prints, per splitter,
 # the number of segments it yields and the first line of each (text before the first
-# heading, bullet or marker is no segment), then the step that picks one.
+# heading, bullet or marker is no segment), or that it found no split, then the step that
+# picks one.
 set -eu
 [ $# -eq 1 ] || { echo "usage: segments.sh <source file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -27,6 +28,7 @@ split() {
     }
     END {
       flush()
+      if (n < 2) { printf "== %s: no split ==\n", name; exit }
       printf "== %s (%d) ==\n", name, n
       for (i = 1; i <= n; i++) printf "%d\t%s\n", i, titles[i]
     }'

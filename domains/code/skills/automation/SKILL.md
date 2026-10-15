@@ -1,6 +1,6 @@
 ---
 name: automation
-description: Install the kit's GitHub Actions automation into this repo (CI on mise + make, issues implemented into PRs, PR review, CI auto-fix). Use when the user wants the repo's automated implementation or review workflows set up (e.g. "自動実装を入れて", "自動レビューを設定して", "automation", "issue から PR が立つようにして").
+description: Adopt the org's shared GitHub Actions and configs into this repo, the way each shared repo's README says. Use when the user wants the org's common CI or automation set up (e.g. "automation", "org の共通 CI を入れて", "共通の Actions を導入して", "CI 設定して").
 ---
 
-Run `.agents/skills/automation/scripts/install.sh`
+Run `.agents/skills/automation/scripts/scan.sh [<repo the user names as shared>...]`

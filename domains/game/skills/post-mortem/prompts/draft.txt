@@ -1,1 +1,1 @@
-Read the earlier post-mortems above and docs/design/gdd.md. Separate what happened from why: push each wrong item to its root cause, and each lesson to a rule the next milestone can follow. Flag a lesson an earlier post-mortem already drew. Draft by the loaded rules and format, and write to the output path.
+Read the earlier post-mortems above and docs/design/gdd.md. Flag a lesson an earlier post-mortem already drew. Draft by the loaded rules and format, and write to the output path.

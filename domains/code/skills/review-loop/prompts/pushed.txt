@@ -1,1 +1,0 @@
-Reply to each thread with .agents/refs/reply-review-thread.sh, then run .agents/skills/review-loop/scripts/watch.sh {pr}

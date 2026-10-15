@@ -1,1 +1,0 @@
-Stage your changes and the generated files listed above, commit, then run .agents/skills/create-pr/scripts/push.sh

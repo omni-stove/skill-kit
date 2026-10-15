@@ -1,1 +1,0 @@
-Run .agents/skills/create-pr/scripts/open.sh "<title>" "<purpose, with refs / Closes #n>" "<approach>" "<verification>" "<review points>" [--base <branch>] [--label <name>]... — a multi-line section is one argument with real newlines ($'line 1\nline 2')

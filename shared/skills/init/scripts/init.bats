@@ -79,10 +79,43 @@ setup() {
   [[ "$output" == *"target	lint"* ]]
   [[ "$output" == *"target	test"* ]]
   [[ "$output" != *"target	.PHONY"* ]]
-  [[ "$output" == *"kept	mise.toml — add"* ]]
-  [[ "$output" == *"kept	.mise/tasks.toml — add an [install] task running: :"* ]]
+  [[ "$output" == *"updated	mise.toml — added [task_config] includes"* ]]
+  grep -q '^includes = \[".mise/tasks.toml"\]' mise.toml
+  [[ "$output" == *"updated	.mise/tasks.toml — added tasks: install update"* ]]
+  [[ "$output" == *"todo	.mise/tasks.toml — give [setup] depends"* ]]
   [ "$(head -1 Makefile)" = "build:" ]
-  [ "$(cat .mise/tasks.toml)" = "[setup]" ]
+  [ "$(head -1 .mise/tasks.toml)" = "[setup]" ]
+  grep -q '^\[install\]' .mise/tasks.toml
+  grep -q '^\[update\]' .mise/tasks.toml
+  [ "$(grep -c '^\[setup\]' .mise/tasks.toml)" -eq 1 ]
+}
+
+@test "a second run on an initialized repo keeps everything" {
+  "$INIT" >/dev/null
+  run "$INIT"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"kept	Makefile"* ]]
+  [[ "$output" == *"kept	mise.toml"* ]]
+  [[ "$output" == *"kept	.mise/tasks.toml"* ]]
+  [[ "$output" != *"updated"* ]]
+  [[ "$output" != *"todo"* ]]
+}
+
+@test "brings an older forwarding Makefile up to the template and shows the diff" {
+  "$INIT" >/dev/null
+  sed -i '' '/mise trust -q/d' Makefile
+  run "$INIT"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"updated	Makefile"* ]]
+  [[ "$output" == *"+	@mise trust -q"* ]]
+  grep -q 'mise trust -q' Makefile
+}
+
+@test "leaves a mise.toml that already has a task_config section to the user" {
+  printf '[task_config]\nincludes = ["other.toml"]\n' > mise.toml
+  run "$INIT"
+  [[ "$output" == *"kept	mise.toml — add"* ]]
+  [ "$(grep -c task_config mise.toml)" -eq 1 ]
 }
 
 @test "lists manifests, version pins and package.json scripts" {
@@ -108,4 +141,41 @@ JSON
   : > go.mod
   run "$INIT"
   [[ "$output" == *"install	go mod download"* ]]
+}
+
+@test "appends the code rules to AGENTS.md once when the code domain is synced" {
+  printf '# Code rules\n\nrule\n' > .agents/refs/code-rules.md
+  echo existing > AGENTS.md
+  run "$INIT"
+  [[ "$output" == *"appended	AGENTS.md"* ]]
+  [ "$(head -1 AGENTS.md)" = "existing" ]
+  grep -qx '# Code rules' AGENTS.md
+  run "$INIT"
+  [[ "$output" == *"kept	AGENTS.md"* ]]
+  [ "$(grep -c '# Code rules' AGENTS.md)" -eq 1 ]
+}
+
+@test "replaces the code rules block when the rules changed, keeping the rest of AGENTS.md" {
+  printf 'intro\n\n# Code rules\n\nold rule\n\n# Other\n\nkeep me\n' > AGENTS.md
+  printf '# Code rules\n\nnew rule\nsecond line\n' > .agents/refs/code-rules.md
+  run "$INIT"
+  [[ "$output" == *"updated	AGENTS.md"* ]]
+  [ "$(cat AGENTS.md)" = "$(printf 'intro\n\n# Code rules\n\nnew rule\nsecond line\n\n# Other\n\nkeep me')" ]
+  run "$INIT"
+  [[ "$output" == *"kept	AGENTS.md"* ]]
+}
+
+@test "replaces a changed code rules block at the end of AGENTS.md" {
+  printf 'intro\n\n# Code rules\n\nold rule\n' > AGENTS.md
+  printf '# Code rules\n\nnew rule\n' > .agents/refs/code-rules.md
+  run "$INIT"
+  [[ "$output" == *"updated	AGENTS.md"* ]]
+  [ "$(cat AGENTS.md)" = "$(printf 'intro\n\n# Code rules\n\nnew rule')" ]
+}
+
+@test "leaves AGENTS.md alone in a domain without code rules" {
+  echo existing > AGENTS.md
+  run "$INIT"
+  [ "$(cat AGENTS.md)" = "existing" ]
+  [[ "$output" != *"AGENTS.md"* ]]
 }

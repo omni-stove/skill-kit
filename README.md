@@ -90,7 +90,10 @@ skill-kit code sync     # or game / story
 
 then runs the `init` skill in Claude Code, which runs `git init` if the directory is not a
 repository yet, generates the three files, proposes a major version per tool, and turns the
-repo's scripts and Makefile targets into tasks. Everyone after
+repo's scripts and Makefile targets into tasks. Run `init` again after a kit update: it diffs
+what the kit generates against what the repo has and adds only what is missing — a newer
+forwarding Makefile, a task the kit now expects, a changed rules block in `AGENTS.md` — and
+never touches what a person wrote. Everyone after
 that runs:
 
 ```sh
@@ -123,6 +126,10 @@ into the repo and creates the labels they fire on:
 Needs the `ANTHROPIC_API_KEY` secret. PRs and pushes made with `GITHUB_TOKEN` do not trigger
 other workflows, so set `AGENT_GITHUB_TOKEN` (a PAT or GitHub App token) when agent PRs should
 get CI and review too. Three consecutive `[agent-fix]` commits stop the fix jobs.
+
+`init` also copies `domains/code/refs/code-rules.md` (comments say only why-not, generated
+files are never hand-edited) into the repo's `AGENTS.md`, so local sessions and the CI agents
+follow the same rules.
 
 Around them, three skills for the person driving the work: `remote-issue` splits a task into
 labeled issues under a parent so the worker implements them in parallel, `fix-pr` addresses a

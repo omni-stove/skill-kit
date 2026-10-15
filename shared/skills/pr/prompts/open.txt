@@ -1,1 +1,1 @@
-Decide from the changes above what the push carries and the wording, then run .agents/skills/pr/scripts/regenerate.sh; the push updates this PR, so do not open another
+Decide from the changes above what the push carries and the wording, then run .agents/skills/pr/scripts/regenerate.sh <changed path>...; the push updates this PR, so do not open another

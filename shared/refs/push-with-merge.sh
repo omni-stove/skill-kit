@@ -16,16 +16,26 @@ add_empty_commit_if_merge_head() {
 }
 
 push_with_merge() {
+  # The push's own output is kept, and the failure kind is read from it below, so stderr is
+  # captured too; LC_ALL=C keeps those messages in English, since a translated locale
+  # would hide 'non-fast-forward'.
   local push_err
   if push_err="$(LC_ALL=C git push "$@" 2>&1)"; then
     [ -n "$push_err" ] && printf '%s\n' "$push_err" >&2
     return 0
   fi
   printf '%s\n' "$push_err" >&2
+  # Only a rejection a merge can recover from is retried; anything else (auth, network, a
+  # protected branch) is passed through. A bare `[rejected]` is not matched on purpose: every
+  # local rejection prints as `! [rejected] ... (reason)`, so it would also catch
+  # `(stale info)` or `(needs force)` and run a pull that cannot help.
   if ! printf '%s' "$push_err" | grep -qiE 'non-fast-forward|fetch first|tip of your current branch is behind'; then
     return 1
   fi
   echo "==> push rejected (remote ahead); merging upstream" >&2
+  # The remote and branch are taken from the push arguments: a caller pushing with
+  # `-u origin <branch>` has no upstream set yet when the push is rejected, so a bare
+  # `git pull` would have nothing to track.
   local arg remote branch
   local positionals=()
   for arg in "$@"; do

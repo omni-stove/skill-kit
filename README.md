@@ -98,9 +98,9 @@ in the package manager's dev dependencies.
 The `task` skill adds a command as a task; the rules both skills follow are in
 `shared/refs/mise-rules.md`.
 
-`pr` opens a PR from the current branch: it reads the branch's PR state, runs the repo's
-`generate` task (when there is one) and lists the generated files that belong in the commit,
-pushes with `shared/refs/push-with-merge.sh` (a rejected push merges the remote and retries),
+`pr` opens a PR from the current branch: it reads the branch's PR state, reruns generate for
+the changed paths (scoped to their packages and dependents under turbo, else the repo's
+`generate` task) and lists the generated files that belong in the commit, pushes with `shared/refs/push-with-merge.sh` (a rejected push merges the remote and retries),
 and opens the PR with a body of 目的 / 実装方針 / 確認方法 / 見て欲しいポイント.
 
 ## Code domain: the org's shared automation

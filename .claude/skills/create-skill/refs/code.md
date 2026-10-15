@@ -11,4 +11,7 @@ Conventions the existing code skills establish — follow them when scaffolding 
 - **Load the mise/make rules** through a `` Run `.agents/skills/<name>/refs.sh` `` line right after
   the frontmatter when the skill writes a task, adds a tool, or touches the Makefile; `refs.sh` cats
   `.agents/refs/mise-rules.md`. `chmod +x` the refs.sh. The shared `init` skill is a working example.
+- **Share PR plumbing through refs:** `.agents/refs/review-threads.sh`,
+  `.agents/refs/resolve-review-thread.sh` and `.agents/refs/push-with-merge.sh` are called or
+  sourced from a skill's scripts; `fix-pr` and `review-loop` are working examples.
 - **Keep each skill self-contained** — never name another skill from the body.

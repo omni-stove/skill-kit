@@ -46,7 +46,11 @@ setup() {
   [[ "$output" == *"created	.mise/tasks.toml"* ]]
   grep -q 'mise run $(TASK)' Makefile
   grep -q '^includes = \[".mise/tasks.toml"\]' mise.toml
+  grep -q '^\[install\]' .mise/tasks.toml
+  grep -q '^run = ":"' .mise/tasks.toml
   grep -q '^\[setup\]' .mise/tasks.toml
+  grep -q '^depends = \["install"\]' .mise/tasks.toml
+  [[ "$output" == *"install	:"* ]]
   grep -q '"skill-kit story sync"' .mise/tasks.toml
   grep -q '"skill-kit story update"' .mise/tasks.toml
   grep -q '^\[update\]' .mise/tasks.toml
@@ -76,7 +80,7 @@ setup() {
   [[ "$output" == *"target	test"* ]]
   [[ "$output" != *"target	.PHONY"* ]]
   [[ "$output" == *"kept	mise.toml — add"* ]]
-  [[ "$output" == *"kept	.mise/tasks.toml"* ]]
+  [[ "$output" == *"kept	.mise/tasks.toml — add an [install] task running: :"* ]]
   [ "$(head -1 Makefile)" = "build:" ]
   [ "$(cat .mise/tasks.toml)" = "[setup]" ]
 }
@@ -96,4 +100,12 @@ JSON
   [[ "$output" == *"pin	package.json	pnpm@10.0.0"* ]]
   [[ "$output" == *"script	test	vitest run"* ]]
   [[ "$output" == *"script	lint	biome check ."* ]]
+  [[ "$output" == *"install	pnpm install --frozen-lockfile"* ]]
+  grep -q '^run = "pnpm install --frozen-lockfile"' .mise/tasks.toml
+}
+
+@test "picks the install command from the lockfile present" {
+  : > go.mod
+  run "$INIT"
+  [[ "$output" == *"install	go mod download"* ]]
 }

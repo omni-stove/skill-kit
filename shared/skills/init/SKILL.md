@@ -7,9 +7,9 @@ Run `.agents/skills/init/refs.sh`
 
 Run `.agents/skills/init/scripts/init.sh`
 
-Propose a major version for every tool the repo runs — the major a listed pin names, else the latest — in one `AskUserQuestion` round, and write what the user settles on under `[tools]` in `mise.toml`.
+Propose the whole `[tools]` block in one `AskUserQuestion`: every tool the repo runs, each at the major a listed pin names, else the latest, with one line on what it is for. Ask only whether the block goes in as proposed; a reply naming changes applies to those tools alone. Write the result in `mise.toml`.
 
-Make the `setup` task install the repo's dependencies before it installs skill-kit. Turn each listed script and target into a task with a description, keeping the names people already type. When a foreign Makefile is listed, delete it after its targets are tasks and run `.agents/skills/init/scripts/init.sh` again.
+Check the `install` task's command against the manifest. Turn each listed script and target into a task with a description, keeping the names people already type; name the lint and test entry points `lint` and `test`. When a foreign Makefile is listed, delete it after its targets are tasks and run `.agents/skills/init/scripts/init.sh` again.
 
 Run `make setup`, then `mise tasks`.
 

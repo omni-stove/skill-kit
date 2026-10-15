@@ -64,7 +64,8 @@ shared/            everything every domain uses verbatim
 domains/
   game/            skills (gdd, mechanic, balance, setup, run, …) + refs
   story/           skills (write, plot, dupcheck, judge, …) + refs
-  code/            skills (analyze-repository, …)
+  code/            skills (automation, remote-issue, fix-pr, review-loop, analyze-repository) + refs
+                   (workflow templates, PR thread scripts)
 ```
 
 Skills read and write fixed paths relative to the repo root (`README.md`, `characters/`,
@@ -98,8 +99,35 @@ make test               # = mise run test
 mise tasks              # list what the repo can do
 ```
 
+A tool with its own binary (runtime, package manager, `biome`, `rust`, `terraform`) goes in
+`[tools]`; a tool that runs on the runtime or loads npm plugins (`vitest`, `turbo`, `vite`) goes
+in the package manager's dev dependencies. CI uses `jdx/mise-action` for the tools, a frozen
+dependency install, then the same `make <task>` commands — never `make setup`.
+
 The `task` skill adds a command as a task; the rules both skills follow are in
 `shared/refs/mise-rules.md`.
+
+## Code domain: agent automation
+
+The `automation` skill copies four GitHub Actions workflows from `domains/code/refs/workflows/`
+into the repo and creates the labels they fire on:
+
+- `ci.yml` — mise-action, `mise run install`, `make lint`, `make test`.
+- `issue-worker.yml` — an issue labeled `bug`, `prototype` or `implementation` is implemented
+  by Claude, which pushes a branch and opens a PR (a draft for prototypes).
+- `pr-review.yml` — Claude reviews every non-draft PR with inline comments and a
+  `Verdict: changes requested` / `Verdict: LGTM` summary, then a second job fixes the
+  unresolved threads on the PR branch with one `[agent-fix]` commit.
+- `ci-auto-fix.yml` — when CI fails on a PR, Claude fixes the cause from the failed job logs.
+
+Needs the `ANTHROPIC_API_KEY` secret. PRs and pushes made with `GITHUB_TOKEN` do not trigger
+other workflows, so set `AGENT_GITHUB_TOKEN` (a PAT or GitHub App token) when agent PRs should
+get CI and review too. Three consecutive `[agent-fix]` commits stop the fix jobs.
+
+Around them, three skills for the person driving the work: `remote-issue` splits a task into
+labeled issues under a parent so the worker implements them in parallel, `fix-pr` addresses a
+PR's review threads and CI failures locally, and `review-loop` waits for the automation to
+settle, audits what it pushed, fixes what remains, and repeats until LGTM.
 
 ## LLM-instruction-rules hook
 

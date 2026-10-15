@@ -1,0 +1,1 @@
+Run git switch -c <new-branch> origin/{base} (uncommitted changes come along), then commit there

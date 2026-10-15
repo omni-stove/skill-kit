@@ -48,3 +48,4 @@ case ":$PATH:" in
 esac
 echo "  Then in a game repo:   skill-kit game sync"
 echo "  Or in a writing repo:  skill-kit story sync"
+echo "  Or in a code repo:     skill-kit code sync"

@@ -1,10 +1,12 @@
 #!/bin/sh
 # skill-kit: deploy markdown/sh skills into any repo's .claude / .agents.
-# Two domains live in one kit and share a common core:
+# Three domains live in one kit and share a common core:
 #   - game  : engine-agnostic game-development skills (gdd, mechanic, balance, run, …)
 #   - story : language-agnostic authoring skills (write, plot, dupcheck, judge, …)
-# `shared/` holds the pieces both domains use verbatim (the LLM-instruction house
-# rules + the setting skills). A sync always deploys shared + the
+#   - code  : skills for a software repo (analyze-repository, …)
+# `shared/` holds the pieces every domain uses verbatim (the LLM-instruction house
+# rules, the mise + make layer (init, task), the git skills cap / create-pr, and the
+# setting skills). A sync always deploys shared + the
 # one domain you name, so a consuming repo only ever sees the skills it wants.
 # POSIX sh + git only. No Node/npm.
 set -eu
@@ -82,9 +84,9 @@ $name
 
 require_domain() {
 	case ${1:-} in
-	game | story) ;;
-	"") die "missing domain — usage: skill-kit {game|story} {sync|update}" ;;
-	*) die "unknown domain '$1' (want: game|story)" ;;
+	game | story | code) ;;
+	"") die "missing domain — usage: skill-kit {game|story|code} {sync|update}" ;;
+	*) die "unknown domain '$1' (want: game|story|code)" ;;
 	esac
 	[ -d "$KIT_HOME/domains/$1" ] || die "domain '$1' not found in kit at $KIT_HOME"
 }
@@ -131,7 +133,7 @@ cmd_update() {
 	if [ -n "$domain" ]; then
 		cmd_sync "$domain"
 	elif [ -d .claude ] || [ -d .agents ]; then
-		die "cannot infer domain here — run: skill-kit {game|story} update"
+		die "cannot infer domain here — run: skill-kit {game|story|code} update"
 	fi
 }
 
@@ -140,7 +142,7 @@ recorded_domain() { cat .agents/refs/domain 2>/dev/null || true; }
 
 usage() {
 	cat >&2 <<'EOF'
-usage: skill-kit <domain> {sync|update}   (domain: game | story)
+usage: skill-kit <domain> {sync|update}   (domain: game | story | code)
        skill-kit {sync|update}            (reuse the domain recorded at last sync)
 
   <domain> sync     symlink shared + <domain> skills/hooks/refs into ./.claude and ./.agents
@@ -155,7 +157,7 @@ EOF
 # (`skill-kit sync` / `skill-kit update`) it is read back from the marker this repo
 # wrote at its last sync, so a repo already set up never needs to re-state its domain.
 case "${1:-}" in
-game | story)
+game | story | code)
 	domain=$1
 	case "${2:-}" in
 	sync) cmd_sync "$domain" ;;
@@ -165,7 +167,7 @@ game | story)
 	;;
 sync)
 	domain=$(recorded_domain)
-	[ -n "$domain" ] || die "no domain recorded here — run: skill-kit {game|story} sync"
+	[ -n "$domain" ] || die "no domain recorded here — run: skill-kit {game|story|code} sync"
 	cmd_sync "$domain"
 	;;
 update) cmd_update "" ;;

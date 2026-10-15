@@ -85,9 +85,15 @@ MCP (to trigger recompiles, enter Play Mode, run tests, read the live console vi
 structured API) is a separate opt-in step that sets `control_mcp` to the server's tool
 prefix. Don't fabricate an MCP server to fill it in.
 
+## Expose build and test as tasks
+
+When `.mise/tasks.toml` exists, add a `build` task running `build_cmd` and a `test` task
+running `headless_cmd`, each with a `description`. Skip a task whose command is a `#` human
+instruction.
+
 ## Verify & report
 
-Finally run `git status` and confirm `.agents/refs/engine.sh` shows as a real, tracked
-file (not ignored), and that nothing else changed. Tell the user the override is in place
+Finally run `git status` and confirm `.agents/refs/engine.sh` appears in it as a real file
+(not a symlink, not ignored), and that nothing else changed. Tell the user the override is in place
 and will survive `skill-kit game sync` / `update`, and that the log fallback
 is in use until an engine-control MCP is wired up.

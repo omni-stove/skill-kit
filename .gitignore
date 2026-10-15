@@ -2,4 +2,5 @@
 !.claude/skills/
 .claude/skills/*
 !.claude/skills/create-skill/
+!.claude/skills/cap
 .agents/

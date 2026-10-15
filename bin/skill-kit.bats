@@ -6,11 +6,12 @@ setup() {
   CLI="$BATS_TEST_DIRNAME/skill-kit"
   REPO_ROOT="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
 
-  # Fixture mini-kit deployed via SKILL_KIT_HOME: shared + two domains.
+  # Fixture mini-kit deployed via SKILL_KIT_HOME: shared + three domains.
   kit="$BATS_TEST_TMPDIR/kit"
   mkdir -p "$kit/bin" "$kit/shared/skills/common" "$kit/shared/refs" "$kit/shared/hooks"
   mkdir -p "$kit/domains/game/skills/gfoo" "$kit/domains/game/refs"
   mkdir -p "$kit/domains/story/skills/sfoo" "$kit/domains/story/refs"
+  mkdir -p "$kit/domains/code/skills/cfoo" "$kit/domains/code/refs"
   # bin marker so self-detect logic in the real CLI stays satisfiable if ever exercised.
   cp "$CLI" "$kit/bin/skill-kit"
   echo common > "$kit/shared/skills/common/SKILL.md"
@@ -20,6 +21,8 @@ setup() {
   echo gameref > "$kit/domains/game/refs/g.md"
   echo sskill > "$kit/domains/story/skills/sfoo/SKILL.md"
   echo storyref > "$kit/domains/story/refs/st.md"
+  echo cskill > "$kit/domains/code/skills/cfoo/SKILL.md"
+  echo coderef > "$kit/domains/code/refs/c.md"
 
   target="$BATS_TEST_TMPDIR/target"
   mkdir -p "$target"
@@ -61,11 +64,21 @@ make_git_kit() {
   [ -L .agents/skills/common ]   # shared
   [ -L .agents/skills/gfoo ]     # game
   [ ! -e .agents/skills/sfoo ]   # story absent
+  [ ! -e .agents/skills/cfoo ]   # code absent
   [ -L .claude/skills/gfoo ]
   [ -L .agents/hooks/h.sh ] && [ -L .claude/hooks/h.sh ]
   [ -L .agents/refs/s.md ] && [ -L .agents/refs/g.md ]
   [ ! -e .agents/refs/st.md ]
   [ ! -e .claude/refs ]          # refs to .agents only
+}
+
+@test "code sync deploys shared + code, not game or story" {
+  SKILL_KIT_HOME="$kit" run "$CLI" code sync
+  [ "$status" -eq 0 ]
+  [ -L .agents/skills/common ] && [ -L .agents/skills/cfoo ]
+  [ ! -e .agents/skills/gfoo ] && [ ! -e .agents/skills/sfoo ]
+  [ -L .agents/refs/c.md ] && [ ! -e .agents/refs/g.md ]
+  [ "$(cat .agents/refs/domain)" = "code" ]
 }
 
 @test "sync records the domain marker as a real, tracked file" {
@@ -164,4 +177,5 @@ make_git_kit() {
   [ "$(readlink .agents/skills/write)" = "$REPO_ROOT/domains/story/skills/write" ]
   [ -L .agents/skills/character ]
   [ "$(readlink .agents/skills/character)" = "$REPO_ROOT/shared/skills/character" ]
+  [ "$(readlink .agents/skills/cap)" = "$REPO_ROOT/shared/skills/cap" ]
 }

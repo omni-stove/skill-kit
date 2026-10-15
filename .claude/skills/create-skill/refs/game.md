@@ -16,3 +16,6 @@ Conventions the existing game skills establish — follow them when scaffolding 
   `refs.sh` cats `doc-rules.md` then the format, rather than restating a template.
 - If the skill runs, builds, tests, or edits game code, load the scriptability rules and
   follow them.
+- **Run the repo's commands through its tasks:** `make <task> [args]` (= `mise run`), never a tool
+  binary the repo has not listed under `[tools]` in `mise.toml`. A skill that adds a task or a tool
+  loads `.agents/refs/mise-rules.md` through its `refs.sh`.

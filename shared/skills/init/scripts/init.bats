@@ -23,12 +23,19 @@ setup() {
   [ "$status" -eq 1 ]
 }
 
-@test "fails and asks for git init outside a repository" {
+@test "initializes a git repository when there is none" {
   rm -r .git
   run "$INIT"
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"git init"* ]]
-  [ ! -e Makefile ]
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"created	.git"* ]]
+  git rev-parse --is-inside-work-tree
+  [ -e Makefile ]
+}
+
+@test "leaves an existing git repository alone" {
+  run "$INIT"
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"created	.git"* ]]
 }
 
 @test "creates the forwarding Makefile, mise.toml and .mise/tasks.toml in an empty repo" {

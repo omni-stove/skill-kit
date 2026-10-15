@@ -9,8 +9,9 @@ Skills for Claude Code, in three domains that share one core:
 Plain markdown (`SKILL.md`) + POSIX `sh` — no Node, no npm.
 
 Prerequisites, on every machine: `git`, an authenticated [GitHub CLI](https://cli.github.com)
-(`gh auth login`), and [mise](https://mise.jdx.dev). The target is always a git repository —
-the kit is cloned and pulled with git, and overrides live as files the repo tracks.
+(`gh auth login`), and [mise](https://mise.jdx.dev). The target is always a git repository
+(`init` creates one if needed) — the kit is cloned and pulled with git, and overrides live as
+files the repo tracks.
 
 ## Install
 
@@ -82,13 +83,13 @@ syncs skill-kit for the repo's recorded domain.
 The first person bootstraps by hand, once:
 
 ```sh
-git init                # if the directory is not a repository yet
 gh api repos/omni-stove/skill-kit/contents/install.sh -q .content | base64 -d | sh
 skill-kit code sync     # or game / story
 ```
 
-then runs the `init` skill in Claude Code, which generates the three files, proposes a major
-version per tool, and turns the repo's scripts and Makefile targets into tasks. Everyone after
+then runs the `init` skill in Claude Code, which runs `git init` if the directory is not a
+repository yet, generates the three files, proposes a major version per tool, and turns the
+repo's scripts and Makefile targets into tasks. Everyone after
 that runs:
 
 ```sh

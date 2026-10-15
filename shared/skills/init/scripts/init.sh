@@ -1,10 +1,10 @@
 #!/bin/sh
-# Create the mise/make files this repo is missing (the forwarding Makefile, mise.toml,
-# .mise/tasks.toml) and list what setup must still fold in: a Makefile with its own
+# Create the mise/make files this repo is missing (a git repository if there is none, the
+# forwarding Makefile, mise.toml, .mise/tasks.toml) and list what init must still fold in: a Makefile with its own
 # targets, dependency manifests and the version pins and scripts they carry. A file that
 # already exists is never changed.
 set -eu
-git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "init: not a git repository. Tell the user to run \`git init\` here (the files below must end up tracked), then stop." >&2; exit 1; }
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { git init -q && echo "created	.git"; }
 domain=$(cat .agents/refs/domain 2>/dev/null || true)
 [ -f .agents/refs/mise-rules.md ] && [ -n "$domain" ] || { echo "init: the kit isn't synced into this repo. Tell the user to run \`skill-kit {game|story|code} sync\`, then stop." >&2; exit 1; }
 

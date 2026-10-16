@@ -150,6 +150,25 @@ targets such a file. `sync` deploys the script and `init` registers it in the re
 }
 ```
 
+## before-skill hook
+
+`shared/hooks/before-skill.sh <skill> <command>...` is a PreToolUse hook on `Skill` that runs
+the command before the named skill and denies the skill with the command's output when it
+fails. The kit ships only the mechanism: which skill and which command are the repo's call,
+given as the hook's arguments in its `.claude/settings.json`. `sync` deploys the script;
+nothing registers it for you. To run `make check` before the `pr` skill:
+
+```json
+{
+  "matcher": "Skill",
+  "hooks": [
+    { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/before-skill.sh\" pr make check", "timeout": 600 }
+  ]
+}
+```
+
+The timeout is the command's: Claude Code stops a hook after 60 s otherwise.
+
 ## Editing
 
 The kit is plain files under `~/.skill-kit`. Edit, commit, push — every consuming repo sees

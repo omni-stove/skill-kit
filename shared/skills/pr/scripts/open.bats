@@ -58,6 +58,12 @@ STUB
   ! grep -q '^refs #8$' "$BODY"
 }
 
+@test "a section that starts with a bullet is text, not a flag" {
+  run "$SCRIPT" t p a v $'- risk one\n- risk two'
+  [ "$status" -eq 0 ]
+  grep -q '^- risk two$' "$BODY"
+}
+
 @test "--base, --draft and --label pass through to gh" {
   run "$SCRIPT" --base develop --draft --label App:x --label auto t p a v
   [ "$status" -eq 0 ]

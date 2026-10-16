@@ -23,7 +23,7 @@ while [ "$#" -gt 0 ]; do
     --base) [ "$#" -ge 2 ] || usage; base="$2"; shift ;;
     --label) [ "$#" -ge 2 ] || usage; flags+=(--label "$2"); shift ;;
     --draft) flags+=(--draft) ;;
-    -*) usage ;;
+    # A section often starts with a bullet, so an unknown dash word is text, not a flag.
     *) args+=("$1") ;;
   esac
   shift

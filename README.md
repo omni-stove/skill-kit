@@ -100,8 +100,9 @@ The `task` skill adds a command as a task; the rules both skills follow are in
 
 `pr` opens a PR from the current branch: it reads the branch's PR state, reruns generate for
 the changed paths (scoped to their packages and dependents under turbo, else the repo's
-`generate` task) and lists the generated files that belong in the commit, pushes with `shared/refs/push-with-merge.sh` (a rejected push merges the remote and retries),
-and opens the PR with a body of 目的 / 実装方針 / 確認方法 / 見て欲しいポイント.
+`generate` task) and lists the generated files that belong in the commit, merges the latest
+base branch (a conflict stops it before the push), pushes with `shared/refs/push-with-merge.sh`
+(a rejected push merges the remote and retries), and opens the PR with a body of 目的 / 実装方針 / 確認方法 / 見て欲しいポイント.
 
 ## Code domain: the org's shared automation
 

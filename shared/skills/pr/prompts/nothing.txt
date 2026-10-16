@@ -1,1 +1,1 @@
-Nothing to regenerate here; stage your changes, commit, then run .agents/skills/pr/scripts/push.sh
+Nothing to regenerate here; stage your changes, commit, then run .agents/skills/pr/scripts/push.sh [base-branch, when not main]

@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# format.sh — indentation, ……, 。」 and ！／？ spacing fixed in place; the other mechanical format rules, listed by rule.
+# format.sh — indentation, ……, ― pairs, ｜, **bold**, 。」, ！／？ spacing and the blank lines around ◇◇◇ fixed in place; the other mechanical format rules, listed by rule.
 
 setup() {
   FORMAT="$BATS_TEST_DIRNAME/format.sh"
@@ -21,6 +21,14 @@ setup() {
   [ "$(cat "$f")" = "$(printf 'Source: story/plot/010-a.md\n\n　彼は頷いた。\n「字下げ」\n　二重。\n　半角。\n　正しい。\n\n◇◇◇\n\n『思考』\n')" ]
 }
 
+@test "format.sh leaves any Key: value header untouched" {
+  printf 'Memo: plot/010.md\nEpigraph: 「言葉」——誰か\n\n　本文。\n' > "$f"
+  before=$(cat "$f")
+  run sh "$FORMAT" "$f"
+  [ -z "$output" ]
+  [ "$before" = "$(cat "$f")" ]
+}
+
 @test "format.sh strips the indent from lines opening with （, 【, 〖, 〔, ［, 〈 or 《" {
   printf '　（まさか）\n　【警告】\n〖称号〗\n　〔注〕\n　［選択］\n　〈声〉\n　《念話》\n' > "$f"
   run sh "$FORMAT" "$f"
@@ -36,11 +44,24 @@ setup() {
   [ "$before" = "$(ls -li "$f"; cat "$f")" ]
 }
 
-@test "format.sh lists blank lines away from the separator and a separator without them" {
-  printf '　一。\n\n　二。\n◇◇◇\n　三。\n' > "$f"
+@test "format.sh puts a blank line on each side of a separator and lists blank lines away from it" {
+  printf '　一。\n\n　二。\n◇ ◇ ◇\n　三。\n' > "$f"
   run sh "$FORMAT" "$f"
+  [ "$(cat "$f")" = "$(printf '　一。\n\n　二。\n\n◇◇◇\n\n　三。\n')" ]
   [[ "$output" == *"blank line"*"2:"* ]]
-  [[ "$output" == *"4:◇◇◇"* ]]
+  [[ "$output" != *"4:"* ]]
+}
+
+@test "format.sh tells a separator from other bracket-only lines in a UTF-8 locale" {
+  printf '【】\n　一。\n' > "$f"
+  LC_ALL=ja_JP.UTF-8 run sh "$FORMAT" "$f"
+  [ "$(cat "$f")" = "$(printf '【】\n　一。\n')" ]
+}
+
+@test "format.sh lists a separator sharing its line or at either end of the file" {
+  printf '◇◇◇\n　一。◇◇◇\n　二。\n◇◇◇\n' > "$f"
+  run sh "$FORMAT" "$f"
+  [[ "$output" == *"1:◇◇◇"*"3:　一。◇◇◇"*"6:◇◇◇"* ]]
 }
 
 @test "format.sh lists dialogue sharing its line" {
@@ -57,11 +78,11 @@ setup() {
   [ "$(cat "$f")" = "$(printf '　次は――だ。\n「終わり」\n　だめ！　次へ。嘘？　本当。\n「本当！？　嘘だ！」\n「なに？――」\n（まさか！）叫んだ！\n')" ]
 }
 
-@test "format.sh lists an unpaired ―" {
-  printf '　三―四。\n　三――四。\n' > "$f"
+@test "format.sh turns — and ─ into ― and pairs an odd run of ―" {
+  printf '　三―四。\n　三――四。\n　三―――四。\n　三——四。\n　三──四。\n' > "$f"
   run sh "$FORMAT" "$f"
-  [[ "$output" == *"1:　三―四。"* ]]
-  [[ "$output" != *"2:"* ]]
+  [ "$status" -eq 0 ]
+  [ "$(cat "$f")" = "$(printf '　三――四。\n　三――四。\n　三――――四。\n　三――四。\n　三――四。\n')" ]
 }
 
 @test "format.sh lists arabic numerals, half- and full-width" {
@@ -70,17 +91,21 @@ setup() {
   [[ "$output" == *"1:"*"2:"* ]]
 }
 
-@test "format.sh lists ruby without the | opener or with a full-width ｜" {
+@test "format.sh fixes a full-width ｜ and lists ruby without the | opener" {
   printf '　太郎《たろう》。\n　｜花子《はなこ》。\n　|次郎《じろう》。\n' > "$f"
   run sh "$FORMAT" "$f"
-  [[ "$output" == *"1:"*"2:"* ]]
+  [ "$(sed -n 2p "$f")" = '　|花子《はなこ》。' ]
+  [[ "$output" == *"1:"* ]]
+  [[ "$output" != *"2:"* ]]
   [[ "$output" != *"3:"* ]]
 }
 
-@test "format.sh lists markdown" {
+@test "format.sh strips **bold** and lists other markdown" {
   printf '# 見出し\n　**強調**した。\n' > "$f"
   run sh "$FORMAT" "$f"
-  [[ "$output" == *"markdown"*"1:　# 見出し"*"2:"* ]]
+  [ "$(sed -n 2p "$f")" = '　強調した。' ]
+  [[ "$output" == *"markdown"*"1:　# 見出し"* ]]
+  [[ "$output" != *"2:"* ]]
 }
 
 @test "format.sh gives the same list in the C locale" {

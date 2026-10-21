@@ -11,4 +11,4 @@ Fidelity:
 - Add no meaning, drop no meaning.
 - Resolve subjects and pronouns Japanese leaves implicit.
 - Hold one rendering for each deliberately repeated word or image.
-- Keep `POV:` lines and 【】 markers verbatim.
+- Keep 【】 markers, `Memo:` lines, and the `Subhead:`, `Lead:` and `Source:` keys verbatim; render the `Subhead:` name as the glossary does, and translate the `Lead:` and `Source:` text.

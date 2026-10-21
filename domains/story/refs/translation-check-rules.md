@@ -2,7 +2,7 @@
 
 Check an English translation against its Japanese source on these dimensions. Read the English alone before opening the source. Read the plot for what the source means where its wording alone leaves it open.
 
-Skip `POV:` lines and 【】 markers entirely.
+Skip 【】 markers and `Memo:` lines entirely.
 
 - English-only: translationese — source syntax showing through, calqued collocations, garden-path parses, body-part subjects, filter phrases, monotone sentence shape — and violations of the English prose style rules visible without the source.
 - Against the source, in both directions: violations of the fidelity rules or of the English prose style rules visible only against the source — source → translation for what the translation loses or thins, translation → source for what it adds, shifts, or reorders.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# format.sh — indentation, ……, ― pairs, ｜, **bold**, 。」, ！／？ spacing and the blank lines around ◇◇◇ fixed in place; the other mechanical format rules, listed by rule.
+# format.sh — indentation, ……, ― pairs, ｜, **bold**, 。」, ！／？ spacing and the * separator and the blank lines around it fixed in place; the other mechanical format rules and a stray 【】, listed by rule.
 
 setup() {
   FORMAT="$BATS_TEST_DIRNAME/format.sh"
@@ -7,26 +7,46 @@ setup() {
 }
 
 @test "format.sh prints nothing for a clean file, header included" {
-  printf 'Source: story/plot/010-a.md\nPOV: 太郎\n\n　|太郎《たろう》は走った――そして、止まった。\n「行くぞ！　早く」\n「え？」\n\n◇◇◇\n\n『まさか！』\n　部屋は三つ、〇・五階。\n' > "$f"
+  printf 'Subhead: 太郎\nMemo: story/plot/010-a.md\n\n　|太郎《たろう》は走った――そして、止まった。\n「行くぞ！　早く」\n「え？」\n\n*\n\n『まさか！』\n　部屋は三つ、〇・五階。\n' > "$f"
   run sh "$FORMAT" "$f"
   [ "$status" -eq 0 ]
   [ -z "$output" ]
 }
 
 @test "format.sh fixes indentation in place: bare narration, indented dialogue, double and half-width indent" {
-  printf 'Source: story/plot/010-a.md\n\n彼は頷いた。\n　「字下げ」\n　　二重。\n  半角。\n　正しい。\n\n　◇◇◇\n\n『思考』\n' > "$f"
+  printf 'Memo: story/plot/010-a.md\n\n彼は頷いた。\n　「字下げ」\n　　二重。\n  半角。\n　正しい。\n\n　*\n\n『思考』\n' > "$f"
   run sh "$FORMAT" "$f"
   [ "$status" -eq 0 ]
   [[ "$output" == *"fixed 5 line(s)"* ]]
-  [ "$(cat "$f")" = "$(printf 'Source: story/plot/010-a.md\n\n　彼は頷いた。\n「字下げ」\n　二重。\n　半角。\n　正しい。\n\n◇◇◇\n\n『思考』\n')" ]
+  [ "$(cat "$f")" = "$(printf 'Memo: story/plot/010-a.md\n\n　彼は頷いた。\n「字下げ」\n　二重。\n　半角。\n　正しい。\n\n*\n\n『思考』\n')" ]
 }
 
-@test "format.sh leaves any Key: value header untouched" {
-  printf 'Memo: plot/010.md\nEpigraph: 「言葉」——誰か\n\n　本文。\n' > "$f"
+@test "format.sh leaves a Memo:, Subhead:, Lead: and Source: header untouched, blank lines included" {
+  printf 'Memo: plot/010.md\nSubhead: 太郎\nLead: 「言葉」——誰か\n\nSource: 誰か\n【】\n　本文。\n' > "$f"
   before=$(cat "$f")
   run sh "$FORMAT" "$f"
   [ -z "$output" ]
   [ "$before" = "$(cat "$f")" ]
+}
+
+@test "format.sh formats any other Key: value line as body" {
+  printf 'Title: 題\n\n　本文。\n' > "$f"
+  run sh "$FORMAT" "$f"
+  [ "$(cat "$f")" = "$(printf '　Title: 題\n\n　本文。\n')" ]
+}
+
+@test "format.sh turns a line of * or ◇ alone into *" {
+  printf '　一。\n\n　* * *\n\n　二。\n\n***\n\n　三。\n\n◇◇◇\n\n　四。\n' > "$f"
+  run sh "$FORMAT" "$f"
+  [ "$(cat "$f")" = "$(printf '　一。\n\n*\n\n　二。\n\n*\n\n　三。\n\n*\n\n　四。\n')" ]
+  [ "$output" = "format: fixed 3 line(s) of $f" ]
+}
+
+@test "format.sh lists a 【】 past the first body line" {
+  printf 'Subhead: 太郎\n【】\n　一。\n【】\n' > "$f"
+  run sh "$FORMAT" "$f"
+  [[ "$output" == *"【】 past"*"4:【】"* ]]
+  [[ "$output" != *"2:"* ]]
 }
 
 @test "format.sh strips the indent from lines opening with （, 【, 〖, 〔, ［, 〈 or 《" {
@@ -45,9 +65,9 @@ setup() {
 }
 
 @test "format.sh puts a blank line on each side of a separator and lists blank lines away from it" {
-  printf '　一。\n\n　二。\n◇ ◇ ◇\n　三。\n' > "$f"
+  printf '　一。\n\n　二。\n* * *\n　三。\n' > "$f"
   run sh "$FORMAT" "$f"
-  [ "$(cat "$f")" = "$(printf '　一。\n\n　二。\n\n◇◇◇\n\n　三。\n')" ]
+  [ "$(cat "$f")" = "$(printf '　一。\n\n　二。\n\n*\n\n　三。\n')" ]
   [[ "$output" == *"blank line"*"2:"* ]]
   [[ "$output" != *"4:"* ]]
 }
@@ -58,10 +78,10 @@ setup() {
   [ "$(cat "$f")" = "$(printf '【】\n　一。\n')" ]
 }
 
-@test "format.sh lists a separator sharing its line or at either end of the file" {
-  printf '◇◇◇\n　一。◇◇◇\n　二。\n◇◇◇\n' > "$f"
+@test "format.sh lists a separator at either end of the file" {
+  printf '*\n　一。\n*\n' > "$f"
   run sh "$FORMAT" "$f"
-  [[ "$output" == *"1:◇◇◇"*"3:　一。◇◇◇"*"6:◇◇◇"* ]]
+  [[ "$output" == *"separator"*"1:*"*"5:*"* ]]
 }
 
 @test "format.sh lists dialogue sharing its line" {

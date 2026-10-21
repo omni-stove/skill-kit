@@ -6,7 +6,8 @@
 #   glossary <path> exists|missing
 #   pair|source-only|en-only <source> <translation>
 #   plot <source> <plot>            (only when the source has a plot)
-# A source's plot is the file its leading `Source:` line names, else the
+# A source's plot is the file a `Memo:` line of its leading header (Memo:, Lead:,
+# Source:, Subhead: and blank lines) names, else the
 # plot/*.md beside it whose stem's leading number (whole stem when there is
 # none) equals the source's stem.
 # Directory listing: the directory's *.txt and *.md in natural sort order,
@@ -30,10 +31,9 @@ plot_of() {
 	_d=$(dirname -- "$1")
 	_s=$(basename -- "$1")
 	_s=${_s%.*}
-	_l=$(head -n 1 -- "$1" 2>/dev/null)
-	case $_l in
-		"Source: "*) _f=${_l#Source: }; [ -f "$_f" ] && { echo "$_f"; return; } ;;
-	esac
+	_f=$(awk '/^Memo: / { print substr($0, 7) } !/^((Memo|Lead|Source|Subhead): |$)/ { exit }' "$1" 2>/dev/null |
+		while IFS= read -r _m; do if [ -f "$_m" ]; then echo "$_m"; break; fi; done)
+	[ -n "$_f" ] && { echo "$_f"; return; }
 	for _f in "$_d"/plot/*.md; do
 		[ -f "$_f" ] || continue
 		_ps=$(basename -- "$_f" .md)

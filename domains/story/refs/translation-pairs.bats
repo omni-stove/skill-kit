@@ -23,15 +23,24 @@ setup() {
   [[ "$output" != *plot* ]]
 }
 
-@test "resolves the plot from the source's leading Source: line" {
-  echo "Source: story/plot/arrival.md" > story/010.txt
+@test "resolves the plot from a Memo: line in the source's header" {
+  printf 'Subhead: 太郎\nMemo: 下書き\n\nMemo: story/plot/arrival.md\n【】\n' > story/010.txt
   : > story/plot/arrival.md
+  : > story/plot/010-co-arrival.md
   run sh "$PAIRS" story/010.txt
   [ "${lines[2]}" = "$(printf 'plot\tstory/010.txt\tstory/plot/arrival.md')" ]
 }
 
-@test "resolves the plot by its leading number when there is no Source: line" {
-  : > story/010.txt
+@test "ignores a Memo: line past the header" {
+  printf '【】\n　本文。\nMemo: story/plot/arrival.md\n' > story/010.txt
+  : > story/plot/arrival.md
+  : > story/plot/010-co-arrival.md
+  run sh "$PAIRS" story/010.txt
+  [ "${lines[2]}" = "$(printf 'plot\tstory/010.txt\tstory/plot/010-co-arrival.md')" ]
+}
+
+@test "resolves the plot by its leading number when no Memo: line names a file" {
+  echo "Memo: 下書き" > story/010.txt
   : > story/plot/010-co-arrival.md
   run sh "$PAIRS" story/010.txt
   [ "${lines[2]}" = "$(printf 'plot\tstory/010.txt\tstory/plot/010-co-arrival.md')" ]

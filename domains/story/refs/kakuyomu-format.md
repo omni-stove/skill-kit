@@ -2,7 +2,7 @@
 
 Kakuyomu novels are read on screens: space generously, and place blank lines at meaning seams, not by line count.
 
-- Separate scenes with `◇◇◇` on its own line; no markdown headings
+- Separate scenes with `*` on its own line; no markdown headings
 - Always break the line between dialogue and narration
 - Blocks of 1–2 sentences and blocks of 3–4 are both normal; keep every block under 5 sentences
 

@@ -3,16 +3,15 @@ Split the file into scenes by your own judgment and evaluate each scene independ
 Judge each scene as an experienced fiction editor. Cover at least these angles, and report anything else that stands out:
 
 - White Room — scene lacks anchoring description of place, light, or layout
-- Disembodied Speech — dialogue runs on with no bodies in it
+- Disembodied Speech — dialogue runs on with no bodies in it, or the reader cannot tell who says a line
 - Sensory Imbalance — everything is visual
 - POV Deviation — narration states what the POV character cannot perceive
-- Silent Character — someone established as present disappears from the scene
+- Lost Position — someone established as present disappears, or an action contradicts the established distance between characters
 - Time Elasticity — volume of talk or thought doesn't fit the time the scene allows
 - Name Fluctuation — narration switches names/titles for the same character without reason
 - Reader-Aimed Exposition — characters explain what they both know, for the reader
 - Topic Jump — one paragraph mixes unrelated topics
-- Distance Mismatch — action contradicts the established distance between characters
 
 Skip what reads as intentional style.
 
-Output the report and stop — no `AskUserQuestion`; edit only on a follow-up instruction.
+Edit the file only on a follow-up instruction.

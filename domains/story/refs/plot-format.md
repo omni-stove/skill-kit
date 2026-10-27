@@ -40,7 +40,7 @@
 - Abstract dialogue: ×「行くぞ」→ ○ 出発を促す
 
 ### ハイライト
-- Lock in specific phrasing worth preserving — distinct from the body which only abstracts
+- Copy in only phrasing the author or the source text gave, verbatim
 - Heading is always present; subsections (`### 地の文` / `### 会話劇`) are listed only when they have content
 
 ### 参照

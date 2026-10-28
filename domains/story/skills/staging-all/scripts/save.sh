@@ -15,4 +15,4 @@ mkdir -p out/staging-all
 record="out/staging-all/$key.md"
 cat > "$record"
 echo "$record"
-prompt saved
+prompt saved fix="$(dirname -- "$0")/fix.sh"

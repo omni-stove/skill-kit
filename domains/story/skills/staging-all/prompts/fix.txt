@@ -1,0 +1,1 @@
+Apply these rules to the selected findings in {target}.

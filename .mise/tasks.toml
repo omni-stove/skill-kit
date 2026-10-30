@@ -37,3 +37,13 @@ git ls-files -co --exclude-standard '*.md' | tr '\n' '\0' \
   | xargs -0 grep -l '^```mermaid' | tr '\n' '\0' \
   | MMDC_DIR="$(mise where npm:@mermaid-js/mermaid-cli)" xargs -0 node .mise/scripts/mermaid-lint.mjs
 '''
+
+# bin/skill-kit, not the installed one: run from inside the kit, it pulls this checkout and
+# re-syncs .claude/.agents against it, where the installed one would point them at ~/.skill-kit.
+[update]
+description = "Pull this skill-kit checkout, then re-sync its .claude and .agents"
+run = "bin/skill-kit story update"
+
+[setup]
+description = "Pull this skill-kit checkout and sync its .claude and .agents (run by make setup)"
+depends = ["update"]

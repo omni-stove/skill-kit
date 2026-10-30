@@ -7,12 +7,13 @@ TASK_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 .PHONY: setup $(TASK) $(TASK_ARGS)
 
-# The one target make owns: install the pinned tools.
+# The one target make owns: install the pinned tools, then hand over to the setup task.
 # Every other command is a task in .mise/tasks.toml — list them with: mise tasks
 setup:
 	@command -v mise >/dev/null || { echo "make setup: mise is not installed — see https://mise.jdx.dev/getting-started.html"; exit 1; }
 	@mise trust -q
 	@mise install
+	@mise run setup
 
 ifneq ($(TASK),)
 ifneq ($(TASK),setup)

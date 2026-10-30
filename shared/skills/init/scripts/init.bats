@@ -9,7 +9,7 @@ setup() {
   git init -q "$repo"
   echo rules > "$repo/.agents/refs/mise-rules.md"
   echo story > "$repo/.agents/refs/domain"
-  cd "$repo"
+  cd "$repo" || exit
 }
 
 @test "fails with the sync hint when the kit is not synced" {
@@ -158,7 +158,7 @@ JSON
   grep -q '^description = "echo \\"hi\\""' .mise/tasks.toml
   grep -q '^run = "npm run say"' .mise/tasks.toml
   [[ "$output" == *"todo	script Build:Web"* ]]
-  ! grep -q 'Build:Web' .mise/tasks.toml
+  ! grep -q 'Build:Web' .mise/tasks.toml || false
 }
 
 @test "lists tool lines from .tool-versions and a go pin" {

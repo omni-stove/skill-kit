@@ -5,7 +5,7 @@ setup() {
   BUNDLE="$BATS_TEST_DIRNAME/bundle.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story"
-  cd "$work"
+  cd "$work" || exit
 }
 
 @test "bundle.sh concatenates txt files in natural order, prefixing file and line" {

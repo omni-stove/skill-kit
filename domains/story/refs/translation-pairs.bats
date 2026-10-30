@@ -5,7 +5,7 @@ setup() {
   PAIRS="$BATS_TEST_DIRNAME/translation-pairs.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story/en" "$work/story/plot"
-  cd "$work"
+  cd "$work" || exit
 }
 
 @test "prints a pair line for a source with a translation" {

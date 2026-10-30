@@ -7,7 +7,7 @@ setup() {
   SEGMENTS="$BATS_TEST_DIRNAME/segments.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story/plot"
-  cd "$work"
+  cd "$work" || exit
 }
 
 @test "paths.sh numbers from 010 by tens in an empty story/plot/" {

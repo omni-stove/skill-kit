@@ -7,7 +7,7 @@ setup() {
   SUMMARY="$BATS_TEST_DIRNAME/summary.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story"
-  cd "$work"
+  cd "$work" || exit
 }
 
 mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
@@ -88,7 +88,7 @@ mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
   [[ "$output" == *"only.txt"* ]]
   mark_done story/only.txt
   record=$(echo out/digest-through/*.md)
-  ! grep -q "old take" "$record"
+  ! grep -q "old take" "$record" || false
   grep -q "digest of story/only.txt" "$record"
 }
 
@@ -120,7 +120,7 @@ mark_done() { printf 'digest of %s\n' "$1" | sh "$DONE" "$1"; }
   sh "$NEXT" story/a.txt
   run sh "$SUMMARY" story < /dev/null
   [ "$status" -ne 0 ]
-  ! grep -q "Overall" out/digest-through/*.md
+  ! grep -q "Overall" out/digest-through/*.md || false
 }
 
 @test "progress is tracked per directory" {

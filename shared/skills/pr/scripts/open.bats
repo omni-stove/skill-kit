@@ -44,7 +44,7 @@ STUB
   grep -q 'null guard' "$BODY"
   grep -q 'open the list page' "$BODY"
   grep -q 'edge values' "$BODY"
-  ! grep -q 'title' "$BODY"
+  ! grep -q 'title' "$BODY" || false
 }
 
 @test "an empty review-points section gets the default" {
@@ -55,7 +55,7 @@ STUB
 @test "a literal \\n stays as text" {
   run "$SCRIPT" t 'Closes #7\nrefs #8' a v
   grep -qF 'Closes #7\nrefs #8' "$BODY"
-  ! grep -q '^refs #8$' "$BODY"
+  ! grep -q '^refs #8$' "$BODY" || false
 }
 
 @test "a section that starts with a bullet is text, not a flag" {

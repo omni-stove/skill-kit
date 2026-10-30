@@ -40,7 +40,7 @@ echo 12
 STUB
   chmod +x "$repo/bin/git" "$repo/bin/make" "$repo/bin/gh"
   PATH="$repo/bin:$PATH"
-  cd "$repo"
+  cd "$repo" || exit
 }
 
 @test "lints, tests, adds the given files, commits and pushes, then points at the replies" {
@@ -53,22 +53,22 @@ STUB
   grep -q '^git add a.ts b.ts$' "$CALLS"
   grep -q 'git commit --no-verify -m' "$CALLS"
   grep -q '^git push$' "$CALLS"
-  ! grep -q 'git pull' "$CALLS"
+  ! grep -q 'git pull' "$CALLS" || false
 }
 
 @test "stops before committing when lint or test fails" {
-  MAKE_FAIL=test run "$SCRIPT" a.ts
+  MAKE_FAIL="test" run "$SCRIPT" a.ts
   [ "$status" -eq 1 ]
   [[ "$output" == *"make test failed"* ]]
-  ! grep -q '^git add' "$CALLS"
-  ! grep -q '^git commit' "$CALLS"
+  ! grep -q '^git add' "$CALLS" || false
+  ! grep -q '^git commit' "$CALLS" || false
 }
 
 @test "with no files pushes an empty commit only, without lint or test" {
   run "$SCRIPT"
   [ "$status" -eq 0 ]
-  ! grep -q '^make' "$CALLS"
-  ! grep -q '^git add' "$CALLS"
+  ! grep -q '^make' "$CALLS" || false
+  ! grep -q '^git add' "$CALLS" || false
   grep -q 'commit --allow-empty --only' "$CALLS"
 }
 
@@ -85,5 +85,5 @@ STUB
   grep -q '^make test$' "$CALLS"
   grep -q '^git add -A$' "$CALLS"
   grep -q 'commit --no-edit' "$CALLS"
-  ! grep -q '^git add a.ts' "$CALLS"
+  ! grep -q '^git add a.ts' "$CALLS" || false
 }

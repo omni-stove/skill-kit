@@ -7,7 +7,7 @@ setup() {
   SUMMARY="$BATS_TEST_DIRNAME/summary.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story"
-  cd "$work"
+  cd "$work" || exit
 }
 
 mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$DONE" "$1"; }
@@ -109,8 +109,9 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   [[ "$output" == *"only.txt"* ]]
   mark_done story/only.txt
   record=$(echo out/read-through/*.impressions.md)
-  ! grep -q "old take" "$record"
+  ! grep -q "old take" "$record" || false
   grep -q "impression of story/only.txt" "$record"
+  # shellcheck disable=SC2012 # the glob names only files the test made
   [ "$(ls out/read-through/*.impressions.md | wc -l)" -eq 1 ]
 }
 
@@ -137,6 +138,7 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   grep -q "impression of story/a.txt" "$record"
   grep -q "## Overall Summary" "$record"
   grep -q "overall take" "$record"
+  # shellcheck disable=SC2012 # the glob names only files the test made
   [ "$(ls out/read-through/* | wc -l)" -eq 1 ]
 }
 
@@ -146,7 +148,7 @@ mark_done() { printf 'impression of %s\nsecond line\nthird line\n' "$1" | sh "$D
   sh "$NEXT" story/a.txt
   run sh "$SUMMARY" story/a.txt < /dev/null
   [ "$status" -ne 0 ]
-  ! grep -q "Overall Summary" out/read-through/*.impressions.md
+  ! grep -q "Overall Summary" out/read-through/*.impressions.md || false
 }
 
 @test "progress is tracked per directory" {

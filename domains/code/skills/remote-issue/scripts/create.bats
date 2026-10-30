@@ -50,7 +50,7 @@ STUB
   [ "$output" = "7" ]
   [[ "$stderr" == *"create.sh --parent 7"* ]]
   [[ "$stderr" == *"report.sh 7"* ]]
-  ! grep -q -- '--label' "$CALLS"
+  ! grep -q -- '--label' "$CALLS" || false
 }
 
 @test "parent.sh reuses an open issue by commenting, and refuses a closed one" {

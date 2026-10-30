@@ -17,6 +17,7 @@ local_path() {
       %[0-9A-Fa-f][0-9A-Fa-f]*)
         _h=${_r#%}
         _h=${_h%"${_h#??}"}
+        # shellcheck disable=SC2059 # the format is the decoded byte as an octal escape
         _p=$_p$(printf "\\$(printf '%03o' "0x$_h")")
         _r=${_r#%??} ;;
       *)

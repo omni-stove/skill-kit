@@ -5,7 +5,7 @@ setup() {
   DIR="$BATS_TEST_DIRNAME"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story"
-  cd "$work"
+  cd "$work" || exit
   : > story/1.txt
 }
 

@@ -5,7 +5,7 @@ setup() {
   FILES="$BATS_TEST_DIRNAME/files.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story"
-  cd "$work"
+  cd "$work" || exit
 }
 
 @test "files.sh lists txt files in natural order" {

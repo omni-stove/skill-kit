@@ -1,0 +1,4 @@
+# Scripts source their neighbours through $(dirname -- "$0"), which shellcheck cannot follow.
+disable=SC1091
+# Single quotes around jq programs and $VARS written into config are meant literally.
+disable=SC2016

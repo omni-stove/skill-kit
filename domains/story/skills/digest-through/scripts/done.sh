@@ -21,4 +21,4 @@ if [ -z "$(printf '%s' "$digest" | tr -d '[:space:]')" ]; then
 fi
 printf '## %s\n\n%s\n\n' "$(basename -- "$1")" "$digest" >> "$record"
 basename -- "$1" >> "$state"
-prompt done next="$(dirname -- "$0")/next.sh" file="$1"
+prompt "done" next="$(dirname -- "$0")/next.sh" file="$1"

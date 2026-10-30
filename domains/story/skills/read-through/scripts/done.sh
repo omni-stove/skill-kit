@@ -26,4 +26,4 @@ fi
 printf '%s' "$impression" > "$last"
 printf '## %s\n\n%s\n\n' "$(basename "$1")" "$impression" >> "$record"
 basename "$1" >> "$state"
-prompt done next="$(dirname -- "$0")/next.sh" file="$1"
+prompt "done" next="$(dirname -- "$0")/next.sh" file="$1"

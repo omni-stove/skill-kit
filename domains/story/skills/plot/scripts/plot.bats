@@ -5,7 +5,7 @@ setup() {
   PATHSH="$BATS_TEST_DIRNAME/path.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work"
-  cd "$work"
+  cd "$work" || exit
 }
 
 @test "path.sh lists no plot when story/plot/ is missing, and says what to read" {

@@ -26,7 +26,7 @@ setup() {
 
   target="$BATS_TEST_TMPDIR/target"
   mkdir -p "$target"
-  cd "$target"
+  cd "$target" || exit
 }
 
 # Turn the fixture kit into a git clone tracking a bare origin, so `update`'s
@@ -86,7 +86,7 @@ make_git_kit() {
   [ "$status" -eq 0 ]
   [ -f .agents/refs/domain ] && [ ! -L .agents/refs/domain ]
   [ "$(cat .agents/refs/domain)" = "story" ]
-  ! grep -Fxq "domain" .agents/refs/.gitignore
+  ! grep -Fxq "domain" .agents/refs/.gitignore || false
 }
 
 @test "sync seeds AGENTS.md and a CLAUDE.md that only imports it" {
@@ -127,7 +127,7 @@ make_git_kit() {
   [ "$status" -eq 0 ]
   [ ! -L .agents/refs/g.md ]
   [ "$(cat .agents/refs/g.md)" = "mine" ]
-  ! grep -Fxq "g.md" .agents/refs/.gitignore
+  ! grep -Fxq "g.md" .agents/refs/.gitignore || false
 }
 
 @test "re-sync prunes links whose kit entry was removed upstream" {

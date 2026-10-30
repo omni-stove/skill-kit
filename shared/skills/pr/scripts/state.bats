@@ -33,7 +33,7 @@ STUB
   [ "$output" = "ON_BASE" ]
   [[ "$stderr" == *"git switch -c <new-branch> origin/main"* ]]
   grep -q 'git fetch origin main' "$CALLS"
-  ! grep -q 'gh pr view' "$CALLS"
+  ! grep -q 'gh pr view' "$CALLS" || false
 }
 
 @test "a custom base branch is compared and fetched" {

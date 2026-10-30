@@ -49,7 +49,7 @@ esac
 STUB
   chmod +x "$repo/bin/gh"
   PATH="$repo/bin:$PATH"
-  cd "$repo"
+  cd "$repo" || exit
 }
 
 @test "fails without an org when the directory has no GitHub repo" {

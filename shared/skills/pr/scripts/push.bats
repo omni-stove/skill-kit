@@ -37,7 +37,7 @@ esac
 STUB
   chmod +x "$repo/bin/git" "$repo/bin/gh"
   PATH="$repo/bin:$PATH"
-  cd "$repo"
+  cd "$repo" || exit
 }
 
 @test "pushes the current branch with -u and points at open.sh when there is no PR" {
@@ -59,7 +59,7 @@ STUB
   run --separate-stderr "$SCRIPT"
   [ "$status" -eq 0 ]
   grep -q '^git fetch origin main$' "$CALLS"
-  ! grep -q '^git merge ' "$CALLS"
+  ! grep -q '^git merge ' "$CALLS" || false
 }
 
 @test "merges the base given as the argument before pushing when the branch is behind" {
@@ -83,7 +83,7 @@ STUB
   run --separate-stderr "$SCRIPT"
   [ "$status" -eq 3 ]
   [[ "$stderr" == *"merge conflict with origin/main"* ]]
-  ! grep -q '^git push' "$CALLS"
+  ! grep -q '^git push' "$CALLS" || false
 }
 
 @test "rejects more than one argument" {

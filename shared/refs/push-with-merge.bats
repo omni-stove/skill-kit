@@ -50,7 +50,7 @@ EOS
 @test "pushes once and does not pull on success" {
   run bash "$WRAPPER"
   [ "$status" -eq 0 ]
-  ! grep -q 'git pull' "$CALLS"
+  ! grep -q 'git pull' "$CALLS" || false
   [ "$(grep -c 'git push' "$CALLS")" -eq 1 ]
 }
 
@@ -80,14 +80,14 @@ EOS
 @test "does not add an empty commit when the pull fast-forwards" {
   GIT_PUSH_FAIL_TIMES=1 run bash "$WRAPPER" -u origin my-branch
   [ "$status" -eq 0 ]
-  ! grep -q 'git commit --allow-empty' "$CALLS"
+  ! grep -q 'git commit --allow-empty' "$CALLS" || false
 }
 
 @test "passes a non-mergeable push failure through without pulling" {
   GIT_PUSH_FAIL_TIMES=1 GIT_PUSH_FAIL_MSG='fatal: Authentication failed' run bash "$WRAPPER" -u origin my-branch
   [ "$status" -ne 0 ]
   [ "$status" -ne 3 ]
-  ! grep -q 'git pull' "$CALLS"
+  ! grep -q 'git pull' "$CALLS" || false
   [ "$(grep -c 'git push' "$CALLS")" -eq 1 ]
 }
 
@@ -95,7 +95,7 @@ EOS
   GIT_PUSH_FAIL_TIMES=1 GIT_PUSH_FAIL_MSG='! [rejected] main -> main (stale info)' run bash "$WRAPPER" -u origin main
   [ "$status" -ne 0 ]
   [ "$status" -ne 3 ]
-  ! grep -q 'git pull' "$CALLS"
+  ! grep -q 'git pull' "$CALLS" || false
   [ "$(grep -c 'git push' "$CALLS")" -eq 1 ]
 }
 
@@ -103,7 +103,7 @@ EOS
   GIT_PUSH_FAIL_TIMES=1 GIT_PULL_FAIL=1 run bash "$WRAPPER"
   [ "$status" -eq 3 ]
   grep -q 'git pull' "$CALLS"
-  ! grep -q 'git merge --abort' "$CALLS"
+  ! grep -q 'git merge --abort' "$CALLS" || false
   [ "$(grep -c 'git push' "$CALLS")" -eq 1 ]
 }
 

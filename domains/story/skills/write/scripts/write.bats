@@ -1,11 +1,12 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2030,SC2031 # each @test runs in its own subshell, and run sets $output afresh in each
 # source.sh — deterministic resolution of the source and its output file; draft.sh — the external model's draft, through a stub curl; others.sh — the other files to read, one per number; scene-check.sh — the format fix and the checks before each hand-off.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story/plot" "$work/sub/plot"
-  cd "$work"
+  cd "$work" || exit
 }
 
 @test "source.sh writes plot/<x>.md to the dir holding plot, named by the leading number" {

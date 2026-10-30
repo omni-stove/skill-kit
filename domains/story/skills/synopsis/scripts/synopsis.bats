@@ -6,7 +6,7 @@ setup() {
   SAVE="$BATS_TEST_DIRNAME/save.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/characters/main" "$work/story"
-  cd "$work"
+  cd "$work" || exit
 }
 
 @test "source.sh lists README.md and the character files, and says to draft" {

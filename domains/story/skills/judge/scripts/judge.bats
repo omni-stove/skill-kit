@@ -5,7 +5,7 @@ setup() {
   OPENING="$BATS_TEST_DIRNAME/opening.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story"
-  cd "$work"
+  cd "$work" || exit
 }
 
 fill() { head -c "$2" /dev/zero | tr '\0' 'a' > "$1"; }

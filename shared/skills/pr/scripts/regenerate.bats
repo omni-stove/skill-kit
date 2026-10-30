@@ -13,7 +13,7 @@ setup() {
   printf 'lint\ntest\n' > "$TASKS"
   REPO="$BATS_TEST_TMPDIR/repo"
   mkdir -p "$REPO/apps/a/api/src/generated" "$REPO/apps/b/web/src/generated" "$REPO/docs"
-  cd "$REPO"
+  cd "$REPO" || exit
   git init -q
   echo '{"name":"root"}' > package.json
   echo '{"name":"a-api"}' > apps/a/api/package.json
@@ -58,7 +58,7 @@ STUB
   run --separate-stderr "$SCRIPT" apps/a/api/src/controller.ts apps/b/web
   [ "$status" -eq 0 ]
   grep -q '^pnpm exec turbo run generate --force --filter=...a-api --filter=...b-web$' "$CALLS"
-  ! grep -q '^mise run' "$CALLS"
+  ! grep -q '^mise run' "$CALLS" || false
 }
 
 @test "under turbo: a path outside any package is skipped and nothing runs" {
@@ -69,7 +69,7 @@ STUB
   [[ "$stderr" == *"skip (no package): docs/readme.md"* ]]
   [[ "$stderr" == *"Nothing to regenerate"* ]]
   [[ "$stderr" == *"push.sh"* ]]
-  ! grep -q '^pnpm' "$CALLS"
+  ! grep -q '^pnpm' "$CALLS" || false
 }
 
 @test "without turbo: runs the generate task and lists what it wrote" {
@@ -78,7 +78,7 @@ STUB
   [ "$status" -eq 0 ]
   [ "$output" = "$(printf 'apps/a/api/src/generated/routes.ts\napps/a/api/src/generated/schema.ts')" ]
   grep -q '^mise run generate$' "$CALLS"
-  ! grep -q '^pnpm' "$CALLS"
+  ! grep -q '^pnpm' "$CALLS" || false
 }
 
 @test "without turbo or a generate task it runs nothing and says so" {
@@ -86,7 +86,7 @@ STUB
   [ "$status" -eq 0 ]
   [ -z "$output" ]
   [[ "$stderr" == *"Nothing to regenerate"* ]]
-  ! grep -q 'run' "$CALLS"
+  ! grep -q 'run' "$CALLS" || false
 }
 
 @test "fails without arguments" {

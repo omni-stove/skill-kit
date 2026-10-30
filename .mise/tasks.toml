@@ -1,0 +1,18 @@
+# Every tracked shell script: *.sh, *.bats, and extensionless files with a sh/bash/bats shebang.
+[lint]
+description = "Run shellcheck over every tracked shell script"
+run = '''
+git ls-files | while read -r f; do
+  case $f in
+    *.sh|*.bats) echo "$f" ;;
+    *.*) ;;
+    *) head -n 1 "$f" 2>/dev/null | grep -qE '^#!.*[/ ](sh|bash|bats)$' && echo "$f" ;;
+  esac
+done | tr '\n' '\0' | xargs -0 shellcheck
+'''
+
+# Not `bats -r .` — the kit synced into its own .claude/.agents would run the
+# same tests again through the symlinks.
+[test]
+description = "Run the bats tests over bin, shared and domains"
+run = "bats -r bin shared domains"

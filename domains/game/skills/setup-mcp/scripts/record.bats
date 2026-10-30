@@ -6,7 +6,7 @@ setup() {
   repo="$BATS_TEST_TMPDIR/repo"
   mkdir -p "$repo/.agents/refs" "$BATS_TEST_TMPDIR/kit"
   printf 'engine_name() { echo "Unity"; }\ncontrol_mcp()        { echo ""; }   # e.g. "mcp__unity__"\n' > "$BATS_TEST_TMPDIR/kit/engine.sh"
-  cd "$repo"
+  cd "$repo" || exit
 }
 
 @test "fails with the sync hint when engine.sh is missing" {

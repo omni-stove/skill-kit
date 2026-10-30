@@ -65,7 +65,7 @@ else
 fi
 
 g=$dir/en/glossary.md
-[ -f "$g" ] && emit glossary "$g" exists || emit glossary "$g" missing
+if [ -f "$g" ]; then emit glossary "$g" exists; else emit glossary "$g" missing; fi
 
 if [ -n "${src-}" ]; then
 	emit_source "$src" "$dir/en/$name"

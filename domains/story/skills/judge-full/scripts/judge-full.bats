@@ -3,7 +3,7 @@
 
 setup() {
   SAVE="$BATS_TEST_DIRNAME/save.sh"
-  cd "$BATS_TEST_TMPDIR"
+  cd "$BATS_TEST_TMPDIR" || exit
 }
 
 @test "save.sh names the report after the manuscript and label, extension stripped" {

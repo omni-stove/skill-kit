@@ -12,7 +12,14 @@ done | tr '\n' '\0' | xargs -0 shellcheck
 '''
 
 # Not `bats -r .` — the kit synced into its own .claude/.agents would run the
-# same tests again through the symlinks.
+# same tests again through the symlinks; find does not follow them either.
+# One bats per file, in parallel, without `bats --jobs`, which needs GNU parallel.
+# A passing file prints nothing; a failing one prints its output without the ok lines.
 [test]
-description = "Run the bats tests over bin, shared and domains"
-run = "bats -r bin shared domains"
+description = "Run the bats tests over bin, shared and domains in parallel, printing only failures"
+quiet = true
+run = '''
+find bin shared domains -name '*.bats' -print0 \
+  | xargs -0 -n 1 -P "$(getconf _NPROCESSORS_ONLN)" sh -c \
+    'out=$(bats --formatter tap "$1" 2>&1) || { printf "%s\n" "$out" | grep -v "^ok "; exit 1; }' _
+'''

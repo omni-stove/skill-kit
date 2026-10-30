@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "line": { "type": "integer", "description": "line number in the first file" },
+          "text": { "type": "string", "description": "the words found, copied exactly from that line" },
+          "kind": { "type": "string", "enum": ["ending", "metaphor", "repetition", "contradiction", "continuity"] },
+          "rule": { "type": "string", "description": "the rule broken" },
+          "basis": { "type": "string", "description": "why these words break it" },
+          "file": { "type": "string", "description": "path of the file the finding rests on" },
+          "quote": { "type": "string", "description": "the words in that file, copied exactly" }
+        },
+        "required": ["line", "text", "kind", "rule", "basis"]
+      }
+    }
+  },
+  "required": ["findings"]
+}

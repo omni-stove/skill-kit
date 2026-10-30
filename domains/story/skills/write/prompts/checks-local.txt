@@ -1,0 +1,3 @@
+Read the whole output file and fix each hit in place; you judge what is a hit.
+
+- Where the same wording appears twice, keep one; an echo stays only when the source file names it.

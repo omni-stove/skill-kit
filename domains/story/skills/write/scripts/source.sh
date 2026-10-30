@@ -3,8 +3,7 @@
 # Prints the output file the source is written to and the steps to write a Scene into it.
 # Output, from where the source sits: plot/<x>.md -> ../<leading number of x,
 # else x>.txt; plot.md -> index.txt beside it; another .md -> <stem>.txt beside
-# it; a .txt is the output itself and is revised in place. With WRITE_DRAFT_MODEL
-# and GEMINI_API_KEY set, a new Scene is drafted through draft.sh instead.
+# it; a .txt is the output itself and is revised in place.
 set -eu
 [ $# -eq 1 ] || { echo "usage: source.sh <file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -36,8 +35,4 @@ if [ -f "$out" ]; then
 else
   prompt new
 fi
-if [ -n "${WRITE_DRAFT_MODEL:-}" ] && [ -n "${GEMINI_API_KEY:-}" ]; then
-  prompt scene-draft others="$(dirname -- "$0")/others.sh" file="$f" draft="$(dirname -- "$0")/draft.sh" out="$out"
-else
-  prompt scene others="$(dirname -- "$0")/others.sh" file="$f" scene_check="$(dirname -- "$0")/scene-check.sh" out="$out"
-fi
+prompt scene others="$(dirname -- "$0")/others.sh" file="$f" scene_check="$(dirname -- "$0")/scene-check.sh" out="$out"

@@ -1,0 +1,4 @@
+
+Then reply with the hand-off alone:
+[Output file] complete.
+[Each finding you held, if any: its line, what it says, and the fixes open to it]

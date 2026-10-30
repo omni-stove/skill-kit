@@ -1,12 +1,13 @@
 #!/usr/bin/env bats
 # shellcheck disable=SC2030,SC2031 # each @test runs in its own subshell, and run sets $output afresh in each
-# source.sh — deterministic resolution of the source and its output file; draft.sh — the external model's draft, through a stub curl; others.sh — the other files to read, one per number; scene-check.sh — the format fix and the checks before each hand-off.
+# source.sh — deterministic resolution of the source and its output file; others.sh — the other files to read, one per number; scene-check.sh — the format fix and the checks before each hand-off; check.sh — the external model's findings over the finished file, through a stub curl.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story/plot" "$work/sub/plot"
   cd "$work" || exit
+  printf '# 作品\n## 舞台\n港町\n' > README.md
 }
 
 @test "source.sh writes plot/<x>.md to the dir holding plot, named by the leading number" {
@@ -53,7 +54,7 @@ setup() {
   run sh "$SOURCE" story/plot/arrival.md
   [[ "$output" == *"does not exist yet"* ]]
   [[ "$output" == *'others.sh "story/plot/arrival.md"'* ]]
-  [[ "$output" == *'scene-check.sh "story/arrival.txt"'* ]]
+  [[ "$output" == *'scene-check.sh "story/plot/arrival.md" "story/arrival.txt"'* ]]
 }
 
 @test "source.sh says to read and ask when the output exists" {
@@ -63,37 +64,9 @@ setup() {
   [[ "$output" == *"Read it, ask"* ]]
 }
 
-harness_writes() {
-  run env -u WRITE_DRAFT_MODEL -u GEMINI_API_KEY "$@" sh "$SOURCE" story/plot/arrival.md
-  [[ "$output" == *"Write 1 Scene"* ]]
-  [[ "$output" != *"draft.sh"* ]]
-}
-
-@test "source.sh hands a new Scene to the harness unless a draft model is set with a key" {
-  : > story/plot/arrival.md
-  harness_writes
-  harness_writes WRITE_DRAFT_MODEL=m
-  harness_writes GEMINI_API_KEY=k
-  harness_writes WRITE_DRAFT_MODEL= GEMINI_API_KEY=k
-}
-
-@test "source.sh hands a new Scene to draft.sh when a draft model is set with a key" {
-  : > story/plot/arrival.md
-  WRITE_DRAFT_MODEL=m GEMINI_API_KEY=k run sh "$SOURCE" story/plot/arrival.md
-  [[ "$output" == *'draft.sh "story/plot/arrival.md" "story/arrival.txt"'* ]]
-  [[ "$output" != *"Write 1 Scene"* ]]
-}
-
-@test "source.sh revises a .txt in the harness even with a draft model set" {
-  : > story/010.txt
-  WRITE_DRAFT_MODEL=m GEMINI_API_KEY=k run sh "$SOURCE" story/010.txt
-  [[ "$output" == *"revise it"* ]]
-  [[ "$output" != *"draft.sh"* ]]
-}
-
 stub_curl() {
   mkdir -p bin .agents/refs
-  for r in format style rhythm; do echo "rule-$r" > ".agents/refs/japanese-web-novel-$r.md"; done
+  echo "rule-style" > .agents/refs/japanese-web-novel-style.md
   printf '%s' "$1" > response.json
   cat > bin/curl <<'STUB'
 #!/bin/sh
@@ -102,53 +75,67 @@ cat response.json
 STUB
   chmod +x bin/curl
   PATH="$work/bin:$PATH"
-  printf 'プロット本文\n' > story/plot/arrival.md
+  mkdir -p characters
+  printf '湊は左利き。\n' > characters/minato.md
+  printf 'プロット本文\n## 参照\n- @characters/minato.md\n' > story/plot/arrival.md
   printf 'レポート本文\n' > report.txt
+  printf '　俺は扉を開けた。\n　右手でペンを取った。\n' > story/arrival.txt
 }
 
-@test "draft.sh sends the rules, plot, report and output so far, and appends the Scene after a *" {
-  stub_curl '{"status":"completed","steps":[{"type":"thought"},{"type":"model_output","content":[{"type":"text","text":"　彼は扉を開けた。"}]}]}'
-  printf '　前の場面。\n' > story/arrival.txt
-  WRITE_DRAFT_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/draft.sh" story/plot/arrival.md story/arrival.txt report.txt
+reply() {
+  jq -n --arg t "$1" '{status: "completed", steps: [{type: "thought"}, {type: "model_output", content: [{type: "text", text: $t}]}]}'
+}
+
+@test "check.sh sends the numbered Scene, the style rules and the cited files" {
+  stub_curl "$(reply '{"findings": []}')"
+  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
   [ "$status" -eq 0 ]
-  [[ "$output" == *'scene-check.sh "story/arrival.txt"'* ]]
-  [ "$(cat story/arrival.txt)" = "$(printf '　前の場面。\n*\n　彼は扉を開けた。')" ]
   [ "$(jq -r .model request.json)" = gemini-4-argon ]
   [ "$(jq -r .generation_config.thinking_level request.json)" = high ]
-  [[ "$(jq -r .system_instruction request.json)" == *rule-rhythm* ]]
-  [[ "$(jq -r .input request.json)" == *プロット本文*レポート本文*前の場面。* ]]
+  [ "$(jq -r .response_format.mime_type request.json)" = application/json ]
+  [ "$(jq -r '.response_format.schema.properties.findings.type' request.json)" = array ]
+  [[ "$(jq -r .system_instruction request.json)" == *rule-style* ]]
+  in=$(jq -r .input request.json)
+  [[ "$in" == *"2	　右手でペンを取った。"* ]]
+  [[ "$in" == *"=== story/plot/arrival.md"*プロット本文*"=== report.txt"*レポート本文*"=== README.md"*港町*"=== characters/minato.md"*左利き* ]]
 }
 
-@test "draft.sh sends a story past the exec argument limit" {
-  stub_curl '{"status":"completed","steps":[{"type":"model_output","content":[{"type":"text","text":"　続き。"}]}]}'
-  awk 'BEGIN { for (i = 0; i < 20000; i++) print "　長い長い物語の一行。" }' > story/arrival.txt
-  WRITE_DRAFT_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/draft.sh" story/plot/arrival.md story/arrival.txt report.txt
+@test "check.sh keeps only findings with a matching line, rule, basis and quote" {
+  stub_curl "$(reply '{"findings": [
+ {"line": 2, "text": "右手で", "kind": "contradiction", "rule": "設定", "basis": "湊は左利き", "file": "characters/minato.md", "quote": "湊は左利き。"},
+ {"line": 2, "text": "右手で", "kind": "contradiction", "rule": "設定", "basis": "引用なし"},
+ {"line": 2, "text": "右手で", "kind": "contradiction", "rule": "設定", "basis": "捏造の引用", "file": "characters/minato.md", "quote": "湊は右利き。"},
+ {"line": 1, "text": "右手で", "kind": "repetition", "rule": "重複", "basis": "行が違う"},
+ {"line": 9, "text": "扉", "kind": "repetition", "rule": "重複", "basis": "範囲外"},
+ {"line": 1, "text": "扉", "kind": "ending", "rule": "", "basis": "ルールなし"},
+ {"line": 1, "text": "扉を開けた", "kind": "continuity", "rule": "位置", "basis": "前の行と食い違う"}
+]}')"
+  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
   [ "$status" -eq 0 ]
-  [ "$(tail -1 story/arrival.txt)" = "　続き。" ]
-  [ "$(jq -r .input request.json | grep -c 長い長い物語)" -eq 20000 ]
+  [[ "$output" == *"1: 扉を開けた [位置] 前の行と食い違う"*"2: 右手で [設定] 湊は左利き — characters/minato.md:「湊は左利き。」"* ]]
+  [[ "$output" != *引用なし* ]]
+  [[ "$output" != *捏造の引用* ]]
+  [[ "$output" != *行が違う* ]]
+  [[ "$output" != *範囲外* ]]
+  [[ "$output" != *ルールなし* ]]
+  [[ "$output" != *"Where the same wording appears twice"* ]]
+  [[ "$output" == *"[Output file] complete."* ]]
 }
 
-@test "draft.sh writes the first Scene without a *" {
-  stub_curl '{"status":"completed","steps":[{"type":"model_output","content":[{"type":"text","text":"　始まり。"}]}]}'
-  WRITE_DRAFT_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/draft.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [ "$status" -eq 0 ]
-  [ "$(cat story/arrival.txt)" = "　始まり。" ]
-}
-
-@test "draft.sh hands the Scene back to the harness when the API fails or the model or key is missing" {
+@test "check.sh runs the checks in the harness when the model fails or is not set" {
   stub_curl '{"error":{"code":404,"message":"not found"}}'
-  WRITE_DRAFT_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/draft.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"not found"* ]]
-  [[ "$output" == *"Write 1 Scene"* ]]
-  [ ! -e story/arrival.txt ]
-  [[ "$output" == *"gemini-4-argon did not write"* ]]
-  WRITE_DRAFT_MODEL=m run env -u GEMINI_API_KEY sh "$BATS_TEST_DIRNAME/draft.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"GEMINI_API_KEY is not set"* ]]
-  run env -u WRITE_DRAFT_MODEL GEMINI_API_KEY=k sh "$BATS_TEST_DIRNAME/draft.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"WRITE_DRAFT_MODEL is not set"* ]]
+  printf '　静かな夜だった。\n' > story/arrival.txt
+  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"gemini-4-argon failed"*"not found"* ]]
+  [[ "$output" == *"Where the same wording appears twice"*"1:　静かな夜だった。"* ]]
+  stub_curl "$(reply 'no list here')"
+  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt
+  [[ "$output" == *"no findings list"* ]]
+  run env -u WRITE_CHECK_MODEL GEMINI_API_KEY=k sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"failed"* ]]
+  [[ "$output" == *"Where the same wording appears twice"* ]]
 }
 
 @test "source.sh fails on a missing source" {
@@ -156,19 +143,23 @@ STUB
   [ "$status" -eq 1 ]
 }
 
-@test "scene-check.sh prints the five whole-file checks" {
+@test "scene-check.sh prints the four whole-file checks and hands the finished file to check.sh" {
   printf '　彼は頷いた。\n' > story/010.txt
-  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
+  : > story/plot/arrival.md
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/plot/arrival.md story/010.txt report.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
   [[ "$output" == *"[Scene name] complete."* ]]
+  [[ "$output" == *'check.sh "story/plot/arrival.md" "story/010.txt" "report.txt" instead'* ]]
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
+  [[ "$output" == *'check.sh "story/010.txt" "story/010.txt" instead'* ]]
 }
 
-@test "scene-check.sh lists narration sentences ending on the copula, not dialogue" {
+@test "check.sh lists narration sentences ending on the copula, not dialogue, when the model is not set" {
   printf '　彼は頷いた。覚悟を決めた目だった。\n「嘘だった」\n　静かな夜だった。\n　鍵は古い真鍮のようだった。\n' > story/010.txt
-  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
+  run env -u WRITE_CHECK_MODEL sh "$BATS_TEST_DIRNAME/check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 2 ]
   [[ "$output" == *"1:"*"目だった。"* ]]
   [[ "$output" == *"3:"*"夜だった。"* ]]
   [[ "$output" == *"4:"*"ようだった。"* ]]
@@ -177,25 +168,27 @@ STUB
 
 @test "scene-check.sh lists negative narration sentences, not dialogue or thoughts" {
   printf '　返事はなかった。\n「知らない。帰れ」\n　廊下には誰もいない。\n『来ない。』\n' > story/010.txt
-  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
   [[ "$output" == *"1:"*"返事はなかった。"* ]]
   [[ "$output" == *"3:"*"誰もいない。"* ]]
   [[ "$output" != *"知らない"* ]]
   [[ "$output" != *"来ない"* ]]
 }
 
-@test "scene-check.sh fails on a missing file" {
-  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/missing.txt
+@test "scene-check.sh and check.sh fail on a missing file" {
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/missing.txt story/missing.txt
+  [ "$status" -eq 1 ]
+  run sh "$BATS_TEST_DIRNAME/check.sh" story/missing.txt story/missing.txt
   [ "$status" -eq 1 ]
 }
 
 @test "scene-check.sh fixes the format and lists the lines that break a format rule" {
   printf '彼は頷いた。\n「終わり。」\n　部屋は3つ。\n' > story/010.txt
-  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
   [ "$(head -2 story/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
   [[ "$output" == *"3:　部屋は3つ。"* ]]
 }

@@ -1,5 +1,6 @@
 
 Then reply with the hand-off alone:
 [Scene name] complete. Reply y for the next Scene, or say what to revise.
-y: write the next Scene and run this script on it. Anything else: revise the Scene as the
-input says, then run this script again.
+y: write the next Scene and run this script on it with the same arguments; once the source
+file has no Scene left, run {check} instead. Anything else: revise the Scene as the input
+says, then run this script again.

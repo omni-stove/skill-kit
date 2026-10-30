@@ -1,0 +1,15 @@
+List what in the first file of the input breaks a check below. Give file and quote for
+every contradiction, and for any other finding that rests on a file, the first file
+included.
+
+- ending: a narration sentence ending beyond what the style rules allow
+- metaphor: a metaphor past the style rules' count
+- repetition: the same word or phrase in narration within a few lines, outside an echo the
+  plot names
+- contradiction: a statement against the plot, the report, or a setting file
+- continuity: time order, or where a character is, against the file's earlier lines
+
+Leave pace, pauses, silences, rhythm, sensation, and whether the story works unflagged.
+
+Style rules:
+{rules}

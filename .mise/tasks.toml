@@ -1,5 +1,10 @@
-# Every tracked shell script: *.sh, *.bats, and extensionless files with a sh/bash/bats shebang.
+# mise runs the depends in parallel. Names use - not :, which make reads as a rule.
 [lint]
+description = "Run shellcheck and the mermaid check in parallel"
+depends = ["lint-shell", "lint-mermaid"]
+
+# Every tracked shell script: *.sh, *.bats, and extensionless files with a sh/bash/bats shebang.
+[lint-shell]
 description = "Run shellcheck over every tracked shell script"
 run = '''
 git ls-files | while read -r f; do
@@ -22,4 +27,13 @@ run = '''
 find bin shared domains -name '*.bats' -print0 \
   | xargs -0 -n 1 -P "$(getconf _NPROCESSORS_ONLN)" sh -c \
     'out=$(bats --formatter tap "$1" 2>&1) || { printf "%s\n" "$out" | grep -v "^ok "; exit 1; }' _
+'''
+
+# Every tracked or new Markdown file with a ```mermaid block, rendered through one browser.
+[lint-mermaid]
+description = "Render every mermaid block in the Markdown files and report the ones that fail"
+run = '''
+git ls-files -co --exclude-standard '*.md' | tr '\n' '\0' \
+  | xargs -0 grep -l '^```mermaid' | tr '\n' '\0' \
+  | MMDC_DIR="$(mise where npm:@mermaid-js/mermaid-cli)" xargs -0 node .mise/scripts/mermaid-lint.mjs
 '''

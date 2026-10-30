@@ -1,0 +1,5 @@
+Write the Scene of the Plot that follows Written so far, or its first Scene when Written so
+far is empty, by the rules below. The Plot leads; keep to the Report. Deliver the Plot's
+プロットの意図 through events alone. Reply with the Scene's text alone.
+
+{rules}

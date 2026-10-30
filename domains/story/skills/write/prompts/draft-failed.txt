@@ -1,0 +1,4 @@
+{model} did not write the Scene: {error}
+Write 1 Scene by the loaded rules: {file} leads, then the report; open another file only
+for a fact the report lacks, and deliver its プロットの意図 through events alone. Save the
+Scene to {out}, then run {scene_check} "{out}"

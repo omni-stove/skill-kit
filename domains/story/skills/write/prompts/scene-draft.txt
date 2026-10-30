@@ -1,0 +1,3 @@
+Launch one Agent on the source file to report what it must stay consistent with and what
+of it the reader already has; the Agent runs {others} "{file}". Save the report to a file.
+Run {draft} "{file}" "{out}" <the report file> with a 15-minute timeout.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 # shellcheck disable=SC2030,SC2031 # each @test runs in its own subshell, and run sets $output afresh in each
-# source.sh — deterministic resolution of the source and its output file; others.sh — the other files to read, one per number; scene-check.sh — the format fix and the checks before each hand-off; check.sh — the external model's findings over the finished file, through a stub curl.
+# source.sh — deterministic resolution of the source and its output file; scene.sh — the writing step, held until the report is saved; others.sh — the other files to read, one per number; scene-check.sh — the format fix and the checks before each hand-off; check.sh — the external model's findings over the finished file, through a stub curl.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
@@ -54,7 +54,25 @@ setup() {
   run sh "$SOURCE" story/plot/arrival.md
   [[ "$output" == *"does not exist yet"* ]]
   [[ "$output" == *'others.sh "story/plot/arrival.md"'* ]]
-  [[ "$output" == *'scene-check.sh "story/plot/arrival.md" "story/arrival.txt"'* ]]
+  [[ "$output" == *'scene.sh "story/plot/arrival.md" "story/arrival.txt" <the report file>'* ]]
+  [[ "$output" != *"Write 1 Scene"* ]]
+}
+
+@test "scene.sh prints the writing step only once the report is saved" {
+  : > story/plot/arrival.md
+  run sh "$BATS_TEST_DIRNAME/scene.sh" story/plot/arrival.md story/arrival.txt report.txt
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"wait for the Agent's report"* ]]
+  [[ "$output" != *"Write 1 Scene"* ]]
+  : > report.txt
+  run sh "$BATS_TEST_DIRNAME/scene.sh" story/plot/arrival.md story/arrival.txt report.txt
+  [ "$status" -eq 1 ]
+  printf 'レポート\n' > report.txt
+  run sh "$BATS_TEST_DIRNAME/scene.sh" story/plot/arrival.md story/arrival.txt report.txt
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Write 1 Scene"* ]]
+  [[ "$output" == *'scene-check.sh "story/plot/arrival.md" "story/arrival.txt" "report.txt"'* ]]
+  [[ "$output" != *"does not exist yet"* ]]
 }
 
 @test "source.sh says to read and ask when the output exists" {

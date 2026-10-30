@@ -1,5 +1,3 @@
-Launch one Agent on the source file to report what it must stay consistent with and what
-of it the reader already has; the Agent runs {others} "{file}". Save the report to a file.
 Write 1 Scene by the loaded rules: the source file leads, open another file only for a
-fact the report lacks, and deliver its プロットの意図 through events alone. Save the Scene
-to the output file, then run {scene_check} "{file}" "{out}" <the report file>
+fact {report} lacks, and deliver its プロットの意図 through events alone. Save the Scene to
+the output file, then run {scene_check} "{file}" "{out}" "{report}"

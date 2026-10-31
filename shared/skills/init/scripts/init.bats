@@ -51,6 +51,7 @@ setup() {
   grep -q '^\[setup\]' .mise/tasks.toml
   grep -q '^depends = \["install"\]' .mise/tasks.toml
   [[ "$output" == *"install	:"* ]]
+  grep -qF '"curl -fsSL https://raw.githubusercontent.com/omni-stove/skill-kit/main/install.sh | sh"' .mise/tasks.toml
   grep -q '"skill-kit story sync"' .mise/tasks.toml
   grep -q '"skill-kit story update"' .mise/tasks.toml
   grep -q '^\[update\]' .mise/tasks.toml
@@ -63,7 +64,7 @@ setup() {
   [[ "$output" == *"mise run count src/story --limit 10"* ]]
   run make -n
   [[ "$output" == *"command -v git"* ]]
-  [[ "$output" == *"gh auth status"* ]]
+  [[ "$output" != *"gh auth"* ]]
   [[ "$output" == *"mise install"* ]]
   [[ "$output" == *"mise run setup"* ]]
 }
@@ -168,6 +169,13 @@ JSON
   [[ "$output" == *"tool	terraform = \"1\""* ]]
   [[ "$output" == *"tool	nodejs = \"20\""* ]]
   [[ "$output" == *"tool	go = \"1\""* ]]
+}
+
+@test "flags a setup task that still installs the kit through gh api" {
+  mkdir .mise && printf '[setup]\ndepends = ["install"]\nrun = [\n  "gh api repos/omni-stove/skill-kit/contents/install.sh -q .content | base64 -d | sh",\n]\n' > .mise/tasks.toml
+  run "$INIT"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"todo	.mise/tasks.toml — in [setup], replace the gh api install line"* ]]
 }
 
 @test "flags an install task that disagrees with the manifest" {

@@ -11,8 +11,7 @@ what it asks and what it gives back.
 
 ## Requirements
 
-`git`, the [GitHub CLI](https://cli.github.com) logged in (`gh auth login`), and
-[mise](https://mise.jdx.dev). The target is a git repository.
+`git`, `curl` and [mise](https://mise.jdx.dev). The target is a git repository.
 
 ## Install
 

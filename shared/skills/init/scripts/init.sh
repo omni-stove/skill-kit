@@ -27,7 +27,6 @@ TASK_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 # Every other command is a task in .mise/tasks.toml — list them with: mise tasks
 setup:
 	@command -v git >/dev/null || { echo "make setup: git is not installed"; exit 1; }
-	@gh auth status >/dev/null 2>&1 || { echo "make setup: GitHub CLI is missing or not logged in — install gh and run: gh auth login"; exit 1; }
 	@command -v mise >/dev/null || { echo "make setup: mise is not installed — see https://mise.jdx.dev/getting-started.html"; exit 1; }
 	@mise trust -q
 	@mise install
@@ -119,7 +118,7 @@ task_setup() {
 description = "Install dependencies and skill-kit, then sync (run by make setup)"
 depends = ["install"]
 run = [
-  "gh api repos/omni-stove/skill-kit/contents/install.sh -q .content | base64 -d | sh",
+  "curl -fsSL https://raw.githubusercontent.com/omni-stove/skill-kit/main/install.sh | sh",
   "skill-kit $domain sync",
 ]
 TOML
@@ -153,6 +152,9 @@ else
 	fi
 	if ! awk '/^\[setup\]/{s=1;next} /^\[/{s=0} s && /^depends *=.*"install"/{f=1} END{exit !f}' .mise/tasks.toml; then
 		echo "todo	.mise/tasks.toml — give [setup] depends = [\"install\"]"
+	fi
+	if grep -q 'gh api repos/omni-stove/skill-kit' .mise/tasks.toml; then
+		echo "todo	.mise/tasks.toml — in [setup], replace the gh api install line with \"curl -fsSL https://raw.githubusercontent.com/omni-stove/skill-kit/main/install.sh | sh\""
 	fi
 	current=$(awk '/^\[install\]/{s=1;next} /^\[/{s=0} s && /^run *=/{sub(/^run *= *"/,""); sub(/"$/,""); print; exit}' .mise/tasks.toml)
 	if [ "$install_cmd" != ":" ] && [ -n "$current" ] && [ "$current" != "$install_cmd" ]; then

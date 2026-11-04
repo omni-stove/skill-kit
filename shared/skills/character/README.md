@@ -13,7 +13,8 @@ flowchart TD
   ask --> named{name decided?}
   named -- "no" --> names[/"candidate names, each noting<br/>any clash with real people<br/>or famous characters"/]
   names --> exists
-  named -- "yes" --> exists{setting for this<br/>character exists?}
+  named -- "yes" --> clash[/"for a new character, any<br/>clash with names already<br/>in this repo"/]
+  clash --> exists{setting for this<br/>character exists?}
   exists -- "yes" --> edit[edit it in place]
   exists -- "no" --> draft[draft a new setting]
   edit --> check[check against the readme<br/>and existing settings]

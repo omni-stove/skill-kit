@@ -13,7 +13,8 @@ flowchart TD
   ask --> named{名前が決まっている?}
   named -- "いいえ" --> names[/"名前の候補。それぞれに実在の<br/>人物や有名なキャラクターと<br/>重なるかの注記"/]
   names --> exists
-  named -- "はい" --> exists{このキャラクターの<br/>設定がある?}
+  named -- "はい" --> clash[/"新しいキャラクターなら、<br/>このリポジトリの既存の<br/>名前との重なり"/]
+  clash --> exists{このキャラクターの<br/>設定がある?}
   exists -- "ある" --> edit[その場で編集]
   exists -- "ない" --> draft[新しく下書き]
   edit --> check[READMEと既存の<br/>設定に照らしてチェック]

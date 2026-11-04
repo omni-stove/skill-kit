@@ -1,0 +1,1 @@
+Count a hit above as a collision when another character, place, or item already uses the name or part of it, outside this character's own setting.

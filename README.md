@@ -2,12 +2,18 @@
 
 Skills for coding agents, in three domains that share one core:
 
-- **game** — game development, on any engine (Unity, Godot, Unreal, custom).
-- **story** — writing fiction, in any language.
-- **code** — working in a software repo, in any language.
+- **[game](domains/game/README.md)** — game development, on any engine (Unity, Godot, Unreal, custom).
+- **[story](domains/story/README.md)** — writing fiction, in any language.
+- **[code](domains/code/README.md)** — working in a software repo, in any language.
+
+Each domain's guide shows the order to use its skills in and where their files go. Every
+domain also gets the shared skills: `init` and `task` for make commands, `cap` and `pr` for
+git, and `character`, `world`, `item` and `timeline` for settings.
 
 Each skill's `README.md` (`shared/skills/<name>/`, `domains/<domain>/skills/<name>/`) shows
 what it asks and what it gives back.
+
+[日本語](README.ja.md)
 
 ## Requirements
 

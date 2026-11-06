@@ -1,0 +1,28 @@
+Read the files above and list the events they give, with the events the user gave in this
+conversation. Ask the author as free text for the events from the opening to the ending
+that are still missing, and for the order the story tells them in. Use only the events the
+files and the author give, each stated as what happens, who does it and where.
+
+Arrange them into two orders:
+
+- 時系列: every event in the order it happens in the story world.
+- 構成: the sections of the story in the order it tells them; under each, the events it
+  shows, by their 時系列 number, in the order it shows them.
+
+Ask the author where an event's place in either order is unclear. Point out an event no
+section shows and a section that shows no event.
+
+Present both, revise on the author's feedback until they accept them, then write {out}:
+
+# <作品タイトル>
+
+## 時系列
+
+1. <出来事>
+2. <出来事>
+
+## 構成
+
+### <section title>
+
+- <時系列の番号>. <出来事>

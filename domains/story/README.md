@@ -7,7 +7,9 @@ Set a repo up with `skill-kit story sync`, then run `init`.
 
 ```mermaid
 flowchart TD
-  settings[character / world / item<br/>timeline] --> plot[plot]
+  settings[character / world / item<br/>timeline] --> outline[outline]
+  outline --> plot[plot]
+  outline --> split
   memo[an outline or memo] --> split[split-plot]
   plot --> write
   split --> write[write<br/>1 Scene at a time]
@@ -25,6 +27,7 @@ flowchart TD
 | Characters | `characters/<main\|supporting\|antagonist\|archive>/<slug>.md` |
 | World settings | `world/` |
 | Items | `items/` |
+| Whole-story flow | `story/outline.md` |
 | Plot | `story/plot/NNN-<slug>.md` |
 | Text | `story/NNN.txt`, written from the plot file of the same number |
 | Synopsis | `story/synopsis.txt` |
@@ -43,6 +46,7 @@ flowchart TD
 
 | Skill | What it does |
 |---|---|
+| [outline](skills/outline/README.md) | Puts the whole story's events in time order and in the order the story tells them, before the plot files |
 | [plot](skills/plot/README.md) | Develops the high-level plot with you, or checks a plot file |
 | [split-plot](skills/split-plot/README.md) | Splits one outline or memo into a plot file per scene |
 | [shorts-plot](skills/shorts-plot/README.md) | Develops the plot of a short story under `src/shorts/` |

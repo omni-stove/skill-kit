@@ -7,7 +7,9 @@
 
 ```mermaid
 flowchart TD
-  settings[character / world / item<br/>timeline] --> plot[plot]
+  settings[character / world / item<br/>timeline] --> outline[outline]
+  outline --> plot[plot]
+  outline --> split
   memo[構成案やメモ] --> split[split-plot]
   plot --> write
   split --> write[write<br/>1 Sceneずつ]
@@ -25,6 +27,7 @@ flowchart TD
 | キャラクター | `characters/<main\|supporting\|antagonist\|archive>/<slug>.md` |
 | 世界設定 | `world/` |
 | アイテム | `items/` |
+| 全体の流れ | `story/outline.md` |
 | プロット | `story/plot/NNN-<slug>.md` |
 | 本文 | `story/NNN.txt`。同じ番号のプロットファイルから書く |
 | 梗概 | `story/synopsis.txt` |
@@ -43,6 +46,7 @@ flowchart TD
 
 | スキル | すること |
 |---|---|
+| [outline](skills/outline/README.ja.md) | プロットファイルの前に、物語全体の出来事を時系列と構成の順に整理する |
 | [plot](skills/plot/README.ja.md) | 対話で大筋のプロットを作る。またはプロットファイルをチェックする |
 | [split-plot](skills/split-plot/README.ja.md) | 1つの構成案やメモをシーンごとのプロットファイルに分ける |
 | [shorts-plot](skills/shorts-plot/README.ja.md) | `src/shorts/` 配下の短編のプロットを作る |

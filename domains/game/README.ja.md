@@ -66,4 +66,4 @@ flowchart TD
 
 物語のあるゲームなら、[character](../../shared/skills/character/README.ja.md)、
 [world](../../shared/skills/world/README.ja.md)、[item](../../shared/skills/item/README.ja.md)、
-[timeline](../../shared/skills/timeline/README.ja.md) もここで使える。
+[outline](../../shared/skills/outline/README.ja.md) もここで使える。

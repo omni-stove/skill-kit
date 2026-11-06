@@ -9,7 +9,7 @@ Conventions the existing game skills establish — follow them when scaffolding 
 - **Name doc paths directly, relative to the repo root.** Design docs live under
   `docs/design/` (`gdd.md`, `mechanics/<slug>.md`, `balance/<slug>.md`,
   `post-mortems/<slug>.md`); setting docs at the root (`README.md`,
-  `characters/<category>/<name>.md`, `world/`, `items/`, `story/timeline.md`).
+  `characters/<category>/<name>.md`, `world/`, `items/`, `story/outline.md`).
 - **Resolve refs inside the skill's `scripts/*.sh`** (`. .agents/refs/engine.sh`), and end the
   script with what to do next, so the body stays at the `Run` lines.
 - **Keep what a script says to the reader in `prompts/<step>.txt`** beside `scripts/`, one file per

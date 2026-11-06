@@ -8,7 +8,7 @@ Skills for coding agents, in three domains that share one core:
 
 Each domain's guide shows the order to use its skills in and where their files go. Every
 domain also gets the shared skills: `init` and `task` for make commands, `cap` and `pr` for
-git, and `character`, `world`, `item` and `timeline` for settings.
+git, and `character`, `world`, `item` and `outline` for settings.
 
 Each skill's `README.md` (`shared/skills/<name>/`, `domains/<domain>/skills/<name>/`) shows
 what it asks and what it gives back.

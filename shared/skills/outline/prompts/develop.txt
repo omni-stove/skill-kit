@@ -1,0 +1,40 @@
+Read the files above and list the events they give, with the events the user gave in this
+conversation. Ask the author as free text for the events from the opening to the ending
+that are still missing, and for the order the story tells them in. Use only the events the
+files and the author give, each stated as what happens, who does it and where.
+
+Arrange them into two Mermaid flowcharts:
+
+- 時系列: every event in the order it happens in the story world. One node `E<n>` per event,
+  labelled with its number and the event, no timestamp, `-->` to the next; branch for
+  concurrent events and merge where they meet; a `subgraph` per phase.
+- 構成: the sections of the story in the order it tells them, one `subgraph S<m>` each, with
+  `-->` from each section to the next. Inside, one node per event it shows, in the order it
+  shows them, its id `S<m>E<n>` and its label the event's 時系列 number and text.
+
+When the author has no told order yet, build 時系列 alone and leave 構成 out of {out}.
+Wrap every label in double quotes. Ask the author where an event's place in either order is
+unclear. Point out an event no section shows and a section that shows no event.
+
+Present them, revise on the author's feedback until they accept them, then write {out}:
+
+# <作品タイトル>
+
+## 時系列
+
+```mermaid
+flowchart TD
+    subgraph P1["<phase>"]
+        E1["① <出来事>"] --> E2["② <出来事>"]
+    end
+```
+
+## 構成
+
+```mermaid
+flowchart TD
+    subgraph S1["<section title>"]
+        S1E2["② <出来事>"] --> S1E1["① <出来事>"]
+    end
+    S1 --> S2
+```

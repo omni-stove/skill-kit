@@ -7,7 +7,7 @@
 
 ```mermaid
 flowchart TD
-  settings[character / world / item<br/>timeline] --> outline[outline]
+  settings[character / world / item] --> outline[outline]
   outline --> plot[plot]
   outline --> split
   memo[構成案やメモ] --> split[split-plot]
@@ -27,7 +27,7 @@ flowchart TD
 | キャラクター | `characters/<main\|supporting\|antagonist\|archive>/<slug>.md` |
 | 世界設定 | `world/` |
 | アイテム | `items/` |
-| 全体の流れ | `story/outline.md` |
+| 時系列と全体の流れ | `story/outline.md` |
 | プロット | `story/plot/NNN-<slug>.md` |
 | 本文 | `story/NNN.txt`。同じ番号のプロットファイルから書く |
 | 梗概 | `story/synopsis.txt` |
@@ -40,13 +40,12 @@ flowchart TD
 | [character](../../shared/skills/character/README.ja.md) | キャラクターを作る・直す。名前の重複も確かめる |
 | [world](../../shared/skills/world/README.ja.md) | 世界設定の要素を作る・直す |
 | [item](../../shared/skills/item/README.ja.md) | アイテムを作る・直す |
-| [timeline](../../shared/skills/timeline/README.ja.md) | 出来事を作中の時系列に並べて図にする |
 
 ## 2. プロット
 
 | スキル | すること |
 |---|---|
-| [outline](skills/outline/README.ja.md) | プロットファイルの前に、物語全体の出来事を時系列と構成の順に整理する |
+| [outline](../../shared/skills/outline/README.ja.md) | プロットファイルの前に、物語全体の出来事を時系列と構成の順に整理する |
 | [plot](skills/plot/README.ja.md) | 対話で大筋のプロットを作る。またはプロットファイルをチェックする |
 | [split-plot](skills/split-plot/README.ja.md) | 1つの構成案やメモをシーンごとのプロットファイルに分ける |
 | [shorts-plot](skills/shorts-plot/README.ja.md) | `src/shorts/` 配下の短編のプロットを作る |

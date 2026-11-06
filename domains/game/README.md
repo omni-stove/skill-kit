@@ -67,4 +67,4 @@ Run `setup` once per repo. Every other skill uses the engine facts it records.
 
 For a game with a story, [character](../../shared/skills/character/README.md),
 [world](../../shared/skills/world/README.md), [item](../../shared/skills/item/README.md) and
-[timeline](../../shared/skills/timeline/README.md) work here too.
+[outline](../../shared/skills/outline/README.md) work here too.

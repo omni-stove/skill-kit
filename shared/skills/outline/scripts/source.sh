@@ -4,7 +4,7 @@
 # files, story/timeline.md, story/synopsis.txt and the plot files under story/plot/,
 # each when present — then story/outline.md when it exists, then how to build it.
 set -eu
-. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 [ $# -eq 0 ] || { echo "usage: source.sh" >&2; exit 2; }
 out=story/outline.md
 echo "== read =="

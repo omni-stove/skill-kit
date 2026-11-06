@@ -7,7 +7,7 @@ Set a repo up with `skill-kit story sync`, then run `init`.
 
 ```mermaid
 flowchart TD
-  settings[character / world / item<br/>timeline] --> outline[outline]
+  settings[character / world / item] --> outline[outline]
   outline --> plot[plot]
   outline --> split
   memo[an outline or memo] --> split[split-plot]
@@ -27,7 +27,7 @@ flowchart TD
 | Characters | `characters/<main\|supporting\|antagonist\|archive>/<slug>.md` |
 | World settings | `world/` |
 | Items | `items/` |
-| Whole-story flow | `story/outline.md` |
+| Timeline and whole-story flow | `story/outline.md` |
 | Plot | `story/plot/NNN-<slug>.md` |
 | Text | `story/NNN.txt`, written from the plot file of the same number |
 | Synopsis | `story/synopsis.txt` |
@@ -40,13 +40,12 @@ flowchart TD
 | [character](../../shared/skills/character/README.md) | Creates or edits a character, checking the name for collisions |
 | [world](../../shared/skills/world/README.md) | Creates or edits a world-setting element |
 | [item](../../shared/skills/item/README.md) | Creates or edits an item |
-| [timeline](../../shared/skills/timeline/README.md) | Puts events in in-world order as a diagram |
 
 ## 2. Plot
 
 | Skill | What it does |
 |---|---|
-| [outline](skills/outline/README.md) | Puts the whole story's events in time order and in the order the story tells them, before the plot files |
+| [outline](../../shared/skills/outline/README.md) | Puts the whole story's events in time order and in the order the story tells them, before the plot files |
 | [plot](skills/plot/README.md) | Develops the high-level plot with you, or checks a plot file |
 | [split-plot](skills/split-plot/README.md) | Splits one outline or memo into a plot file per scene |
 | [shorts-plot](skills/shorts-plot/README.md) | Develops the plot of a short story under `src/shorts/` |

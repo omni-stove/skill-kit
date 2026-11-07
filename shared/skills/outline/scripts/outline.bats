@@ -12,8 +12,8 @@ setup() {
   run sh "$SOURCE"
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "== read ==" ]
-  [[ "${lines[1]}" == "Read the files above"* ]]
-  [[ "$output" == *"write story/outline.md"* ]]
+  [[ "${lines[1]}" == "Take only the events"* ]]
+  [[ "$output" == *"Write story/outline.md before asking"* ]]
   [[ "$output" != *"exists:"* ]]
 }
 

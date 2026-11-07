@@ -1,22 +1,7 @@
-Read the files above and list the events they give, with the events the user gave in this
-conversation. Ask the author as free text for the events from the opening to the ending
-that are still missing, and for the order the story tells them in. Use only the events the
-files and the author give, each stated as what happens, who does it and where.
+Take only the events the files above and the author in this conversation give, each stated
+as what happens, who does it and where.
 
-Arrange them into two Mermaid flowcharts:
-
-- 時系列: every event in the order it happens in the story world. One node `E<n>` per event,
-  labelled with its number and the event, no timestamp, `-->` to the next; branch for
-  concurrent events and merge where they meet; a `subgraph` per phase.
-- 構成: the sections of the story in the order it tells them, one `subgraph S<m>` each, with
-  `-->` from each section to the next. Inside, one node per event it shows, in the order it
-  shows them, its id `S<m>E<n>` and its label the event's 時系列 number and text.
-
-When the author has no told order yet, build 時系列 alone and leave 構成 out of {out}.
-Wrap every label in double quotes. Ask the author where an event's place in either order is
-unclear. Point out an event no section shows and a section that shows no event.
-
-Present them, revise on the author's feedback until they accept them, then write {out}:
+Write {out} before asking anything, in this shape:
 
 # <作品タイトル>
 
@@ -38,3 +23,19 @@ flowchart TD
     end
     S1 --> S2
 ```
+
+- 時系列: every event in the order it happens in the story world. One node `E<n>` per event,
+  labelled with its number and the event, no timestamp, `-->` to the next; branch for
+  concurrent events and merge where they meet; a `subgraph` per phase.
+- 構成: the sections in the order the story tells them, one `subgraph S<m>` each, `-->` from
+  each to the next. Inside, one node `S<m>E<n>` per event it shows, in the order it shows
+  them, labelled with the event's 時系列 number and text.
+
+Leave 構成 out while the told order is unknown. Wrap every label in double quotes. Place an
+event the files leave unclear where you judge most likely.
+
+Tell the author {out} is written, without the charts. Ask as free text for the events from
+the opening to the ending still missing, the told order, and the place of each event you
+placed by judgment; point out an event no section shows and a section that shows no event.
+Write each answer and piece of feedback into {out} as it comes and ask for what is still
+missing, until the author accepts it.

@@ -10,8 +10,14 @@ Write {out} before asking anything, in this shape:
 ```mermaid
 flowchart TD
     subgraph P1["<phase>"]
-        E1["① <出来事>"] --> E2["② <出来事>"]
+        E1["#1 <出来事>"]
     end
+    subgraph P2["<phase>"]
+        E2["#2 <出来事>"] --> E3["#3 <出来事>"]
+        E4["#4 <出来事>"]
+        E3 & E4 --> E5["#5 <出来事>"]
+    end
+    E1 --> E2 & E4
 ```
 
 ## 構成
@@ -19,17 +25,26 @@ flowchart TD
 ```mermaid
 flowchart TD
     subgraph S1["<section title>"]
-        S1E2["② <出来事>"] --> S1E1["① <出来事>"]
+        direction TB
+        S1E3["#3 <短い出来事>"] --> S1E1["#1 <短い出来事>"]
+    end
+    subgraph S2["<section title>"]
+        direction TB
+        S2E5["#5 <短い出来事>"]
     end
     S1 --> S2
 ```
 
 - 時系列: every event in the order it happens in the story world. One node `E<n>` per event,
-  labelled with its number and the event, no timestamp, `-->` to the next; branch for
-  concurrent events and merge where they meet; a `subgraph` per phase.
-- 構成: the sections in the order the story tells them, one `subgraph S<m>` each, `-->` from
-  each to the next. Inside, one node `S<m>E<n>` per event it shows, in the order it shows
-  them, labelled with the event's 時系列 number and text.
+  labelled `#<n>` and the event in full, no timestamp, `-->` to the next. Branch for
+  concurrent events and merge them with `&` where they meet. A `subgraph P<k>` per phase
+  holds the edges inside it; write each edge between phases outside, right after the
+  `end` of the phase it leads into.
+- 構成: the sections in the order the story tells them, one `subgraph S<m>` each with
+  `direction TB`, its title carrying the section's number or kind and its viewpoint
+  character when known, and `-->` from each to the next on one line at the end. Inside, one
+  node `S<m>E<n>` per event it shows, in the order it shows them, labelled `#<n>` and a
+  shortened form of the event.
 
 Leave 構成 out while the told order is unknown. Wrap every label in double quotes. Place an
 event the files leave unclear where you judge most likely.

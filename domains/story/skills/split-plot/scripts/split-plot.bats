@@ -15,7 +15,7 @@ setup() {
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "story/plot/010-co-arrival.md" ]
   [ "${lines[1]}" = "story/plot/020-co-first-night.md" ]
-  [[ "${lines[2]}" == "Create each plot file"* ]]
+  [[ "${lines[2]}" == "Fill each plot file"* ]]
 }
 
 @test "paths.sh numbers from 010 when story/plot/ is missing" {
@@ -80,4 +80,11 @@ MD
 @test "segments.sh fails on a missing source" {
   run sh "$SEGMENTS" story/none.md
   [ "$status" -eq 1 ]
+}
+
+@test "paths.sh writes the plot file skeleton at each path" {
+  run sh "$PATHS" co arrival first-night
+  [ "$status" -eq 0 ]
+  grep -qx '## セリフ' story/plot/010-co-arrival.md
+  grep -qx '## 参照' story/plot/020-co-first-night.md
 }

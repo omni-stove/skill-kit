@@ -1,1 +1,2 @@
-Confirm the path and content with the author, then write the file.
+Confirm the path and content with the author, then run
+{skeleton} {out}

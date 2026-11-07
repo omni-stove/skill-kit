@@ -2,11 +2,11 @@
 # Usage: path.sh [<slug> | <existing plot file>]
 # No argument: prints the existing plot files under story/plot/, one per line, in
 # natural sort order, then how to develop the plot from them. An existing plot file: the
-# check to run on it. <slug> (kebab-case English title, no leading number): prints the
+# check to run on it, with the plot file rules. <slug> (kebab-case English title, no leading number): prints the
 # plot's `Output:` path, with the action to take when it already exists. The path is the existing plot
 # with that slug, or else story/plot/NNN-<slug>.md, where NNN is three digits: the
 # highest leading number already in story/plot/ rounded up to the next ten (010 when
-# there is none).
+# there is none). Then the command that writes the plot file skeleton there.
 set -eu
 . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 dir=story/plot
@@ -14,6 +14,7 @@ dir=story/plot
 if [ $# -eq 1 ] && [ -f "$1" ]; then
   echo "Check: $1"
   prompt check
+  cat "$(dirname -- "$0")/../../../refs/plot-format.txt"
   exit 0
 fi
 if [ $# -eq 0 ]; then
@@ -37,6 +38,7 @@ if [ -n "$out" ]; then
   echo "Output: $out"
   prompt exists
 else
-  printf 'Output: %s/%03d-%s.md\n' "$dir" $(( (max / 10 + 1) * 10 )) "$1"
+  out=$(printf '%s/%03d-%s.md' "$dir" $(( (max / 10 + 1) * 10 )) "$1")
+  echo "Output: $out"
 fi
-prompt write
+prompt write skeleton="$(dirname -- "$0")/../../../refs/plot-skeleton.sh" out="$out"

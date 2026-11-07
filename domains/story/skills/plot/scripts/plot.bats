@@ -29,6 +29,7 @@ setup() {
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "Output: story/plot/010-first-contact.md" ]
   [[ "${lines[1]}" == "Confirm the path and content"* ]]
+  [[ "${lines[2]}" == *"/refs/plot-skeleton.sh story/plot/010-first-contact.md" ]]
 }
 
 @test "path.sh numbers a new plot at the next ten after the highest number" {
@@ -47,6 +48,7 @@ setup() {
   run sh "$PATHSH" first-contact
   [ "${lines[0]}" = "Output: story/plot/020-first-contact.md" ]
   [[ "$output" == *"Confirm the overwrite"* ]]
+  [[ "$output" == *"/refs/plot-skeleton.sh story/plot/020-first-contact.md"* ]]
   run sh "$PATHSH" memo
   [ "${lines[0]}" = "Output: story/plot/memo.md" ]
   [[ "$output" == *"Confirm the overwrite"* ]]
@@ -72,6 +74,7 @@ setup() {
   run sh "$PATHSH" story/plot/010-arrival.md
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "Check: story/plot/010-arrival.md" ]
-  [[ "$output" == *"against the loaded rules"* ]]
+  [[ "$output" == *"against the rules below"* ]]
+  [[ "$output" == *"Write the plot body above the first heading"* ]]
   [[ "$output" != *"Output:"* ]]
 }

@@ -17,7 +17,7 @@ setup() {
   echo old > story/plot/010-a.md
   run sh "$SKEL" story/plot/010-a.md story/plot/020-b.md
   [ "$status" -eq 0 ]
-  ! grep -q old story/plot/010-a.md
+  run ! grep -q old story/plot/010-a.md
   cmp story/plot/010-a.md story/plot/020-b.md
 }
 

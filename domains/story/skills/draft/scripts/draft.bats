@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# source.sh — the plot and its output file; draft.sh — the drafting step, held until the report is saved; finish.sh — the format fix and the feedback hand-off.
+# source.sh — the plot and its output file; draft.sh — the drafting step, held until the report is saved; gaps.sh — asking for what the marked passages lack, held until the draft is saved; finish.sh — the format fix and the feedback hand-off.
 
 setup() {
   work="$BATS_TEST_TMPDIR/work"
@@ -52,6 +52,18 @@ setup() {
   run sh "$BATS_TEST_DIRNAME/draft.sh" story/plot/010-arrival.md story/010.txt report.txt
   [ "$status" -eq 0 ]
   [[ "$output" == *"Write every Scene"* ]]
+  [[ "$output" == *'gaps.sh "story/plot/010-arrival.md" "story/010.txt" "report.txt"'* ]]
+}
+
+@test "gaps.sh prints the step to fill the marked passages only once the draft is saved" {
+  : > story/plot/010-arrival.md
+  run sh "$BATS_TEST_DIRNAME/gaps.sh" story/plot/010-arrival.md story/010.txt report.txt
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"save the draft there"* ]]
+  : > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/gaps.sh" story/plot/010-arrival.md story/010.txt report.txt
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"For each place marked in story/010.txt"* ]]
   [[ "$output" == *'finish.sh "story/plot/010-arrival.md" "story/010.txt"'* ]]
 }
 

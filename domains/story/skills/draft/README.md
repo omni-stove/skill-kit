@@ -12,6 +12,10 @@ flowchart TD
   exists -- "no" --> agent
   ask -- "yes" --> agent[subagent reports what<br/>the plot must stay<br/>consistent with]
   agent --> write[write every Scene,<br/>noting where the<br/>plot falls short]
-  write --> format[fix the format]
+  write --> gap{a passage would<br/>only fill space?}
+  gap -- "yes" --> need[/asks for the information<br/>each such passage lacks/]
+  need --> fill[write those passages<br/>from the answers]
+  fill --> format
+  gap -- "no" --> format[fix the format]
   format --> done[/"drafted + per Scene: what the plot lacks,<br/>how the draft filled it in,<br/>and how the plot could be fixed"/]
 ```

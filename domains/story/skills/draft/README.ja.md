@@ -11,6 +11,10 @@ flowchart TD
   exists -- "ない" --> agent
   ask -- "する" --> agent[サブエージェントが<br/>プロットと整合を取るべき<br/>内容を報告]
   agent --> write[全Sceneを書き、<br/>プロットの不足を<br/>書き留める]
-  write --> format[書式を直す]
+  write --> gap{埋め草にしか<br/>ならない箇所がある?}
+  gap -- "ある" --> need[/その箇所ごとに<br/>足りない情報を聞く/]
+  need --> fill[答えをもとに<br/>その箇所を書く]
+  fill --> format
+  gap -- "ない" --> format[書式を直す]
   format --> done[/"完了 + Sceneごとに、プロットに足りないもの、<br/>下書きでの補い方、<br/>プロットの直し方"/]
 ```

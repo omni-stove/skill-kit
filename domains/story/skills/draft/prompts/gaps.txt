@@ -1,0 +1,5 @@
+For each place marked in {out}, reread {file} and {report} for the information it lacks.
+Ask the author for that information by Scene and wait, then write those passages from the
+answers. With no place marked, go straight on.
+
+Then run {finish} "{file}" "{out}"

@@ -6,4 +6,7 @@ Where the text needs something the plot leaves open, or the plot cannot hold to 
 report, a setting, or its own 禁止事項 and ハイライト, write what you judge most likely and
 note the place; you judge what the plot lacks.
 
-Save the draft to {out}, then run {finish} "{file}" "{out}"
+Where the plot gives a passage nothing to move, mark the place instead of filling it; you
+judge which passages these are.
+
+Save the draft to {out}, then run {gaps} "{file}" "{out}" "{report}"

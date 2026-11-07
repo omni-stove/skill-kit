@@ -2,11 +2,11 @@
 # Usage: others.sh <file>   (a plot file, or the story file itself)
 # Prints the other plot and story files around the source, one per number, in
 # order: the story file where a number has one, else its plot file. A plot file
-# pairs with a story file as source.sh maps it: plot/<x>.md -> ../<leading
+# pairs with a story file as write and draft map it: plot/<x>.md -> ../<leading
 # number of x, else x>.txt. The source and its own pair are left out.
 set -eu
 [ $# -eq 1 ] || { echo "usage: others.sh <file>" >&2; exit 2; }
-. "$(dirname -- "$0")/../../../refs/local-path.sh"
+. "$(dirname -- "$0")/local-path.sh"
 set -- "$(local_path "$1")"
 f=$1
 [ -f "$f" ] || { echo "others: no such file: $f" >&2; exit 1; }

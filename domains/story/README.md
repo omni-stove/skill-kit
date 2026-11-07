@@ -11,6 +11,9 @@ flowchart TD
   outline --> plot[plot]
   outline --> split
   memo[an outline or memo] --> split[split-plot]
+  plot --> draft[draft<br/>whole plot at once]
+  draft -- "feedback" --> plot
+  draft --> write
   plot --> write
   split --> write[write<br/>1 Scene at a time]
   write --> checks[check the draft]
@@ -55,6 +58,7 @@ flowchart TD
 | Skill | What it does |
 |---|---|
 | [write](skills/write/README.md) | Writes the text from a plot file one Scene at a time, or revises a text file |
+| [draft](skills/draft/README.md) | Writes the text from a plot file in one pass, then points out what the plot lacks |
 | [load](skills/load/README.md) | Reads files and holds them for the next request |
 
 ## 4. Checking and fixing

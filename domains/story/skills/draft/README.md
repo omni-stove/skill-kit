@@ -1,0 +1,17 @@
+# draft
+
+Writes a plot file out as a whole story file in one pass, then hands the plot back with
+where it falls short. The plot file is left as it is.
+
+Parallelograms are what the user sees and answers.
+
+```mermaid
+flowchart TD
+  input[plot file] --> exists{story file exists?}
+  exists -- "yes" --> ask[/asks: overwrite<br/>with the draft?/]
+  exists -- "no" --> agent
+  ask -- "yes" --> agent[subagent reports what<br/>the plot must stay<br/>consistent with]
+  agent --> write[write every Scene,<br/>noting where the<br/>plot falls short]
+  write --> format[fix the format]
+  format --> done[/"drafted + per Scene: what the plot lacks,<br/>how the draft filled it in,<br/>and how the plot could be fixed"/]
+```

@@ -1,0 +1,4 @@
+Launch one Agent on the plot file to report what it must stay consistent with, what of it
+the reader already has, and where it contradicts a setting or a file around it; the Agent
+runs {others} "{file}". Open no other file until it returns. Save its report to a file,
+then run {draft} "{file}" "{out}" <the report file>

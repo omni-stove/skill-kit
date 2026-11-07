@@ -11,6 +11,9 @@ flowchart TD
   outline --> plot[plot]
   outline --> split
   memo[構成案やメモ] --> split[split-plot]
+  plot --> draft[draft<br/>プロット全体を一気に]
+  draft -- "FB" --> plot
+  draft --> write
   plot --> write
   split --> write[write<br/>1 Sceneずつ]
   write --> checks[本文をチェック]
@@ -55,6 +58,7 @@ flowchart TD
 | スキル | すること |
 |---|---|
 | [write](skills/write/README.ja.md) | プロットファイルから本文を1 Sceneずつ書く。または本文を直す |
+| [draft](skills/draft/README.ja.md) | プロットファイルから本文を一気に書き、プロットに足りないものを指摘する |
 | [load](skills/load/README.ja.md) | ファイルを読んで、次の依頼のために覚えておく |
 
 ## 4. チェックと修正

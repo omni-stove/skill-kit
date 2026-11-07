@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 # shellcheck disable=SC2030,SC2031 # each @test runs in its own subshell, and run sets $output afresh in each
-# source.sh — deterministic resolution of the source and its output file; scene.sh — the writing step, held until the report is saved; others.sh — the other files to read, one per number; scene-check.sh — the format fix and the checks before each hand-off; check.sh — the external model's findings over the finished file, through a stub curl.
+# source.sh — deterministic resolution of the source and its output file; scene.sh — the writing step, held until the report is saved; scene-check.sh — the format fix and the checks before each hand-off; check.sh — the external model's findings over the finished file, through a stub curl.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
@@ -209,34 +209,4 @@ reply() {
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
   [ "$(head -2 story/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
   [[ "$output" == *"3:　部屋は3つ。"* ]]
-}
-
-@test "others.sh prints the story file where a number has both, else the plot file" {
-  : > story/plot/010-co-arrival.md
-  : > story/010.txt
-  : > story/plot/020-night.md
-  : > story/plot/030-dawn.md
-  : > story/plot/040-end.md
-  run sh "$BATS_TEST_DIRNAME/others.sh" story/plot/030-dawn.md
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "story/010.txt" ]
-  [ "${lines[1]}" = "story/plot/020-night.md" ]
-  [ "${lines[2]}" = "story/plot/040-end.md" ]
-  [ "${#lines[@]}" -eq 3 ]
-}
-
-@test "others.sh leaves out the source's own pair" {
-  : > story/plot/010-co-arrival.md
-  : > story/010.txt
-  : > story/plot/020-night.md
-  : > story/020.txt
-  run sh "$BATS_TEST_DIRNAME/others.sh" story/plot/020-night.md
-  [ "$output" = "story/010.txt" ]
-  run sh "$BATS_TEST_DIRNAME/others.sh" story/020.txt
-  [ "$output" = "story/010.txt" ]
-}
-
-@test "others.sh fails on a missing source" {
-  run sh "$BATS_TEST_DIRNAME/others.sh" story/plot/missing.md
-  [ "$status" -eq 1 ]
 }

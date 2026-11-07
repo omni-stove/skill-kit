@@ -1,0 +1,5 @@
+
+Leave {file} as it is and reply with the feedback alone:
+{out} drafted.
+[Each note, in plot order: the Scene, what the plot lacks, the lines of {out} that fill
+it in and how, and the fixes open to the plot; with no note, that the plot held]

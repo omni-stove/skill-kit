@@ -1,0 +1,1 @@
+The output file exists. Ask "Overwrite it with the draft?" and wait for the response; go on only on yes.

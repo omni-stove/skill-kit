@@ -35,4 +35,4 @@ if [ -f "$out" ]; then
 else
   prompt new
 fi
-prompt report others="$(dirname -- "$0")/others.sh" file="$f" scene="$(dirname -- "$0")/scene.sh" out="$out"
+prompt report others="$(dirname -- "$0")/../../../refs/others.sh" file="$f" scene="$(dirname -- "$0")/scene.sh" out="$out"

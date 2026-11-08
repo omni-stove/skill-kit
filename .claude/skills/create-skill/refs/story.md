@@ -3,7 +3,7 @@
 Conventions the existing story skills establish — follow them when scaffolding a new one:
 
 - **Name project paths directly, relative to the repo root:** `README.md`,
-  `characters/<category>/<name>.md`, `world/`, `items/`, `plot/<title>.md`, `story/<n>.txt`,
+  `characters/<category>/<name>.md`, `world/`, `items/`, `plot/<title>.md`, `story/<n>.txt`, `draft/<n>.txt`,
   `story/synopsis.txt`, `story/timeline.md`, `story/outline.md`. A location no skill uses yet is added to this
   list, so every skill names the same paths.
 - **Push deterministic work into `scripts/*.sh`** under the skill dir, called from the body in one

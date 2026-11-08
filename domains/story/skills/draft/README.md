@@ -10,7 +10,7 @@ flowchart TD
   input[plot file] --> exists{story file exists?}
   exists -- "yes" --> ask[/asks: overwrite<br/>with the draft?/]
   exists -- "no" --> agent
-  ask -- "yes" --> agent[subagent reports what<br/>the plot must stay<br/>consistent with]
+  ask -- "yes" --> agent[subagent reports what<br/>the plot must stay<br/>consistent with,<br/>reading no later file,<br/>outline or synopsis]
   agent --> write[write every Scene,<br/>noting where the<br/>plot falls short]
   write --> gap{a passage would<br/>only fill space?}
   gap -- "yes" --> need[/asks for the information<br/>each such passage lacks/]

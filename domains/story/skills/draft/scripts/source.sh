@@ -26,5 +26,6 @@ case $(basename -- "$dir") in
 esac
 out=${out#./}
 echo "Output: $out"
+prompt scope others="$(dirname -- "$0")/../../../refs/others.sh" file="$f"
 [ ! -f "$out" ] || prompt exists
-prompt report others="$(dirname -- "$0")/../../../refs/others.sh" file="$f" draft="$(dirname -- "$0")/draft.sh" out="$out"
+prompt report file="$f" draft="$(dirname -- "$0")/draft.sh" out="$out"

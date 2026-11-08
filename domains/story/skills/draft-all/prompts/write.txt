@@ -1,0 +1,13 @@
+Launch one Agent per plot above in parallel; each tab-separated line is a plot file and
+its output file.
+Each agent's prompt holds the two paths and has it run .agents/skills/draft-all/refs.sh,
+read every .md file in {dir}, and write every Scene of its plot file in one pass by the
+loaded rules: its plot file leads, the other plots give what surrounds it, open another
+file only for a fact the plots lack, and deliver its プロットの意図 through events alone.
+Where the text needs what the plot leaves open or the plot cannot hold, it writes what it
+judges most likely without asking. It saves the text to its output file, runs
+.agents/refs/format.sh <its output file>, and brings the lines listed within the loaded
+rules.
+
+Once every agent has returned, reply with the output files written, in the order above,
+and any plot left undrafted.

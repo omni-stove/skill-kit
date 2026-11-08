@@ -47,13 +47,15 @@ setup() {
   [ "${lines[0]}" = "Output: story/010.txt" ]
   [[ "$output" == *"revise it"* ]]
   [[ "$output" == *'scene-check.sh "story/010.txt"'* ]]
+  [[ "$output" == *'others.sh --earlier "story/010.txt"'* ]]
 }
 
 @test "source.sh says to start fresh when the output is missing" {
   : > story/plot/arrival.md
   run sh "$SOURCE" story/plot/arrival.md
   [[ "$output" == *"does not exist yet"* ]]
-  [[ "$output" == *'others.sh "story/plot/arrival.md"'* ]]
+  [[ "$output" == *'others.sh --earlier "story/plot/arrival.md"'* ]]
+  [[ "$output" == *'story/outline.md, story/synopsis.txt, draft/ and'* ]]
   [[ "$output" == *'scene.sh "story/plot/arrival.md" "story/arrival.txt" <the report file>'* ]]
   [[ "$output" != *"Write 1 Scene"* ]]
 }

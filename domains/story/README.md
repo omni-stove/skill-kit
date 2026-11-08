@@ -15,6 +15,7 @@ flowchart TD
   draft -- "feedback" --> plot
   draft --> write
   plot --> write
+  plot --> draftall[draft-all<br/>every plot at once]
   split --> write[write<br/>1 Scene at a time]
   write --> checks[check the draft]
   checks -- "fix" --> write
@@ -33,6 +34,7 @@ flowchart TD
 | Timeline and whole-story flow | `story/outline.md` |
 | Plot | `story/plot/NNN-<slug>.md` |
 | Text | `story/NNN.txt`, written from the plot file of the same number |
+| Rough drafts of every plot | `draft/NNN.txt`, written from the plot file of the same number |
 | Synopsis | `story/synopsis.txt` |
 | English translation | `story/en/` |
 
@@ -59,6 +61,7 @@ flowchart TD
 |---|---|
 | [write](skills/write/README.md) | Writes the text from a plot file one Scene at a time, or revises a text file |
 | [draft](skills/draft/README.md) | Writes the text from a plot file in one pass, then points out what the plot lacks |
+| [draft-all](skills/draft-all/README.md) | Writes every plot out into `draft/` at once, filling in what the plots leave open without asking |
 | [load](skills/load/README.md) | Reads files and holds them for the next request |
 
 ## 4. Checking and fixing

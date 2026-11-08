@@ -14,9 +14,11 @@ f=$(local_path "$1")
 dir=$(dirname -- "$f")
 stem=$(basename -- "$f")
 stem=${stem%.*}
+others="$(dirname -- "$0")/../../../refs/others.sh"
 case $f in
   *.txt)
     echo "Output: $f"
+    prompt scope others="$others" file="$f"
     prompt revise scene_check="$(dirname -- "$0")/scene-check.sh" file="$f"
     exit 0 ;;
 esac
@@ -30,9 +32,10 @@ case $(basename -- "$dir") in
 esac
 out=${out#./}
 echo "Output: $out"
+prompt scope others="$others" file="$f"
 if [ -f "$out" ]; then
   prompt exists
 else
   prompt new
 fi
-prompt report others="$(dirname -- "$0")/../../../refs/others.sh" file="$f" scene="$(dirname -- "$0")/scene.sh" out="$out"
+prompt report file="$f" scene="$(dirname -- "$0")/scene.sh" out="$out"

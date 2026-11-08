@@ -1,11 +1,19 @@
 #!/bin/sh
-# Usage: others.sh <file>   (a plot file, or the story file itself)
+# Usage: others.sh [--earlier] <file>   (a plot file, or the story file itself)
 # Prints the other plot and story files around the source, one per number, in
 # order: the story file where a number has one, else its plot file. A plot file
 # pairs with a story file as write and draft map it: plot/<x>.md -> ../<leading
 # number of x, else x>.txt. The source and its own pair are left out.
+# With --earlier, prints only the numbers below the source's; a file without a
+# number has no known place in the order, so it is left out, and a source
+# without one gets nothing.
 set -eu
-[ $# -eq 1 ] || { echo "usage: others.sh <file>" >&2; exit 2; }
+earlier=
+if [ "${1:-}" = --earlier ]; then
+  earlier=1
+  shift
+fi
+[ $# -eq 1 ] || { echo "usage: others.sh [--earlier] <file>" >&2; exit 2; }
 . "$(dirname -- "$0")/local-path.sh"
 set -- "$(local_path "$1")"
 f=$1
@@ -24,16 +32,23 @@ case $f in
     [ "$(basename -- "$dir")" = plot ] || exit 0
     story=$(dirname -- "$dir"); plot=$dir; own=$(key "$f") ;;
 esac
+keep() {
+  [ "$1" != "$own" ] || return 1
+  [ -n "$earlier" ] || return 0
+  case $1$own in *[!0-9]*) return 1 ;; esac
+  [ "$1" -lt "$own" ]
+}
 {
   for md in "$plot"/*.md; do
     [ -f "$md" ] || continue
     k=$(key "$md")
-    [ "$k" = "$own" ] && continue
+    keep "$k" || continue
     [ -f "$story/$k.txt" ] || printf '%s\t%s\n' "$k" "$md"
   done
   for txt in "$story"/*.txt; do
     [ -f "$txt" ] || continue
     k=$(basename -- "$txt" .txt)
-    [ "$k" = "$own" ] || printf '%s\t%s\n' "$k" "$txt"
+    keep "$k" || continue
+    printf '%s\t%s\n' "$k" "$txt"
   done
 } | sort | cut -f2 | sed 's|^\./||'

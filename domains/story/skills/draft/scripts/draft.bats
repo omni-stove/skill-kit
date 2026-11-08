@@ -12,7 +12,8 @@ setup() {
   run sh "$BATS_TEST_DIRNAME/source.sh" story/plot/010-arrival.md
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "Output: story/010.txt" ]
-  [[ "$output" == *'others.sh "story/plot/010-arrival.md"'* ]]
+  [[ "$output" == *'others.sh --earlier "story/plot/010-arrival.md"'* ]]
+  [[ "$output" == *'story/outline.md, story/synopsis.txt, draft/ and'* ]]
   [[ "$output" == *'draft.sh "story/plot/010-arrival.md" "story/010.txt" <the report file>'* ]]
   [[ "$output" != *"Overwrite"* ]]
 }

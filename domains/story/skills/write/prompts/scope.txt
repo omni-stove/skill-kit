@@ -1,0 +1,2 @@
+Of the story's plot and story files, story/outline.md, story/synopsis.txt, draft/ and
+story/en/ included, you and every Agent you launch open only the source file, the output file, any file the user names, and the files that {others} --earlier "{file}" prints.

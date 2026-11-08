@@ -15,6 +15,7 @@ flowchart TD
   draft -- "FB" --> plot
   draft --> write
   plot --> write
+  plot --> draftall[draft-all<br/>全プロットをまとめて]
   split --> write[write<br/>1 Sceneずつ]
   write --> checks[本文をチェック]
   checks -- "修正" --> write
@@ -33,6 +34,7 @@ flowchart TD
 | 時系列と全体の流れ | `story/outline.md` |
 | プロット | `story/plot/NNN-<slug>.md` |
 | 本文 | `story/NNN.txt`。同じ番号のプロットファイルから書く |
+| 全プロットの下書き | `draft/NNN.txt`。同じ番号のプロットファイルから書く |
 | 梗概 | `story/synopsis.txt` |
 | 英訳 | `story/en/` |
 
@@ -59,6 +61,7 @@ flowchart TD
 |---|---|
 | [write](skills/write/README.ja.md) | プロットファイルから本文を1 Sceneずつ書く。または本文を直す |
 | [draft](skills/draft/README.ja.md) | プロットファイルから本文を一気に書き、プロットに足りないものを指摘する |
+| [draft-all](skills/draft-all/README.ja.md) | すべてのプロットをまとめて `draft/` に書き出す。プロットが決めていないところは聞かずに補う |
 | [load](skills/load/README.ja.md) | ファイルを読んで、次の依頼のために覚えておく |
 
 ## 4. チェックと修正

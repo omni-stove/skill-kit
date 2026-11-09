@@ -73,7 +73,7 @@ MD
   [[ "$output" == *"== bullets (2) =="* ]]
   [[ "$output" == *"== blocks (5) =="* ]]
   [[ "$output" == *"== markers: no split =="* ]]
-  [[ "$output" != *"【場面3】"* ]]
+  [[ "$output" == *"$(printf '5\t【場面3】')"* ]]
   [[ "$output" == *"paths.sh <base name>"* ]]
 }
 

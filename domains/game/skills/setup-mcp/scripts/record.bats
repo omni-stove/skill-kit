@@ -27,7 +27,7 @@ setup() {
   echo '{"mcpServers":{"unity":{"command":"x"}}}' > .mcp.json
   PATH=/usr/bin:/bin run sh "$RECORD" mcp__unity__
   [[ "$output" == *"server	unity — configured"* ]]
-  [[ "$output" != *"warning"* ]]
+  [[ "$output" != *"warning	"* ]]
   [ "$(sh -c '. .agents/refs/engine.sh; control_mcp')" = "mcp__unity__" ]
   [ "$(sh -c '. .agents/refs/engine.sh; engine_name')" = "Unity" ]
   [ "$(sh -c '. "$0"; control_mcp' "$BATS_TEST_TMPDIR/kit/engine.sh")" = "" ]

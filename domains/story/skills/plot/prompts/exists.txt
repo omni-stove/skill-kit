@@ -1,1 +1,1 @@
-The output file exists. Confirm the overwrite with the author before editing it.
+The output file exists. Confirm the overwrite with the author before replacing it.

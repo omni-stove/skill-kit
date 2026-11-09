@@ -1,2 +1,2 @@
-Confirm the path and content with the author, then run
-{skeleton} {out}
+Confirm the path and content with the author, then write the file with this one command, each section's text by the rules below, leaving out the options that stay empty:
+{skeleton} {out} --body <text> --intent <text> --length <text> --prohibited <text> --highlights <text> --references <text>

@@ -69,7 +69,7 @@ setup() {
 }
 
 @test "gaps.sh says a draft is short of its length before the step to fill it" {
-  printf '本文\n\n## 分量\n100字\n' > story/plot/010-arrival.md
+  printf '本文\n\n## Length\n100字\n' > story/plot/010-arrival.md
   printf '彼は頷いた。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/gaps.sh" story/plot/010-arrival.md story/010.txt report.txt
   [ "$status" -eq 0 ]

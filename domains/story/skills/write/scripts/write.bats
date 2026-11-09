@@ -97,7 +97,7 @@ STUB
   PATH="$work/bin:$PATH"
   mkdir -p characters
   printf '湊は左利き。\n' > characters/minato.md
-  printf 'プロット本文\n## 参照\n- @characters/minato.md\n' > story/plot/arrival.md
+  printf 'プロット本文\n## References\n- @characters/minato.md\n' > story/plot/arrival.md
   printf 'レポート本文\n' > report.txt
   printf '　俺は扉を開けた。\n　右手でペンを取った。\n' > story/arrival.txt
 }

@@ -1,6 +1,6 @@
 #!/bin/sh
 # Usage: gaps.sh <plot file> <output file> <report file>
-# Says when the saved draft is shorter than the plot's 分量, then prints the step to fill
+# Says when the saved draft is shorter than the plot's ## Length, then prints the step to fill
 # the passages marked in it from the author's answers, which leads to finish.sh.
 set -eu
 [ $# -eq 3 ] || { echo "usage: gaps.sh <plot file> <output file> <report file>" >&2; exit 2; }

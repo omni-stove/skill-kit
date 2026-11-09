@@ -3,9 +3,9 @@ its output file.
 Each agent's prompt holds the two paths and has it run .agents/skills/draft-all/refs.sh,
 read every .md file in {dir}, and write every Scene of its plot file in one pass by the
 loaded rules: its plot file leads, the other plots give what surrounds it, open another
-file only for a fact the plots lack, and deliver its プロットの意図 through events alone.
+file only for a fact the plots lack, and deliver its Intent through events alone.
 It plays out each event of the plot body on the page in action, dialogue, and the POV's
-reaction. It brings the whole text to at least the length under its plot's 分量, giving
+reaction. It brings the whole text to at least the length under its plot's ## Length, giving
 the most length to the turns that change what the POV knows, wants, or does next, which
 it judges. At those turns the POV's perception and reaction stay even where the loaded
 rules would cut them for adding no new fact.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# length.sh — whether the story file is shorter than the length the plot's 分量 gives.
+# length.sh — whether the story file is shorter than the length the plot's ## Length gives.
 
 setup() {
   LEN="$BATS_TEST_DIRNAME/length.sh"
@@ -8,7 +8,7 @@ setup() {
 }
 
 plot() {
-  printf '本文\n\n## 分量\n%b\n## 禁止事項\n99999字\n' "$1" > plot.md
+  printf '本文\n\n## Length\n%b\n## Prohibited\n99999字\n' "$1" > plot.md
 }
 
 @test "length.sh counts 字 without whitespace over the whole file" {

@@ -9,4 +9,4 @@ Run `.agents/skills/shorts-plot/refs.sh`
 
 Read `src/shorts/<short-id>/README.md` for context if present, then develop the plot following the loaded dialogue rules.
 
-Confirm the overwrite with the author when `src/shorts/<short-id>/plot.md` exists, then run `.agents/refs/plot-skeleton.sh src/shorts/<short-id>/plot.md`.
+Confirm the overwrite with the author when `src/shorts/<short-id>/plot.md` exists, then write the file by the loaded rules with this one command, leaving out the options that stay empty: `.agents/refs/plot-skeleton.sh src/shorts/<short-id>/plot.md --body <text> --intent <text> --length <text> --prohibited <text> --highlights <text> --references <text>`

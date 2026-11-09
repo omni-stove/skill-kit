@@ -3,7 +3,7 @@
 # Fixes the output file's format through format.sh. With WRITE_CHECK_MODEL and
 # GEMINI_API_KEY set, has that Gemini model (thinking high) list findings, in the
 # shape of check-schema.json, on the line-numbered output against the style rules,
-# given the source, the report, README.md and the files the source's 参照 names,
+# given the source, the report, README.md and the files the source's References names,
 # and prints the findings whose
 # text is on the line they name, with a rule and a basis, and whose quote, where
 # they cite a file, is in that file; the rest are dropped. Without the model, or
@@ -35,7 +35,7 @@ check() {
   prompt check-system rules="$(cat "$style")" > "$tmp/sys"
   {
     printf '%s\n' "$src" "$report" README.md
-    sed -n '/^## 参照/,/^## /s/^- @//p' "$src"
+    sed -n '/^## References/,/^## /s/^- @//p' "$src"
   } | awk 'NF && !seen[$0]++' | while IFS= read -r p; do
     [ -f "$p" ] && [ "$p" != "$f" ] && printf '%s\n' "$p"
   done > "$tmp/files"

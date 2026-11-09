@@ -22,7 +22,7 @@ setup() {
   [[ "$output" == *"Launch one Agent per plot"* ]]
   [[ "$output" == *"read every .md file in story/plot"* ]]
   [[ "$output" == *"plays out each event of the plot body"* ]]
-  [[ "$output" == *"gives each event under its plot's 分量 at least the length listed"* ]]
+  [[ "$output" == *"brings the whole text to at least the length under its plot's 分量"* ]]
   [[ "$output" == *".agents/refs/length.sh <its plot file> <its output file>"* ]]
   [[ "$output" != *"Overwrite"* ]]
   [ -d draft ]

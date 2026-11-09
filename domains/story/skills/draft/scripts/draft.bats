@@ -68,15 +68,12 @@ setup() {
   [[ "$output" == *'finish.sh "story/plot/010-arrival.md" "story/010.txt"'* ]]
 }
 
-@test "gaps.sh lists an event short of its length before the step to fill it" {
-  printf '本文\n\n## 分量\n- 対決: 100字\n- 移動: 流す\n' > story/plot/010-arrival.md
+@test "gaps.sh says a draft is short of its length before the step to fill it" {
+  printf '本文\n\n## 分量\n100字\n' > story/plot/010-arrival.md
   printf '彼は頷いた。\n' > story/010.txt
-  run sh "$BATS_TEST_DIRNAME/gaps.sh" story/plot/010-arrival.md story/010.txt report.txt 1-1
-  [ "$status" -eq 0 ]
-  [[ "$output" == *"Treat each as a marked place"*"対決: 6/100字"*"For each place marked"* ]]
   run sh "$BATS_TEST_DIRNAME/gaps.sh" story/plot/010-arrival.md story/010.txt report.txt
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"line range(s)"* ]]
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Mark the passages that need more"*"6/100字"*"For each place marked"* ]]
 }
 
 @test "finish.sh fixes the format, lists what is left, and hands back the feedback" {

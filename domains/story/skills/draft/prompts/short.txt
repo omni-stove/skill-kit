@@ -1,1 +1,1 @@
-Events shorter than the length under 分量, as <event>: <counted>/<minimum>. Treat each as a marked place:
+The draft is shorter than the length under 分量, as <counted>/<length>. Mark the passages that need more to reach it, which you judge:

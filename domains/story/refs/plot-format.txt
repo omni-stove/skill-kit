@@ -10,7 +10,7 @@ Plot body
 - Put writing instructions (「〜のように書く」「〜を匂わせない」) in 禁止事項
 
 分量
-- Leave it blank unless the author gives a length for an event of this plot; then list each as a bullet of a short name for the event in the plot body's words and its minimum length in half-width digits: `- <name>: 4000字` or `- <name>: 800 words`, or `- <name>: 流す` or `- <name>: brief` for an event to pass over quickly
+- Write only the length of the whole plot on one line, without a bullet, in half-width digits: `12000字` or `3000 words`, with the number the author gives, otherwise the length you judge its events need
 
 禁止事項
 - Leave it blank unless the author names something to rule out; then list each as a bullet: tonal mistakes, plot moves, information not to reveal yet

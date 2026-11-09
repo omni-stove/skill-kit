@@ -11,5 +11,5 @@ flowchart TD
   need --> fill[答えをもとに<br/>その箇所を書く]
   fill --> format
   gap -- "ない" --> format[書式を直す]
-  format --> done[/"完了 + Sceneごとに、プロットに足りないもの、<br/>下書きでの補い方、<br/>プロットの直し方"/]
+  format --> done[/"report/NNN.md: 分量の不足 +<br/>Sceneごとに、プロットに足りないもの、<br/>下書きでの補い方、<br/>プロットの直し方"/]
 ```

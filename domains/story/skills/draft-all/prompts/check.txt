@@ -1,0 +1,8 @@
+Launch one Agent per plot above in parallel; each tab-separated line is a plot file and
+its report file.
+Each agent's prompt holds the two paths and the loaded rules' definition of the report on
+a plot, and has it save that report on its plot to its report file. Of the story's plot and
+story files, story/outline.md, story/synopsis.txt, draft/ and story/en/ included, it opens
+only its plot file and the files that {others} --earlier <its plot file> prints.
+
+Once every agent has returned, run {write}

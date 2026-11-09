@@ -34,7 +34,9 @@ flowchart TD
 | Timeline and whole-story flow | `story/outline.md` |
 | Plot | `story/plot/NNN-<slug>.md` |
 | Text | `story/NNN.txt`, written from the plot file of the same number |
+| Report on drafting a plot into text | `story/report/NNN.md` |
 | Rough drafts of every plot | `draft/NNN.txt`, written from the plot file of the same number |
+| Report on those drafts | `draft/report.md` |
 | Synopsis | `story/synopsis.txt` |
 | English translation | `story/en/` |
 

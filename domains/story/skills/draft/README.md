@@ -11,5 +11,5 @@ flowchart TD
   need --> fill[write those passages<br/>from the answers]
   fill --> format
   gap -- "no" --> format[fix the format]
-  format --> done[/"drafted + per Scene: what the plot lacks,<br/>how the draft filled it in,<br/>and how the plot could be fixed"/]
+  format --> done[/"report/NNN.md: short of its length +<br/>per Scene: what the plot lacks,<br/>how the draft filled it in,<br/>and how the plot could be fixed"/]
 ```

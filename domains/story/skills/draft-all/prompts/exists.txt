@@ -1,1 +1,1 @@
-The files on the Exists lines hold an earlier draft. Ask "Overwrite them with the new drafts?" and wait for the response; on no, drop the plots that draft into them.
+The files on the Exists lines hold an earlier draft. Ask "Overwrite them with the new drafts?" and wait for the response, then run {plots} --overwrite on yes and {plots} --keep on no.

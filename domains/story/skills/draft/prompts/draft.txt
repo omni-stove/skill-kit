@@ -1,6 +1,6 @@
 Write every Scene of the plot file in one pass by the loaded rules: the plot file leads,
 open another file only for a fact {report} lacks, and deliver its プロットの意図 through
-events alone.
+events alone. Give the most length to the events under its 転換点.
 
 Where the text needs something the plot leaves open, or the plot cannot hold to the
 report, a setting, or its own 禁止事項 and ハイライト, write what you judge most likely and

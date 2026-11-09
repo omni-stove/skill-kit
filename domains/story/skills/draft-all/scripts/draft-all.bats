@@ -21,6 +21,8 @@ setup() {
   [[ "$output" != *".hidden"* ]]
   [[ "$output" == *"Launch one Agent per plot"* ]]
   [[ "$output" == *"read every .md file in story/plot"* ]]
+  [[ "$output" == *"plays out each event of the plot body"* ]]
+  [[ "$output" == *"gives the most length to the events under its plot's 転換点"* ]]
   [[ "$output" != *"Overwrite"* ]]
   [ -d draft ]
 }

@@ -1,6 +1,6 @@
 # draft-all
 
-Writes every plot in `story/plot/` out as text in `draft/` at once. Where a plot leaves something open, the draft fills it in without asking.
+Writes every plot in `story/plot/` out as text in `draft/` at once. Each event in a plot is played out on the page, with the most length on the events listed under the plot's 転換点, or on the turning points the draft finds when none are listed. Where a plot leaves something open, the draft fills it in without asking, adding only what the events need.
 
 Parallelograms are what the user sees and answers.
 

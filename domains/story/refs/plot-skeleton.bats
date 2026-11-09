@@ -9,7 +9,7 @@ setup() {
 @test "plot-skeleton.sh writes every section heading in order, with the placeholder under the dialogue heading" {
   run sh "$SKEL" story/plot/010-a.md
   [ "$status" -eq 0 ]
-  [ "$(cat story/plot/010-a.md)" = "$(printf '\n## プロットの意図\n\n## 禁止事項\n\n## ハイライト\n\n## セリフ\n<!-- 指示があるまでこの項目に追加しない -->\n\n## 参照')" ]
+  [ "$(cat story/plot/010-a.md)" = "$(printf '\n## プロットの意図\n\n## 転換点\n\n## 禁止事項\n\n## ハイライト\n\n## セリフ\n<!-- 指示があるまでこの項目に追加しない -->\n\n## 参照')" ]
 }
 
 @test "plot-skeleton.sh replaces an existing file and writes each file given" {

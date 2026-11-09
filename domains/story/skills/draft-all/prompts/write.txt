@@ -4,10 +4,16 @@ Each agent's prompt holds the two paths and has it run .agents/skills/draft-all/
 read every .md file in {dir}, and write every Scene of its plot file in one pass by the
 loaded rules: its plot file leads, the other plots give what surrounds it, open another
 file only for a fact the plots lack, and deliver its プロットの意図 through events alone.
+It plays out each event of the plot body on the page in action, dialogue, and the POV's
+reaction, and gives the most length to the events under its plot's 転換点; with none
+listed there, to the turns that change what the POV knows, wants, or does next, which it
+judges. At those turns the POV's perception and reaction stay even where the loaded
+rules would cut them for adding no new fact.
 Where the text needs what the plot leaves open or the plot cannot hold, it writes what it
-judges most likely without asking. It saves the text to its output file, runs
-.agents/refs/format.sh <its output file>, and brings the lines listed within the loaded
-rules.
+judges most likely without asking, adding only what an event of the plot needs in order
+to happen or what changes what the POV does next. It saves the text to its output file,
+runs .agents/refs/format.sh <its output file>, and brings the lines listed within the
+loaded rules.
 
 Once every agent has returned, reply with the output files written, in the order above,
 and any plot left undrafted.

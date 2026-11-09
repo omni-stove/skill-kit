@@ -1,9 +1,5 @@
 # staging
 
-Checks one story file scene by scene for description quality.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   check[check each scene's<br/>description]

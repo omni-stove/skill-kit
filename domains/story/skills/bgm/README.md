@@ -1,9 +1,5 @@
 # bgm
 
-Builds a Suno prompt for a BGM track from the story's settings or a described scene or mood.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   subject{subject from this<br/>project's story?}

@@ -1,9 +1,5 @@
 # feature-jsdoc
 
-Adds or revises the @feature JSDoc on an app's pages and components, describing what each does from the user's point of view.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   scope{scope?}

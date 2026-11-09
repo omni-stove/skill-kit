@@ -1,9 +1,5 @@
 # balance
 
-Designs or documents the balance of a game system: its tunable numbers, curves, and the reasoning behind them.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the GDD and the<br/>mechanics it governs]

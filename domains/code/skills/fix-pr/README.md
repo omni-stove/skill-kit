@@ -1,9 +1,5 @@
 # fix-pr
 
-Fixes a PR's unresolved review threads, failing CI and merge conflicts, then pushes and answers each thread.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   fetch[check out the PR with<br/>the latest commits and<br/>the base branch merged in]

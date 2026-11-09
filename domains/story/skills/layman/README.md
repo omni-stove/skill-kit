@@ -1,9 +1,5 @@
 # layman
 
-Reads a file or every .txt file in a directory as a layman and flags passages that need specialist knowledge.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   input{file or directory?}

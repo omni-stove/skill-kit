@@ -1,9 +1,5 @@
 # automation
 
-Sets up the org's shared GitHub Actions and configs in this repo, the way each shared repo's README says.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   list[list the org's shared repos<br/>and this repo's CI and tasks]

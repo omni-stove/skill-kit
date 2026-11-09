@@ -1,9 +1,5 @@
 # plot
 
-Develops a high-level plot with the author through dialogue, or checks an existing plot file.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   input{plot file named?}

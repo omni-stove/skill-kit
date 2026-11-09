@@ -1,9 +1,5 @@
 # init
 
-リポジトリをmiseとmakeに載せ、すべてのコマンドを `make <name>` で動くようにする。
-
-平行四辺形はユーザーに見えて、答えるもの。
-
 ```mermaid
 flowchart TD
   create[足りないmakeと<br/>miseのファイルを作る]

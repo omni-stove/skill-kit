@@ -1,9 +1,5 @@
 # tachie
 
-Builds an image-generation prompt for a character's standing art (立ち絵).
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   who{character from<br/>this project?}

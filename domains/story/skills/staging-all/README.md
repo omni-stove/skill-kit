@@ -1,9 +1,5 @@
 # staging-all
 
-Runs the scene description check on every .txt file in a directory at once.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   files{how many files?}

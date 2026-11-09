@@ -1,9 +1,5 @@
 # feature-jsdoc
 
-アプリのページとコンポーネントに、それぞれがユーザーにとって何をするものかを書く@feature JSDocを付ける、または見直す。
-
-平行四辺形はユーザーに見えて、答えるもの。
-
 ```mermaid
 flowchart TD
   scope{範囲は?}

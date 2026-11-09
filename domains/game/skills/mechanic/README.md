@@ -1,9 +1,5 @@
 # mechanic
 
-Designs or documents one game mechanic precisely enough to implement and balance: input, behaviour, states, parameters, edge cases.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the GDD and the<br/>existing mechanics]

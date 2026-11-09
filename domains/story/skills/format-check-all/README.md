@@ -1,9 +1,5 @@
 # format-check-all
 
-Checks every .txt file in a directory against the Japanese web novel format rules and reports the lines with issues.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   input[list the .txt files<br/>in the given directory<br/>or the given file's]

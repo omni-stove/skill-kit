@@ -1,9 +1,5 @@
 # check
 
-Checks a story file for contradictions with its settings and the files before and after it, without fixing anything.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the file, its settings<br/>and the edges of the<br/>previous and next files]

@@ -1,9 +1,5 @@
 # gdd
 
-Creates or edits the game design document: the overview of what the game is and how it works.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   missing{input lacks what<br/>the GDD needs?}

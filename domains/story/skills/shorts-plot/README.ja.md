@@ -1,9 +1,5 @@
 # shorts-plot
 
-short-id を受け取り、src/shorts/ 配下の短編のプロットをユーザーと一緒に作る。
-
-平行四辺形はユーザーに見えて、答えるもの。
-
 ```mermaid
 flowchart TD
   read[短編のREADMEが<br/>あれば読む]

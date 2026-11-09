@@ -1,9 +1,5 @@
 # run
 
-Builds and runs the game so a change can be seen working.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   how{how does the<br/>game run here?}

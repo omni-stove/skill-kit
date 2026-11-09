@@ -1,9 +1,5 @@
 # dupcheck
 
-Finds expressions that overlap in meaning within one Japanese fiction file, and fixes them.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   detect[detect overlapping<br/>expressions in the file]

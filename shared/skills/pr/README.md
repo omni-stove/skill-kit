@@ -1,9 +1,5 @@
 # pr
 
-Opens a pull request from the current branch, or updates the one it already has.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   state{branch state?}

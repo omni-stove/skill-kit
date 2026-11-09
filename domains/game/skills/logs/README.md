@@ -1,9 +1,5 @@
 # logs
 
-Reads the game engine's runtime log: logged output, runtime exceptions and their stack traces.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read recent messages<br/>and runtime exceptions]

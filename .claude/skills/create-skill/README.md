@@ -1,9 +1,5 @@
 # create-skill
 
-Scaffolds a new skill in this kit from the name, purpose and trigger the user gives.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   domain{domain clear?}

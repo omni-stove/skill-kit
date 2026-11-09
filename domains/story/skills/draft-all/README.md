@@ -1,6 +1,6 @@
 # draft-all
 
-Writes every plot in `story/plot/` out as text in `draft/` at once. Each event in a plot is played out on the page, with the most length on the events listed under the plot's 転換点, or on the turning points the draft finds when none are listed. Where a plot leaves something open, the draft fills it in without asking, adding only what the events need.
+Writes every plot in `story/plot/` out as text in `draft/` at once. Each event in a plot is played out on the page, giving the events listed under the plot's 分量 at least their length and passing quickly over those marked to pass over; with no length listed, the most length goes to the turning points the draft finds. Where a plot leaves something open, the draft fills it in without asking, adding only what the events need.
 
 Parallelograms are what the user sees and answers.
 
@@ -11,5 +11,5 @@ flowchart TD
   exists -- "no" --> write
   ask -- "yes: every plot,<br/>no: only plots with no draft" --> write[write each plot in parallel,<br/>reading all the plots]
   write --> format[fix the format]
-  format --> done[/"files written +<br/>any plot left undrafted"/]
+  format --> done[/"files written +<br/>any plot left undrafted +<br/>events short of their length"/]
 ```

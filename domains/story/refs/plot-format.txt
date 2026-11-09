@@ -9,8 +9,8 @@ Plot body
 - Leave it blank unless the author has a clear intent to record; then state in one or two sentences what the scene conveys (intent, theme, or emotional target), not how the prose achieves it: × 読者だけが気づく仕込みにする / 予告と実演として働く
 - Put writing instructions (「〜のように書く」「〜を匂わせない」) in 禁止事項
 
-転換点
-- Leave it blank unless the author marks an event of this plot as a turning point of the whole story; then list each as a bullet naming the event and what it changes in the story's course
+分量
+- Leave it blank unless the author gives a length for an event of this plot; then list each as a bullet of a short name for the event in the plot body's words and its minimum length in half-width digits: `- <name>: 4000字` or `- <name>: 800 words`, or `- <name>: 流す` or `- <name>: brief` for an event to pass over quickly
 
 禁止事項
 - Leave it blank unless the author names something to rule out; then list each as a bullet: tonal mistakes, plot moves, information not to reveal yet

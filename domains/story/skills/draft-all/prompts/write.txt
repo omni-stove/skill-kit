@@ -5,15 +5,18 @@ read every .md file in {dir}, and write every Scene of its plot file in one pass
 loaded rules: its plot file leads, the other plots give what surrounds it, open another
 file only for a fact the plots lack, and deliver its プロットの意図 through events alone.
 It plays out each event of the plot body on the page in action, dialogue, and the POV's
-reaction, and gives the most length to the events under its plot's 転換点; with none
-listed there, to the turns that change what the POV knows, wants, or does next, which it
-judges. At those turns the POV's perception and reaction stay even where the loaded
+reaction. It gives each event under its plot's 分量 at least the length listed and passes
+quickly over those marked 流す or brief; with no number listed there, it gives the most
+length to the turns that change what the POV knows, wants, or does next, which it judges.
+At those events and turns the POV's perception and reaction stay even where the loaded
 rules would cut them for adding no new fact.
 Where the text needs what the plot leaves open or the plot cannot hold, it writes what it
 judges most likely without asking, adding only what an event of the plot needs in order
 to happen or what changes what the POV does next. It saves the text to its output file,
 runs .agents/refs/format.sh <its output file>, and brings the lines listed within the
-loaded rules.
+loaded rules. It then runs .agents/refs/length.sh <its plot file> <its output file>
+followed by, for each event with a number under 分量, in order, its lines in the output
+file as <first>-<last>, and returns the lines that prints.
 
 Once every agent has returned, reply with the output files written, in the order above,
-and any plot left undrafted.
+any plot left undrafted, and, per output file, the events returned as short of their length.

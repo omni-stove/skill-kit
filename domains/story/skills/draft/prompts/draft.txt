@@ -1,6 +1,7 @@
 Write every Scene of the plot file in one pass by the loaded rules: the plot file leads,
 open another file only for a fact {report} lacks, and deliver its プロットの意図 through
-events alone. Give the most length to the events under its 転換点.
+events alone. Give each event under its 分量 at least the length listed, and pass quickly
+over those marked 流す or brief.
 
 Where the text needs something the plot leaves open, or the plot cannot hold to the
 report, a setting, or its own 禁止事項 and ハイライト, write what you judge most likely and
@@ -9,4 +10,5 @@ note the place; you judge what the plot lacks.
 Where the plot gives a passage nothing to move, mark the place instead of filling it; you
 judge which passages these are.
 
-Save the draft to {out}, then run {gaps} "{file}" "{out}" "{report}"
+Save the draft to {out}, then run {gaps} "{file}" "{out}" "{report}" followed by, for each
+event with a number under 分量, in order, its lines in {out} as <first>-<last>

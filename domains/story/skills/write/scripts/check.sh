@@ -2,7 +2,8 @@
 # Usage: check.sh <source file> <output file> [<report file>]
 # Fixes the output file's format through format.sh. With WRITE_CHECK_MODEL and
 # GEMINI_API_KEY set, has that Gemini model (thinking high) list findings, in the
-# shape of check-schema.json, on the line-numbered output against the style rules,
+# shape of check-schema.json, on the line-numbered output against the guard rules
+# and author-rules.md where it exists,
 # given the source, the report, README.md and the files the source's References names,
 # and prints the findings whose
 # text is on the line they name, with a rule and a basis, and whose quote, where
@@ -21,9 +22,9 @@ report=${3:-}
 [ -z "$report" ] || [ -f "$report" ] || { echo "check: no such file: $report" >&2; exit 1; }
 format=.agents/refs/format.sh
 [ -f "$format" ] || format=$(dirname -- "$0")/../../../refs/format.sh
-style=.agents/refs/japanese-web-novel-style.md
-[ -f "$style" ] || style=$(dirname -- "$0")/../../../refs/japanese-web-novel-style.md
-sh "$format" "$f" > /dev/null
+guards=.agents/refs/japanese-web-novel-sentence-guard.md
+[ -f "$guards" ] || guards=$(dirname -- "$0")/../../../refs/japanese-web-novel-sentence-guard.md
+sh "$format" --guard "$f" > /dev/null
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
@@ -32,7 +33,10 @@ trap 'rm -rf "$tmp"' EXIT
 check() {
   [ -n "${WRITE_CHECK_MODEL:-}" ] || { echo "WRITE_CHECK_MODEL is not set" >&2; return 1; }
   [ -n "${GEMINI_API_KEY:-}" ] || { echo "GEMINI_API_KEY is not set" >&2; return 1; }
-  prompt check-system rules="$(cat "$style")" > "$tmp/sys"
+  {
+    prompt check-system rules="$(cat "$guards")"
+    [ ! -f author-rules.md ] || prompt check-author rules="$(cat author-rules.md)"
+  } > "$tmp/sys"
   {
     printf '%s\n' "$src" "$report" README.md
     sed -n '/^## References/,/^## /s/^- @//p' "$src"

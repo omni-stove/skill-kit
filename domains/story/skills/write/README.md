@@ -2,7 +2,10 @@
 
 ```mermaid
 flowchart TD
-  input{input file?}
+  author{author-rules.md<br/>at the repo root?}
+  author -- "yes" --> override[its rules override<br/>the default rules]
+  author -- "no" --> input
+  override --> input{input file?}
   input -- "plot" --> exists{story file exists?}
   exists -- "yes" --> ask[/asks: continue<br/>or start over?/]
   exists -- "no" --> write

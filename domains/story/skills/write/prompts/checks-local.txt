@@ -1,3 +1,5 @@
-Read the whole output file and fix each hit in place; you judge what is a hit.
+Read the whole output file and fix each hit in place; you judge what is a hit. Hold for the hand-off each one you cannot decide.
 
-- Where the same wording appears twice in narration, keep one; an echo stays only when the source file names it.
+- Where the same wording appears twice within a few lines in narration, keep one; an echo stays only when the source file names it.
+- Bring each narration sentence ending and metaphor within the loaded rules' limits.
+- Fix each contradiction with the source file, the report, or a setting file, and each break in continuity.

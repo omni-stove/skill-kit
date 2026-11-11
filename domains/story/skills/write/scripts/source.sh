@@ -32,10 +32,6 @@ case $(basename -- "$dir") in
 esac
 out=${out#./}
 echo "Output: $out"
+[ ! -f "$out" ] || prompt exists
 prompt scope others="$others" file="$f"
-if [ -f "$out" ]; then
-  prompt exists
-else
-  prompt new
-fi
 prompt report file="$f" scene="$(dirname -- "$0")/scene.sh" out="$out"

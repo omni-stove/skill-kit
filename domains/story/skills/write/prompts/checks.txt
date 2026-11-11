@@ -1,6 +1,6 @@
 Read the whole output file and fix each hit in place; you judge what is a hit.
 
-- Sweep narration for sentences that look back — a past-time word, a replayed line of dialogue, a summary of an event the reader has already read, a comparison of the present with an earlier event, a rewording, summing-up, or explanation of the sentence before — and cut whole each one the loaded rules cut.
-- Bring narration that says a thing is absent, did not happen, is not so, or is not quite so within the loaded rules.
+- Cut whole each narration sentence the loaded rules cut, sweeping for those that look back at earlier text or restate the sentence before.
+- Absence check: bring each denial in narration within the loaded rules.
 - Rewrite, from what is known at that point, narration that draws on an answer the story gives only later.
 - In narration, restore a dropped object, subject, referent, or action where the lines before it do not supply it.

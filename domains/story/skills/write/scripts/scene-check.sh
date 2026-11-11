@@ -17,7 +17,7 @@ f=$(local_path "$2")
 [ -f "$f" ] || { echo "scene-check: no such file: $f" >&2; exit 1; }
 format=.agents/refs/format.sh
 [ -f "$format" ] || format=$(dirname -- "$0")/../../../refs/format.sh
-fmt=$(sh "$format" "$f")
+fmt=$(sh "$format" --guard "$f")
 prompt checks
 contrast=$(grep -nE 'ではな(く|い。|かった。)|というより|でも.*でもなく|のとは違(う|った)。|わけ(では|でも|じゃ)な' "$f" | grep -vE '^[0-9]+:(「|『)' || true)
 if [ -n "$contrast" ]; then

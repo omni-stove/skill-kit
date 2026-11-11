@@ -137,6 +137,28 @@ setup() {
   cmp "$f" "$f.c"
 }
 
+@test "format.sh lists dialogue following a sentence or another line of dialogue on its line" {
+  printf '　彼は言った。「行く」\n「行く」「待て」\n　彼は「海」と書いた。\n' > "$f"
+  run sh "$FORMAT" "$f"
+  [[ "$output" == *"1:"*"2:"* ]]
+  [[ "$output" != *"3:"* ]]
+}
+
+@test "format.sh --guard leaves notation alone and lists only markdown and shared dialogue" {
+  printf '彼は……止まった｜。\n\n◆◆◆\n\n部屋は3つ—。\n**太字**\n「行く」と言った。\n# 見出し\n' > "$f"
+  run sh "$FORMAT" --guard "$f"
+  [ "$status" -eq 0 ]
+  [ "$(sed -n 1p "$f")" = "　彼は……止まった｜。" ]
+  [ "$(sed -n 2p "$f")" = "" ]
+  [ "$(sed -n 3p "$f")" = "◆◆◆" ]
+  [ "$(sed -n 5p "$f")" = "　部屋は3つ――。" ]
+  [ "$(sed -n 6p "$f")" = "　太字" ]
+  [[ "$output" == *"7:「行く」と言った。"* ]]
+  [[ "$output" == *"見出し"* ]]
+  [[ "$output" != *"部屋は"* ]]
+  [[ "$output" != *"◆"* ]]
+}
+
 @test "format.sh fails on a missing file" {
   run sh "$FORMAT" "$BATS_TEST_TMPDIR/missing.txt"
   [ "$status" -eq 1 ]

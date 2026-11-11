@@ -1,0 +1,3 @@
+
+Where these author rules differ, they override the guard rules:
+{rules}

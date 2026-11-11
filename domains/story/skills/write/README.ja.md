@@ -2,7 +2,10 @@
 
 ```mermaid
 flowchart TD
-  input{入力ファイルは?}
+  author{リポジトリ直下に<br/>author-rules.mdがある?}
+  author -- "ある" --> override[既定のルールより<br/>そちらを優先]
+  author -- "ない" --> input
+  override --> input{入力ファイルは?}
   input -- "プロット" --> exists{本文ファイルがある?}
   exists -- "ある" --> ask[/続きから書くか<br/>最初からやり直すかを聞く/]
   exists -- "ない" --> write

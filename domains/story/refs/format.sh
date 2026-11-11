@@ -1,5 +1,5 @@
 #!/bin/sh
-# Usage: format.sh <story file>
+# Usage: format.sh [--guard] <story file>
 # Fixes in place, noting the count on stderr: indentation — one full-width space
 # opens each narration line; lines opening with 「, 『, （, 【, 〖, 〔, ［, 〈 or 《 and
 # the * separator get none; …… becomes ――; — and ─ become ―; a ― run of odd
@@ -13,29 +13,37 @@
 # A leading header of Memo:, Lead:, Source: and Subhead: lines, with the blank
 # lines among and after them, is skipped.
 # Same-speaker dialogue runs and the use of 『』 stay with the reader.
+# With --guard, leaves notation to the author: keeps …, ｜, separators and blank lines as
+# they are, gives a symbol-only line no indent, and lists only markdown and dialogue
+# sharing its line.
 # Patterns use alternation, never a multibyte bracket, so any locale works.
 set -eu
-[ $# -eq 1 ] || { echo "usage: format.sh <story file>" >&2; exit 2; }
+guard=
+if [ "${1:-}" = --guard ]; then
+  guard=1
+  shift
+fi
+[ $# -eq 1 ] || { echo "usage: format.sh [--guard] <story file>" >&2; exit 2; }
 . "$(dirname -- "$0")/local-path.sh"
 set -- "$(local_path "$1")"
 f=$1
 [ -f "$f" ] || { echo "format: no such file: $f" >&2; exit 1; }
 tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
-awk '
+awk -v guard="$guard" '
 BEGIN { hdr = 1 }
 hdr && /^(Memo|Lead|Source|Subhead): / { line[++m] = $0; next }
 hdr && m && $0 == "" { line[++m] = $0; next }
 { if (hdr) first = m + 1; hdr = 0; sub(/^(　| |\t)+/, "") }
-/^(\*|◇|　| |\t)+$/ { $0 = "*" }
-$0 != "" && !/^(「|『|（|【|〖|〔|［|〈|《|\*$)/ { $0 = "　" $0 }
+!guard && /^(\*|◇|　| |\t)+$/ { $0 = "*" }
+$0 != "" && !/^(「|『|（|【|〖|〔|［|〈|《|\*$)/ && !(guard && /^(\*|＊|◇|◆|☆|★|　| )+$/) { $0 = "　" $0 }
 {
-  gsub(/(…)+/, "――")
+  if (!guard) gsub(/(…)+/, "――")
   gsub(/—|─/, "―")
   gsub(/――/, "\003")
   gsub(/―/, "\003")
   gsub(/\003/, "――")
-  gsub(/｜/, "|")
+  if (!guard) gsub(/｜/, "|")
   while (match($0, /\*\*[^*]+\*\*/))
     $0 = substr($0, 1, RSTART - 1) substr($0, RSTART + 2, RLENGTH - 4) substr($0, RSTART + RLENGTH)
   gsub(/。」/, "」")
@@ -50,7 +58,7 @@ $0 != "" && !/^(「|『|（|【|〖|〔|［|〈|《|\*$)/ { $0 = "　" $0 }
 END {
   if (!first) first = m + 1
   for (n = 1; n <= m; n++) {
-    s = (line[n] ~ /^\*$/) && n >= first
+    s = !guard && (line[n] ~ /^\*$/) && n >= first
     if (s && n > first && line[n - 1] != "") print ""
     print line[n]
     if (s && n < m && line[n + 1] != "") print ""
@@ -61,7 +69,7 @@ if ! cmp -s "$tmp" "$f"; then
   cat "$tmp" > "$f"
   echo "format: fixed $n line(s) of $f" >&2
 fi
-awk '
+awk -v guard="$guard" '
 function hit(rule, n) { hits[rule] = hits[rule] n ":" line[n] "\n" }
 { line[NR] = $0 }
 END {
@@ -70,6 +78,7 @@ END {
 
   for (n = first; n <= NR; n++) {
     s = line[n]
+    if (guard && s ~ /^(\*|＊|◇|◆|☆|★|　| )*$/) continue
     if (s == "") {
       if (line[n - 1] !~ /^\*$/ && line[n + 1] !~ /^\*$/) hit("blank", n)
       continue
@@ -78,9 +87,10 @@ END {
       if (n == first || n == NR || line[n - 1] != "" || line[n + 1] != "") hit("separator", n)
       continue
     }
-    if (s ~ /^【】$/ && n > first) hit("chapter", n)
+    if (!guard && s ~ /^【】$/ && n > first) hit("chapter", n)
     if (s ~ /^(　)?(#+ |[-*+] |> |```)/) hit("markdown", n)
-    if (s ~ /^「/ && s !~ /」$/) hit("dialogue", n)
+    if (s ~ /^「/ && s !~ /」$/ || s ~ /。「|」「/) hit("dialogue", n)
+    if (guard) continue
     if (s ~ /[0-9]|０|１|２|３|４|５|６|７|８|９/) hit("numeral", n)
     t = s; gsub(/《/, "\001", t); gsub(/》/, "\002", t)
     gsub(/\|[^|\001\002]+\001[^\001\002]+\002/, "", t)

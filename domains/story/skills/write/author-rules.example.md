@@ -1,0 +1,11 @@
+- Separate Scenes with `*` on its own line, a blank line on each side; no blank lines elsewhere
+- Merge consecutive dialogue from the same speaker, or insert narration between
+- ……: forbidden
+- ――: speech cut off mid-line, or a pause or lingering beat in dialogue or narration
+- 『』: inner thoughts, book titles, emphasis
+- Use kanji numerals, with 〇 for zero and ・ as the decimal point (〇・五)
+- Ruby: `|単語《ルビ》`
+- Split a narration sentence well over ~80 chars where its action or object changes
+- Keep a tension events raise open until the source resolves it; end the Scene on exactly one
+- Alternate what the POV is sure of with what the POV only supposes, each on a matter the sentence before it leaves untouched and each supposition one events can later reverse, where events, sensation, or the POV's judgment state offer it
+- After 2–3 dense paragraphs, one sparse paragraph, kept even with no new fact: a plain fact, the next question, or a viewpoint-distance shift, where events, sensation, or the POV's judgment state offer it

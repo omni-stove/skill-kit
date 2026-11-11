@@ -50,10 +50,10 @@ setup() {
   [[ "$output" == *'others.sh --earlier "story/010.txt"'* ]]
 }
 
-@test "source.sh says to start fresh when the output is missing" {
+@test "source.sh goes straight to the report when the output is missing" {
   : > story/plot/arrival.md
   run sh "$SOURCE" story/plot/arrival.md
-  [[ "$output" == *"does not exist yet"* ]]
+  [[ "$output" != *"Read the output file, ask"* ]]
   [[ "$output" == *'others.sh --earlier "story/plot/arrival.md"'* ]]
   [[ "$output" == *'story/outline.md, story/synopsis.txt, draft/ and'* ]]
   [[ "$output" == *'scene.sh "story/plot/arrival.md" "story/arrival.txt" <the report file>'* ]]
@@ -74,19 +74,18 @@ setup() {
   [ "$status" -eq 0 ]
   [[ "$output" == *"Write 1 Scene"* ]]
   [[ "$output" == *'scene-check.sh "story/plot/arrival.md" "story/arrival.txt" "report.txt"'* ]]
-  [[ "$output" != *"does not exist yet"* ]]
 }
 
 @test "source.sh says to read and ask when the output exists" {
   : > story/plot/010-co-arrival.md
   : > story/010.txt
   run sh "$SOURCE" story/plot/010-co-arrival.md
-  [[ "$output" == *"Read it, ask"* ]]
+  [[ "$output" == *"Read the output file, ask"* ]]
 }
 
 stub_curl() {
   mkdir -p bin .agents/refs
-  echo "rule-style" > .agents/refs/japanese-web-novel-style.md
+  echo "rule-style" > .agents/refs/japanese-web-novel-sentence-guard.md
   printf '%s' "$1" > response.json
   cat > bin/curl <<'STUB'
 #!/bin/sh
@@ -106,7 +105,7 @@ reply() {
   jq -n --arg t "$1" '{status: "completed", steps: [{type: "thought"}, {type: "model_output", content: [{type: "text", text: $t}]}]}'
 }
 
-@test "check.sh sends the numbered Scene, the style rules and the cited files" {
+@test "check.sh sends the numbered Scene, the guard rules and the cited files" {
   stub_curl "$(reply '{"findings": []}')"
   WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
   [ "$status" -eq 0 ]
@@ -118,6 +117,28 @@ reply() {
   in=$(jq -r .input request.json)
   [[ "$in" == *"2	　右手でペンを取った。"* ]]
   [[ "$in" == *"=== story/plot/arrival.md"*プロット本文*"=== report.txt"*レポート本文*"=== README.md"*港町*"=== characters/minato.md"*左利き* ]]
+}
+
+@test "check.sh sends author-rules.md as overriding the guard rules when it exists" {
+  stub_curl "$(reply '{"findings": []}')"
+  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
+  [[ "$(jq -r .system_instruction request.json)" != *"override"* ]]
+  printf '体言止めを使ってよい\n' > author-rules.md
+  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
+  [[ "$(jq -r .system_instruction request.json)" == *rule-style*"override the guard rules"*体言止めを使ってよい* ]]
+}
+
+@test "refs.sh adds author-rules.md after the default rules only when it exists" {
+  mkdir -p .agents/refs
+  for r in japanese-web-novel-sentence-guard japanese-web-novel-narration-guard; do echo "$r" > ".agents/refs/$r.md"; done
+  echo lead > .agents/refs/author-override.md
+  run sh "$BATS_TEST_DIRNAME/../refs.sh"
+  [ "$status" -eq 0 ]
+  [[ "$output" != *lead* ]]
+  echo mine > author-rules.md
+  run sh "$BATS_TEST_DIRNAME/../refs.sh"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *narration-guard*lead*mine* ]]
 }
 
 @test "check.sh keeps only findings with a matching line, rule, basis and quote" {
@@ -181,7 +202,7 @@ reply() {
   printf '　彼は頷いた。覚悟を決めた目だった。\n「嘘だった」\n　静かな夜だった。\n　鍵は古い真鍮のようだった。\n' > story/010.txt
   run env -u WRITE_CHECK_MODEL sh "$BATS_TEST_DIRNAME/check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 2 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
   [[ "$output" == *"1:"*"目だった。"* ]]
   [[ "$output" == *"3:"*"夜だった。"* ]]
   [[ "$output" == *"4:"*"ようだった。"* ]]
@@ -236,10 +257,12 @@ reply() {
 }
 
 @test "scene-check.sh fixes the format and lists the lines that break a format rule" {
-  printf '彼は頷いた。\n「終わり。」\n　部屋は3つ。\n' > story/010.txt
+  printf '彼は頷いた。\n「終わり。」\n「行く」と言った。\n　部屋は3つ……。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
   [ "$(head -2 story/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
-  [[ "$output" == *"3:　部屋は3つ。"* ]]
+  [[ "$output" == *"3:「行く」と言った。"* ]]
+  [[ "$output" != *"部屋は3つ"* ]]
+  [ "$(sed -n 4p story/010.txt)" = "　部屋は3つ……。" ]
 }

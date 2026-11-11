@@ -7,8 +7,8 @@ Skills for coding agents, in three domains that share one core:
 - **[code](domains/code/README.md)** — working in a software repo, in any language.
 
 Each domain's guide shows the order to use its skills in and where their files go. Every
-domain also gets the shared skills: `init` and `task` for make commands, `cap` and `pr` for
-git, and `character`, `world`, `item` and `outline` for settings.
+domain also gets the shared skills: `init` and `task` for make commands, `cap`, `pr`,
+`fix-pr`, `remote-issue` and `automation` for git and GitHub, and `character`, `world`, `item` and `outline` for settings.
 
 Each skill's `README.md` (`shared/skills/<name>/`, `domains/<domain>/skills/<name>/`) shows
 what it asks and what it gives back.

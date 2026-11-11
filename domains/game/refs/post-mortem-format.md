@@ -1,6 +1,6 @@
 # Post-mortem format
 
-A post-mortem holds what one milestone set out to do, what happened, and what the next milestone does differently. Design changes it calls for live in the GDD, mechanic, and balance docs, linked from here.
+A post-mortem holds what one milestone set out to do, what happened, and what the next milestone does differently.
 
 ```markdown
 # [Milestone] Post-Mortem
@@ -22,8 +22,8 @@ Each item: what happened, the root cause, and what it cost in time, scope, or qu
 One bullet per lesson, as a rule the next milestone can follow.
 
 ## Action Items
-| Action | Owner | Due | Doc it changes |
-|---|---|---|---|
+| Action | Owner | Due |
+|---|---|---|
 
 ## Open Questions
 Causes still unclear and what data would settle each.

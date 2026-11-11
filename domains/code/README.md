@@ -25,7 +25,7 @@ flowchart TD
 |---|---|
 | [init](../../shared/skills/init/README.md) | Puts the repo on mise and make, so every command runs as `make <name>` |
 | [task](../../shared/skills/task/README.md) | Adds or changes a `make <name>` command |
-| [automation](skills/automation/README.md) | Sets up the org's shared GitHub Actions and configs |
+| [automation](../../shared/skills/automation/README.md) | Sets up the org's shared GitHub Actions and configs |
 
 ## 2. Knowing the app
 
@@ -40,5 +40,5 @@ flowchart TD
 |---|---|
 | [cap](../../shared/skills/cap/README.md) | Commits everything and pushes to the current branch |
 | [pr](../../shared/skills/pr/README.md) | Opens a pull request, or updates the one the branch has |
-| [fix-pr](skills/fix-pr/README.md) | Fixes review threads, failing CI and conflicts, then answers each thread |
-| [remote-issue](skills/remote-issue/README.md) | Splits work too large for one session into issues the issue worker implements in parallel |
+| [fix-pr](../../shared/skills/fix-pr/README.md) | Fixes review threads, failing CI and conflicts, then answers each thread |
+| [remote-issue](../../shared/skills/remote-issue/README.md) | Splits work too large for one session into issues the issue worker implements in parallel |

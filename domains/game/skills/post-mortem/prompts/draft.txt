@@ -1,1 +1,1 @@
-Read the earlier post-mortems above and docs/design/gdd.md. Flag a lesson an earlier post-mortem already drew. Draft by the loaded rules and format, and write to the output path.
+Read the earlier post-mortems above. Flag a lesson an earlier post-mortem already drew. Draft by the loaded rules and format, and write to the output path.

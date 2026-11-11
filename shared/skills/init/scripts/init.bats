@@ -230,6 +230,13 @@ JSON
   [ "$(cat AGENTS.md)" = "$(printf 'intro\n\n# Code rules\n\nnew rule')" ]
 }
 
+@test "appends the game rules to AGENTS.md when the game domain is synced" {
+  printf '# Game rules\n\nrule\n' > .agents/refs/game-rules.md
+  run "$INIT"
+  [[ "$output" == *'appended	AGENTS.md — "# Game rules"'* ]]
+  grep -qx '# Game rules' AGENTS.md
+}
+
 @test "leaves AGENTS.md alone in a domain without code rules" {
   echo existing > AGENTS.md
   run "$INIT"

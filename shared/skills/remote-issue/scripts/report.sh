@@ -3,7 +3,7 @@
 # <label><TAB><title><TAB><url>, and the parent's unchecked checklist items (the deferred work).
 # usage: report.sh <parent-number>
 set -euo pipefail
-. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 
 [ "$#" -eq 1 ] && [[ "$1" =~ ^[0-9]+$ ]] || { echo "usage: report.sh <parent-number>" >&2; exit 2; }
 parent="$1"

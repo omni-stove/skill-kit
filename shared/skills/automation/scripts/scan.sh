@@ -7,7 +7,7 @@
 #   org: the owner of this repo's origin. A repo named here is listed as shared whether or
 #   not it looks it.
 set -euo pipefail
-. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 command -v jq >/dev/null || { echo "scan: jq is required — install it (mise use -g jq), then rerun" >&2; exit 1; }
 
 usage() { echo "usage: scan.sh [--org <org>] [repo...]   (a repo named here is listed as shared)" >&2; exit 2; }

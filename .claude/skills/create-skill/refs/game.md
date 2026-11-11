@@ -6,9 +6,8 @@ Conventions the existing game skills establish — follow them when scaffolding 
   build/run command, grep pattern) comes from `.agents/refs/engine.sh`. If a value the new
   skill needs isn't defined, add the function name to the default and have the user
   re-generate their repo's override — don't build the value in-model.
-- **Name doc paths directly, relative to the repo root.** Design docs live under
-  `docs/design/` (`gdd.md`, `mechanics/<slug>.md`, `balance/<slug>.md`,
-  `post-mortems/<slug>.md`); setting docs at the root (`README.md`,
+- **Name doc paths directly, relative to the repo root.** Post-mortems live at
+  `docs/design/post-mortems/<slug>.md`; setting docs at the root (`README.md`,
   `characters/<category>/<name>.md`, `world/`, `items/`, `story/outline.md`).
 - **Resolve refs inside the skill's `scripts/*.sh`** (`. .agents/refs/engine.sh`), and end the
   script with what to do next, so the body stays at the `Run` lines.

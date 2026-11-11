@@ -3,7 +3,7 @@
 # print the PR's state, active review threads, checks and changed files, and say what to do next.
 # usage: fetch.sh [pr-number-or-url-or-branch]   (none: the current branch's PR)
 set -euo pipefail
-. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 
 [ "$#" -le 1 ] || { echo "usage: fetch.sh [pr-number-or-url-or-branch]" >&2; exit 2; }
 if [ "$#" -eq 0 ]; then

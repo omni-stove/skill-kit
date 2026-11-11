@@ -4,7 +4,7 @@
 # marked `covers`: such an issue replaces an item of the split.
 # usage: similar.sh <keyword>...
 set -euo pipefail
-. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 
 [ "$#" -ge 1 ] || { echo "usage: similar.sh <keyword>...   (words from the task)" >&2; exit 2; }
 "${GH_CMD:-gh}" issue list --search "$*" --state open --limit 30 --json number,title,labels,url \

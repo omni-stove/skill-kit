@@ -189,6 +189,7 @@ install_rules() {
 	fi
 }
 install_rules .agents/refs/code-rules.md
+install_rules .agents/refs/game-rules.md
 
 # Claude Code fires only the hooks registered in settings, so each deployed hook is registered
 # here; the file is the repo's, so an existing one is merged, not replaced.

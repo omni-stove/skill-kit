@@ -4,7 +4,7 @@
 # committed first, as resolved. Ends with what to do next.
 # usage: commit-push.sh [file...]
 set -euo pipefail
-. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
+. "$(dirname -- "$0")/../../../refs/prompt.sh"
 
 next() {
   prompt pushed pr="$(gh pr view --json number -q .number 2>/dev/null || echo '<pr>')" >&2

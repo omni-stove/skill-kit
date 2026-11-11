@@ -1,6 +1,6 @@
 # game
 
-ゲーム開発のためのスキル。エンジンは問わない（Unity、Godot、Unreal、自作）。設計書を書き、ゲームをビルド・実行・修正する。
+ゲーム開発のためのスキル。エンジンは問わない（Unity、Godot、Unreal、自作）。ゲームをビルド・実行・修正し、マイルストーンをふりかえる。
 `skill-kit game sync` のあと `init`、次に `setup` を実行して使い始める。
 
 ## 流れ
@@ -8,11 +8,8 @@
 ```mermaid
 flowchart TD
   setup[setup<br/>キットをエンジンに合わせる] --> mcp[setup-mcp<br/>任意]
-  setup --> gdd
-  mcp --> gdd[gdd]
-  gdd --> mechanic[mechanic]
-  mechanic --> balance[balance]
-  balance --> impl[実装]
+  setup --> impl[実装]
+  mcp --> impl
   impl --> run[run]
   run --> broken{動く?}
   broken -- "コンパイルエラー" --> fix[fix]
@@ -26,9 +23,6 @@ flowchart TD
 
 | もの | 場所 |
 |---|---|
-| ゲームデザイン文書 | `docs/design/gdd.md` |
-| メカニクス | `docs/design/mechanics/<slug>.md` |
-| バランス | `docs/design/balance/<slug>.md` |
 | ポストモーテム | `docs/design/post-mortems/` |
 
 ## 1. セットアップ
@@ -40,21 +34,23 @@ flowchart TD
 | [setup](skills/setup/README.ja.md) | エンジンのソースフォルダ、ログ、エラー形式、ビルドと実行のコマンドを記録する |
 | [setup-mcp](skills/setup-mcp/README.ja.md) | Computer Useでエディタを直接操作できるようにするか、エンジン操作サーバーをつなぎ、ログを読む代わりに動いているエンジンを操作する |
 
-## 2. 設計
-
-| スキル | すること |
-|---|---|
-| [gdd](skills/gdd/README.ja.md) | ゲームが何で、どう動くかの全体像を作る・直す |
-| [mechanic](skills/mechanic/README.ja.md) | 1つのメカニクスを、実装とバランス調整ができる細かさで設計する |
-| [balance](skills/balance/README.ja.md) | システムの調整できる数値、カーブ、その根拠を設計する |
-
-## 3. ビルド・実行・修正
+## 2. ビルド・実行・修正
 
 | スキル | すること |
 |---|---|
 | [run](skills/run/README.ja.md) | ゲームをビルドして実行し、変更が動くのを確かめる |
 | [fix](skills/fix/README.ja.md) | プロジェクト自身のコードのコンパイルエラーと警告を直す |
 | [logs](skills/logs/README.ja.md) | 実行時のログを読む: 出力、例外、スタックトレース |
+
+## 3. 作業をマージまで運ぶ
+
+| スキル | すること |
+|---|---|
+| [cap](../../shared/skills/cap/README.ja.md) | すべてをコミットして今のブランチにpushする |
+| [pr](../../shared/skills/pr/README.ja.md) | Pull Requestを作る。ブランチにすでにあれば更新する |
+| [fix-pr](../../shared/skills/fix-pr/README.ja.md) | レビューの指摘、CIの失敗、コンフリクトを直し、指摘ごとに返信する |
+| [remote-issue](../../shared/skills/remote-issue/README.ja.md) | 1セッションに収まらない作業を、Issueワーカーが並行して実装するIssueに分ける |
+| [automation](../../shared/skills/automation/README.ja.md) | 組織の共通GitHub Actionsと設定を入れる |
 
 ## 4. ふりかえり
 

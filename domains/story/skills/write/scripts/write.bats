@@ -172,7 +172,9 @@ reply() {
   [[ "$output" == *"[Scene name] complete."* ]]
   [[ "$output" == *'check.sh "story/plot/arrival.md" "story/010.txt" "report.txt" instead'* ]]
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
-  [[ "$output" == *'check.sh "story/010.txt" "story/010.txt" instead'* ]]
+  [[ "$output" == *"[Output file] revised."* ]]
+  [[ "$output" == *'y: run '*'check.sh "story/010.txt" "story/010.txt"'* ]]
+  [[ "$output" != *"next Scene"* ]]
 }
 
 @test "check.sh lists narration sentences ending on the copula, not dialogue, when the model is not set" {
@@ -195,6 +197,35 @@ reply() {
   [[ "$output" == *"3:"*"誰もいない。"* ]]
   [[ "$output" != *"知らない"* ]]
   [[ "$output" != *"来ない"* ]]
+}
+
+@test "scene-check.sh lists narration set against a denied alternative, apart from negatives and not dialogue" {
+  printf '　離さないのではなく、離せないのだ。\n　落ちたのは尾根からではなかった。\n　怒鳴るというより、押し出すようだった。\n　棚田でも餅でもなく、社を見に来た。\n　任されたのとは違う。\n　道を教えていたわけではないだろう。\n「敵ではなく味方だ」\n　臼をどかすまでもなく、わかった。\n　残念がるでもなく繰り返した。\n　返事はなかった。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
+  [ "$status" -eq 0 ]
+  listed=$(printf '%s\n' "$output" | sed -n '/denies or discounts/,/negative narration sentence/p')
+  [ "$(printf '%s\n' "$listed" | grep -cE '^[0-9]+:')" -eq 6 ]
+  [[ "$listed" == *"1:"*"2:"*"3:"*"4:"*"5:"*"6:"* ]]
+  [[ "$listed" != *"味方だ"* ]]
+  [[ "$listed" != *"臼を"* ]]
+  [[ "$listed" != *"残念がる"* ]]
+  [[ "$listed" != *"返事は"* ]]
+  negatives=$(printf '%s\n' "$output" | sed -n '/negative narration sentence/,$p')
+  [[ "$negatives" == *"10:"*"返事はなかった。"* ]]
+  [[ "$negatives" != *"尾根"* ]]
+}
+
+@test "scene-check.sh lists narration describing a voice or sound, not dialogue or lookalike words" {
+  printf '　しゃがれた声が続いた。\n　金具が小さな音を立てた。\n　声は平らだった。\n　声が尖った。\n　怒っているのだと、声の低さでわかった。\n「低い声で言え」\n　笑い声が上がった。\n　銃声は続いた。\n　また声がした。\n　彼は頷いた。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
+  [ "$status" -eq 0 ]
+  listed=$(printf '%s\n' "$output" | sed -n '/how a voice or sound sounds/,/Then reply/p')
+  [ "$(printf '%s\n' "$listed" | grep -cE '^[0-9]+:')" -eq 5 ]
+  [[ "$listed" == *"1:"*"2:"*"3:"*"4:"*"5:"* ]]
+  [[ "$listed" != *"低い声で言え"* ]]
+  [[ "$listed" != *"笑い声"* ]]
+  [[ "$listed" != *"銃声"* ]]
+  [[ "$listed" != *"また声"* ]]
 }
 
 @test "scene-check.sh and check.sh fail on a missing file" {

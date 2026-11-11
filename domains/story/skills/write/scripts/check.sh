@@ -85,7 +85,7 @@ if check 2> "$tmp/err"; then
 else
   [ -z "${WRITE_CHECK_MODEL:-}" ] || echo "check: $WRITE_CHECK_MODEL failed: $(cat "$tmp/err")" >&2
   prompt checks-local
-  datta=$(grep -n 'だった。' "$f" | grep -vE '^[0-9]+:[「『]' || true)
+  datta=$(grep -n 'だった。' "$f" | grep -vE '^[0-9]+:(「|『)' || true)
   if [ -n "$datta" ]; then
     prompt datta
     printf '%s\n' "$datta"

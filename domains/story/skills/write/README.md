@@ -13,5 +13,8 @@ flowchart TD
   reply -- "y, no Scene left" --> final[check the whole file]
   final --> done[/"complete + findings left<br/>for the user to decide"/]
   reply -- "revise" --> check
-  input -- "story:<br/>revise as the user says" --> check
+  input -- "story:<br/>revise as the user says" --> rcheck[check and fix the file]
+  rcheck --> rreply[/"revised.<br/>y: finish<br/>or say what to revise"/]
+  rreply -- "y" --> final
+  rreply -- "revise" --> rcheck
 ```

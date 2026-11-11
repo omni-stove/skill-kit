@@ -11,7 +11,7 @@ plot() {
   printf '本文\n\n## Length\n%b\n## Prohibited\n99999字\n' "$1" > plot.md
 }
 
-@test "length.sh counts 字 without whitespace over the whole file" {
+@test "length.sh counts characters without whitespace over the whole file" {
   plot '12字\n'
   run sh "$LEN" plot.md story.txt
   [ "$status" -eq 0 ]

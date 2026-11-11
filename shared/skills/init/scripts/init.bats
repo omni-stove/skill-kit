@@ -268,6 +268,47 @@ JSON
   [ "$(cat .claude/settings.json)" = "not json" ]
 }
 
+@test "registers the run-skill-scripts hook beside the rules hook" {
+  mkdir -p .claude/hooks && : > .claude/hooks/llm-instruction-rules.sh && : > .claude/hooks/run-skill-scripts.sh
+  run "$INIT"
+  [ "$(jq -r '.hooks.PreToolUse | length' .claude/settings.json)" -eq 2 ]
+  [ "$(jq -r '.hooks.PreToolUse[1].matcher' .claude/settings.json)" = "Read|Bash" ]
+  [ "$(jq -r '.hooks.PreToolUse[1].hooks[0].command' .claude/settings.json)" = '"$CLAUDE_PROJECT_DIR/.claude/hooks/run-skill-scripts.sh"' ]
+  run "$INIT"
+  [[ "$output" == *"kept	.claude/settings.json — the run-skill-scripts hook"* ]]
+  [ "$(jq -r '.hooks.PreToolUse | length' .claude/settings.json)" -eq 2 ]
+}
+
+@test "registers the run-skill-scripts hook for Codex in .codex/hooks.json, and keeps it after" {
+  mkdir -p .agents/hooks && : > .agents/hooks/run-skill-scripts.sh
+  run "$INIT"
+  [[ "$output" == *"created	.codex/hooks.json"* ]]
+  [ "$(jq -r '.hooks.PreToolUse[0].matcher' .codex/hooks.json)" = "null" ]
+  [ "$(jq -r '.hooks.PreToolUse[0].hooks[0].command' .codex/hooks.json)" = "sh -c 'exec \"\$(git rev-parse --show-toplevel)/.agents/hooks/run-skill-scripts.sh\"'" ]
+  run "$INIT"
+  [[ "$output" == *"kept	.codex/hooks.json"* ]]
+  [ "$(jq -r '.hooks.PreToolUse | length' .codex/hooks.json)" -eq 1 ]
+}
+
+@test "the Codex hook command runs the hook from a subdirectory" {
+  mkdir -p .agents/hooks sub
+  printf '#!/bin/sh\necho ran\n' > .agents/hooks/run-skill-scripts.sh && chmod +x .agents/hooks/run-skill-scripts.sh
+  "$INIT" >/dev/null
+  cmd=$(jq -r '.hooks.PreToolUse[0].hooks[0].command' .codex/hooks.json)
+  run sh -c "cd sub && $cmd"
+  [ "$output" = "ran" ]
+}
+
+@test "adds the Codex hook to an existing .codex/hooks.json without touching the rest" {
+  mkdir -p .agents/hooks .codex && : > .agents/hooks/run-skill-scripts.sh
+  echo '{"hooks":{"Stop":[{"hooks":[]}],"PreToolUse":[{"matcher":"x","hooks":[]}]}}' > .codex/hooks.json
+  run "$INIT"
+  [[ "$output" == *"updated	.codex/hooks.json"* ]]
+  [ "$(jq -r '.hooks.Stop | length' .codex/hooks.json)" -eq 1 ]
+  [ "$(jq -r '.hooks.PreToolUse | length' .codex/hooks.json)" -eq 2 ]
+  [ "$(jq -r '.hooks.PreToolUse[0].matcher' .codex/hooks.json)" = "x" ]
+}
+
 @test "leaves settings.json alone when the hook is not deployed" {
   run "$INIT"
   [ ! -e .claude/settings.json ]

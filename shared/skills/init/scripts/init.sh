@@ -190,35 +190,45 @@ install_rules() {
 }
 install_rules .agents/refs/code-rules.md
 
-# Claude Code fires only the hooks registered in settings, so the deployed hook is registered
+# Claude Code fires only the hooks registered in settings, so each deployed hook is registered
 # here; the file is the repo's, so an existing one is merged, not replaced.
-hook_entry='{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/llm-instruction-rules.sh\""}]}'
 settings=.claude/settings.json
-if [ -e .claude/hooks/llm-instruction-rules.sh ]; then
+register_hook() { # <hook name> <matcher>
+	[ -e ".claude/hooks/$1.sh" ] || return 0
+	entry=$(printf '{"matcher": "%s", "hooks": [{"type": "command", "command": "\\"$CLAUDE_PROJECT_DIR/.claude/hooks/%s.sh\\""}]}' "$2" "$1")
 	if [ ! -e "$settings" ]; then
-		cat >"$settings" <<'JSON'
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/llm-instruction-rules.sh\"" }
-        ]
-      }
-    ]
-  }
-}
-JSON
-		echo "created	$settings — registers the llm-instruction-rules hook"
-	elif grep -q 'llm-instruction-rules.sh' "$settings"; then
-		echo "kept	$settings"
-	elif command -v jq >/dev/null 2>&1 && tmp=$(mktemp) && jq --argjson e "$hook_entry" '.hooks.PreToolUse = ((.hooks.PreToolUse // []) + [$e])' "$settings" >"$tmp" 2>/dev/null; then
+		printf '{"hooks": {"PreToolUse": []}}\n' >"$settings"
+		echo "created	$settings"
+	fi
+	if grep -q "$1.sh" "$settings"; then
+		echo "kept	$settings — the $1 hook"
+	elif command -v jq >/dev/null 2>&1 && tmp=$(mktemp) && jq --argjson e "$entry" '.hooks.PreToolUse = ((.hooks.PreToolUse // []) + [$e])' "$settings" >"$tmp" 2>/dev/null; then
 		mv "$tmp" "$settings"
-		echo "updated	$settings — added the llm-instruction-rules hook under hooks.PreToolUse"
+		echo "updated	$settings — added the $1 hook under hooks.PreToolUse"
 	else
 		rm -f "${tmp:-}"
-		echo "todo	$settings — add under hooks.PreToolUse: $hook_entry"
+		echo "todo	$settings — add under hooks.PreToolUse: $entry"
+	fi
+}
+register_hook llm-instruction-rules 'Write|Edit'
+register_hook run-skill-scripts 'Read|Bash'
+
+# Codex reads hooks from .codex/hooks.json, gives no project-dir variable, and names its shell
+# tool its own way, so the entry has no matcher and finds the repo through git.
+codex_hooks=.codex/hooks.json
+if [ -e .agents/hooks/run-skill-scripts.sh ]; then
+	codex_cmd='sh -c '\''exec "$(git rev-parse --show-toplevel)/.agents/hooks/run-skill-scripts.sh"'\'''
+	if [ -e "$codex_hooks" ] && grep -q 'run-skill-scripts.sh' "$codex_hooks"; then
+		echo "kept	$codex_hooks — the run-skill-scripts hook"
+	elif command -v jq >/dev/null 2>&1 && mkdir -p .codex && tmp=$(mktemp) &&
+		{ cat "$codex_hooks" 2>/dev/null || echo '{}'; } |
+		jq --arg c "$codex_cmd" '.hooks.PreToolUse = ((.hooks.PreToolUse // []) + [{hooks: [{type: "command", command: $c}]}])' >"$tmp" 2>/dev/null; then
+		[ -e "$codex_hooks" ] && verb=updated || verb=created
+		mv "$tmp" "$codex_hooks"
+		echo "$verb	$codex_hooks — registers the run-skill-scripts hook for Codex"
+	else
+		rm -f "${tmp:-}"
+		echo "todo	$codex_hooks — add under hooks.PreToolUse: {\"hooks\": [{\"type\": \"command\", \"command\": \"sh -c 'exec \\\"\$(git rev-parse --show-toplevel)/.agents/hooks/run-skill-scripts.sh\\\"'\"}]}"
 	fi
 fi
 

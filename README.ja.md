@@ -48,6 +48,9 @@ skill-kit code sync     # または game / story
 **llm-instruction-rules** は、Claudeが `SKILL.md`、`AGENTS.md`、プロンプトを編集するたびに、
 指示文を書くときのルールを見せる。`init` が登録する。
 
+**run-skill-scripts** は、ClaudeとCodexがスキルのスクリプトを開いて読むのを止め、そのまま実行させる。`init` が両方に登録する。
+Codexで効くのは、リポジトリをtrustedにし、Codex上で新しいフックを承認してから。
+
 **before-skill** はスキルの前にコマンドを実行し、コマンドが失敗したらスキルを止める。
 `.claude/settings.json` の `hooks.PreToolUse` に自分で登録する。この例は `pr` の前に `make check` を実行する:
 

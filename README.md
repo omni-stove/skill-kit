@@ -49,6 +49,10 @@ link is (e.g. `.claude/skills/<name>/`). Sync leaves it alone.
 **llm-instruction-rules** shows Claude the house rules for writing instructions whenever it
 edits a `SKILL.md`, `AGENTS.md` or a prompt. `init` registers it.
 
+**run-skill-scripts** stops Claude and Codex from opening a skill's scripts, so they run
+them straight away. `init` registers it for both. Codex runs it only once the repo is trusted
+and you have approved the new hook in Codex.
+
 **before-skill** runs a command before a skill and stops the skill when the command fails.
 Register it yourself in `.claude/settings.json`, under `hooks.PreToolUse`; this one runs
 `make check` before `pr`:

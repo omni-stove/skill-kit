@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Print the report of one remote-issue run: the parent's URL, each child issue as
-# <label><TAB><title><TAB><url>, and the parent's unchecked checklist items (the deferred work).
+# Print the report of one remote-issue run: the parent's URL and each child issue as
+# <label><TAB><title><TAB><url>, where an issue filed to wait shows `later:<label>` and
+# the issues it waits on as a fourth column.
 # usage: report.sh <parent-number>
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
@@ -11,7 +12,9 @@ echo "==> parent"
 "${GH_CMD:-gh}" issue view "$parent" --json url -q .url
 echo "==> issues"
 "${GH_CMD:-gh}" api "repos/{owner}/{repo}/issues/${parent}/sub_issues" \
-  --jq '.[] | "\([.labels[].name] | join(","))\t\(.title)\t\(.html_url)"'
-echo "==> deferred"
-"${GH_CMD:-gh}" issue view "$parent" --json body -q .body | grep -E '^\s*[-*] \[ \]' || echo "(none)"
+  --jq '.[] | ([.labels[].name] | join(",")) as $l
+         | ([(.body // "") | capture("ラベル: `(?<t>[a-z]+)`")? | .t] | first) as $t
+         | if $l == "" and $t != null
+           then "later:\($t)\t\(.title)\t\(.html_url)\t\([(.body // "") | capture("待ち: (?<w>[^\n]*)")? | .w] | first // "")"
+           else "\($l)\t\(.title)\t\(.html_url)" end'
 prompt report >&2

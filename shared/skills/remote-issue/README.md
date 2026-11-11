@@ -2,12 +2,16 @@
 
 ```mermaid
 flowchart TD
-  split["split the task into<br/>independent issues:<br/>bug, prototype or<br/>implementation"]
+  split["split the task into<br/>independent issues:<br/>bug or implementation"]
   split --> similar[look for open issues<br/>that already cover an item]
   similar --> origin{task comes from<br/>an existing issue?}
   origin -- "yes" --> comment[add the plan to that<br/>issue as the parent]
   origin -- "no" --> parent[create a parent issue]
-  comment --> create[file each issue<br/>under the parent]
+  comment --> create[file every issue<br/>under the parent]
+  create --> wait{waits on<br/>another issue?}
+  wait -- "no" --> now[labeled:<br/>the worker starts it]
+  wait -- "yes" --> later[unlabeled, naming<br/>the label to add and<br/>the issues to merge first]
   parent --> create
-  create --> report[/"parent + one line per issue<br/>+ existing issues that<br/>replaced items +<br/>deferred work"/]
+  now --> report[/"parent + one line per issue<br/>+ the unlabeled ones with<br/>their label and waits +<br/>existing issues that<br/>replaced items"/]
+  later --> report
 ```

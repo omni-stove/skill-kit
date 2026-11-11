@@ -1,1 +1,1 @@
-Report the above with one line per issue on what it does, plus the existing issues that replaced items
+Report the above with one line per issue on what it does, the later: issues apart with the label the user adds and the issues to merge first, plus the existing issues that replaced items

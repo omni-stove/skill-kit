@@ -39,7 +39,7 @@ Run `setup` once per repo. Every other skill uses the engine facts it records.
 | Skill | What it does |
 |---|---|
 | [setup](skills/setup/README.md) | Records the engine's source folders, logs, error formats, and build and run commands |
-| [setup-mcp](skills/setup-mcp/README.md) | Connects an engine-control server, so the kit drives the live engine instead of reading its logs |
+| [setup-mcp](skills/setup-mcp/README.md) | Lets the agent work in the engine's editor through Computer Use, or connects an engine-control server, so the kit drives the live engine instead of reading its logs |
 
 ## 2. Design
 

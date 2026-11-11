@@ -68,12 +68,12 @@ headless_cmd()       { echo "# Unity headless (setup fills in <Unity> binary pat
 # One-line hint on how the user makes changes take effect after an edit.
 recompile_hint()     { echo "Switch back to the Unity Editor window; it recompiles on focus."; }
 
-# --- Engine-control MCP (optional) ------------------------------------------
-# If this repo has an MCP server that can DRIVE the engine — trigger a recompile, enter
-# Play Mode, run tests, read the live console through a structured API — name its tool
-# prefix here. Skills that can do more with a live engine (fix/logs/run) check this: when
-# it is non-empty they prefer the MCP tools whose names start with this prefix; when it is
-# empty they fall back to log-scraping and human build/run instructions. The `setup-mcp`
-# skill configures the server in this repo's .mcp.json and fills this in. Empty by default
-# — the kit bundles no MCP server, so nothing here breaks a repo that has none.
-control_mcp()        { echo ""; }   # e.g. "mcp__unity__" when a Unity Editor MCP bridge is wired up
+# --- Engine control (optional) ----------------------------------------------
+# The MCP tool prefix the agent drives the engine through. Computer Use on the editor
+# ("mcp__computer-use__", or "mcp__remote-devices__computer_" in a cloud session) lets it
+# work in the editor GUI itself — build scenes, wire the Inspector, press Play and watch the
+# Game view. An engine MCP bridge (e.g. "mcp__unity__") triggers recompiles, Play Mode, tests
+# and reads the console through a structured API. fix/logs/run use whichever is named here;
+# empty, they fall back to log-scraping and human build/run instructions. The `setup-mcp`
+# skill sets this up and fills it in. Empty by default.
+control_mcp()        { echo ""; }   # e.g. "mcp__computer-use__", or "mcp__unity__" for a bridge

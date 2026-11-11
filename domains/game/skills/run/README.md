@@ -3,10 +3,12 @@
 ```mermaid
 flowchart TD
   how{how does the<br/>game run here?}
+  how -- "Computer Use" --> play_ed[press Play in the editor,<br/>play the changed flow and<br/>screenshot the Game view]
   how -- "engine connected" --> drive[drive Play Mode,<br/>tests or the build]
   how -- "headless" --> headless[run it headless]
   how -- "from the shell" --> build[build, then run]
   how -- "by hand only" --> manual[/shows the step to do<br/>by hand and waits/]
+  play_ed --> up
   drive --> up[confirm it is up]
   headless --> up
   build --> up

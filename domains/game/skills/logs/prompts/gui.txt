@@ -1,0 +1,1 @@
+To reproduce a problem, play the scenario yourself in the editor through the {gui} tools instead of asking the user, with tail -f "{log}" running, and screenshot the Game view where it goes wrong.

@@ -1,0 +1,1 @@
+Do the editor steps yourself through the {ctrl} tools rather than relaying them: bring the editor to the front and let it finish compiling, press Play, and play the changed flow with clicks and keys, screenshotting the Game view as you go; stop Play Mode when done.

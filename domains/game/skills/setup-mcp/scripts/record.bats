@@ -49,3 +49,12 @@ setup() {
   run sh "$RECORD" mcp__x__
   [ "$status" -eq 1 ]
 }
+
+@test "records Computer Use without looking for a server in .mcp.json" {
+  cp "$BATS_TEST_TMPDIR/kit/engine.sh" .agents/refs/engine.sh
+  run sh "$RECORD" mcp__computer-use__
+  [ "$status" -eq 0 ]
+  [ "$(sh -c '. .agents/refs/engine.sh; control_mcp')" = "mcp__computer-use__" ]
+  [[ "$output" == *"Computer Use"* ]]
+  [[ "$output" != *"warning	"* ]]
+}

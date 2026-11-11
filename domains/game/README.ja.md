@@ -38,7 +38,7 @@ flowchart TD
 | スキル | すること |
 |---|---|
 | [setup](skills/setup/README.ja.md) | エンジンのソースフォルダ、ログ、エラー形式、ビルドと実行のコマンドを記録する |
-| [setup-mcp](skills/setup-mcp/README.ja.md) | エンジン操作サーバーをつなぎ、ログを読む代わりに動いているエンジンを直接操作する |
+| [setup-mcp](skills/setup-mcp/README.ja.md) | Computer Useでエディタを直接操作できるようにするか、エンジン操作サーバーをつなぎ、ログを読む代わりに動いているエンジンを操作する |
 
 ## 2. 設計
 

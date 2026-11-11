@@ -1,0 +1,1 @@
+Then do this yourself through the {gui} tools: {hint} Wait for the compile to finish, rerun {self}, and confirm the errors are gone.

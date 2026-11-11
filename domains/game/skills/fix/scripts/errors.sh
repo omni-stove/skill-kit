@@ -1,11 +1,13 @@
 #!/bin/sh
 # List the latest compile errors/warnings from this repo's engine build log, scoped to the
 # project's own source (newest compile only), then the steps to fix them. With an
-# engine-control MCP wired up, says to read them from its console instead.
+# engine-control MCP bridge wired up, says to read them from its console instead; with
+# Computer Use on the editor, says to recompile there.
 [ -f .agents/refs/engine.sh ] || { echo "errors: .agents/refs/engine.sh not found — the kit isn't synced into this repo. Tell the user to run \`skill-kit game sync\`, then stop." >&2; exit 1; }
 . .agents/refs/engine.sh
 . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 mcp=$(control_mcp)
+case $mcp in *computer*) gui=$mcp; mcp= ;; *) gui= ;; esac
 if [ -n "$mcp" ]; then
   prompt read-mcp mcp="$mcp"
 else
@@ -20,6 +22,8 @@ fi
 prompt next source_root="$(source_root)" third_party="$(third_party)"
 if [ -n "$mcp" ]; then
   prompt recompile-mcp mcp="$mcp"
+elif [ -n "$gui" ]; then
+  prompt recompile-gui gui="$gui" hint="$(recompile_hint)" self="$0"
 else
   prompt recompile-log hint="$(recompile_hint)"
 fi

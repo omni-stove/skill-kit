@@ -1,6 +1,7 @@
 #!/bin/sh
 # Tail this repo's engine runtime log: recent call-site messages (deduped, by frequency),
 # then runtime exceptions, then how to read them. --prev tails the previous session's log.
+# With Computer Use on the editor, also says to reproduce the scenario there.
 [ -f .agents/refs/engine.sh ] || { echo "tail: .agents/refs/engine.sh not found — the kit isn't synced into this repo. Tell the user to run \`skill-kit game sync\`, then stop." >&2; exit 1; }
 . .agents/refs/engine.sh
 . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
@@ -10,6 +11,7 @@ case "${1:-}" in
   *) echo "usage: tail.sh [--prev]" >&2; exit 2 ;;
 esac
 mcp=$(control_mcp)
+case $mcp in *computer*) gui=$mcp; mcp= ;; *) gui= ;; esac
 if [ -n "$mcp" ] && [ -z "${1:-}" ]; then
   prompt mcp mcp="$mcp"
 fi
@@ -18,3 +20,4 @@ grep -oE "$(call_site_pattern)" "$log" 2>/dev/null | tail -100 | sort | uniq -c 
 echo "== runtime exceptions =="
 grep -nE "$(runtime_error_pattern)" "$log" 2>/dev/null | tail -50
 prompt next source_root="$(source_root)" third_party="$(third_party)" log="$log" self="$0"
+[ -z "$gui" ] || prompt gui gui="$gui" log="$log"

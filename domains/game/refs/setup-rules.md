@@ -6,7 +6,7 @@ you change for this repo.
 
 This produces one **real** file in this repo: `.agents/refs/engine.sh` — engine-specific
 facts (source root, log path, build/run commands, compile/runtime/call-site grep patterns,
-and the optional engine-control MCP prefix).
+and the optional engine-control prefix).
 
 `skill-kit game sync` leaves real files untouched and keeps them git-tracked, so a real file
 overrides the kit's symlinked default. Do NOT edit a symlink target, and never
@@ -73,17 +73,17 @@ and that `compile_error_pattern` actually matches a real error line if the log h
 `.agents/refs/scriptability-rules.md` is a rule the agent should follow on *every*
 task in this repo, not only when a skill happens to read it. Offer to add a one-line
 pointer to it in the repo's `CLAUDE.md` (create or append) so it's always in context —
-e.g. "Game workflow: follow `.agents/refs/scriptability-rules.md` (no GUI; wire refs and
-run headless via script)." Do this only with the user's OK; don't clobber existing
+e.g. "Game workflow: follow `.agents/refs/scriptability-rules.md` (work in the editor through
+Computer Use when it is set up; otherwise wire refs and run headless via script)." Do this
+only with the user's OK; don't clobber existing
 `CLAUDE.md` content — append a line.
 
-## Engine-control MCP (optional)
+## Engine control (optional)
 
 Leave `control_mcp` echoing an empty string — reading errors, reading logs, and running
-the game then use the log-scraping fallback, which always works. Wiring an engine-control
-MCP (to trigger recompiles, enter Play Mode, run tests, read the live console via a
-structured API) is a separate opt-in step that sets `control_mcp` to the server's tool
-prefix. Don't fabricate an MCP server to fill it in.
+the game then use the log-scraping fallback, which always works. Driving the engine — Computer
+Use on the editor, or an engine-control MCP server — is a separate opt-in step that sets
+`control_mcp` to the tools' prefix. Don't fabricate a prefix to fill it in.
 
 ## Expose build and test as tasks
 
@@ -96,4 +96,4 @@ instruction.
 Finally run `git status` and confirm `.agents/refs/engine.sh` appears in it as a real file
 (not a symlink, not ignored), and that nothing else changed. Tell the user the override is in place
 and will survive `skill-kit game sync` / `update`, and that the log fallback
-is in use until an engine-control MCP is wired up.
+is in use until engine control is set up.

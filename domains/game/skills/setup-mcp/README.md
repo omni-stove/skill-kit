@@ -1,9 +1,5 @@
 # setup-mcp
 
-Connects an optional engine-control server so the kit drives the live engine instead of reading its logs.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   ask[/"shows the engine and the<br/>servers set up now;<br/>asks which server to use"/]

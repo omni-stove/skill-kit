@@ -1,9 +1,5 @@
 # background
 
-Builds an image-generation prompt for a background or scenery image of a location or scene.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   scene{scene from this<br/>project's story?}

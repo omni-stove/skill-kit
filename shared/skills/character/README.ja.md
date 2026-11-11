@@ -1,9 +1,5 @@
 # character
 
-対話を通してキャラクター設定を作成・編集する。
-
-平行四辺形はユーザーに見えて、答えるもの。
-
 ```mermaid
 flowchart TD
   read[プロジェクトのREADMEと<br/>既存のキャラクターを読む]

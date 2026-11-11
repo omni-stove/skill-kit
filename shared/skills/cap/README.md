@@ -1,9 +1,5 @@
 # cap
 
-Commits all current changes and pushes them to the current branch.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   changes{any changes?}

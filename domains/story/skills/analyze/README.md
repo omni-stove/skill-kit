@@ -1,9 +1,5 @@
 # analyze
 
-Investigates a file's stylistic habits and repetitions, then fixes the items the user picks.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   tally[tally the file's habits<br/>and repetitions]

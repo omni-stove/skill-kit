@@ -1,9 +1,5 @@
 # format-check
 
-Checks one story file against the Japanese web novel format rules and reports only the lines with issues.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   fix[fix mechanical format<br/>issues in place]

@@ -1,9 +1,5 @@
 # fix
 
-Fixes the compile errors and warnings the game engine is emitting, in the project's own code.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the latest compile<br/>errors and warnings]

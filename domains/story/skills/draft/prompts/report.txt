@@ -1,4 +1,4 @@
-Launch one Agent on the plot file to report what it must stay consistent with, what of it
-the reader already has, and where it contradicts a setting or an earlier file, within that
-limit, which you state in its prompt with that command. Open no other file until it returns. Save its report to a file,
-then run {draft} "{file}" "{out}" <the report file>
+Launch one Agent on the plot file to save to {check} the report on a plot that the loaded
+rules define, within that limit, which you state in its prompt with that command and that
+definition.
+Open no other file until it returns, then run {draft} "{file}" "{out}" "{check}"

@@ -1,9 +1,5 @@
 # judge
 
-Screens a work as a contest judge: the synopsis first, then the opening text.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   synopsis[judge the synopsis<br/>by the contest rules]

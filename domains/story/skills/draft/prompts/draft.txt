@@ -1,12 +1,7 @@
 Write every Scene of the plot file in one pass by the loaded rules: the plot file leads,
-open another file only for a fact {report} lacks, and deliver its プロットの意図 through
-events alone.
+open another file only for a fact {report} lacks, and deliver its Intent through
+events alone. Bring the whole text to at least the length under its ## Length.
 
-Where the text needs something the plot leaves open, or the plot cannot hold to the
-report, a setting, or its own 禁止事項 and ハイライト, write what you judge most likely and
-note the place; you judge what the plot lacks.
-
-Where the plot gives a passage nothing to move, mark the place instead of filling it; you
-judge which passages these are.
+Note and mark places by the loaded rules.
 
 Save the draft to {out}, then run {gaps} "{file}" "{out}" "{report}"

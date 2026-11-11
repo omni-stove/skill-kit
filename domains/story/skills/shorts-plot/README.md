@@ -1,9 +1,5 @@
 # shorts-plot
 
-Develops the plot of a short story under src/shorts/ with the user, from the short's id.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the short's README<br/>if there is one]

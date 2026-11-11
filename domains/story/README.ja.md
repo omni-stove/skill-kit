@@ -34,7 +34,9 @@ flowchart TD
 | 時系列と全体の流れ | `story/outline.md` |
 | プロット | `story/plot/NNN-<slug>.md` |
 | 本文 | `story/NNN.txt`。同じ番号のプロットファイルから書く |
+| プロットを本文にしたときのレポート | `story/report/NNN.md` |
 | 全プロットの下書き | `draft/NNN.txt`。同じ番号のプロットファイルから書く |
+| その下書きのレポート | `draft/report.md` |
 | 梗概 | `story/synopsis.txt` |
 | 英訳 | `story/en/` |
 

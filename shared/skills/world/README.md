@@ -1,9 +1,5 @@
 # world
 
-Creates or edits a world-setting element, such as a magic system, race, history or geography, through dialogue.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the project readme<br/>and existing world settings]

@@ -29,7 +29,8 @@ setup() {
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "Output: story/plot/010-first-contact.md" ]
   [[ "${lines[1]}" == "Confirm the path and content"* ]]
-  [[ "${lines[2]}" == *"/refs/plot-skeleton.sh story/plot/010-first-contact.md" ]]
+  [[ "${lines[2]}" == *"/refs/plot-skeleton.sh story/plot/010-first-contact.md --body <text>"* ]]
+  [[ "$output" == *"Write the plot body above the first heading"* ]]
 }
 
 @test "path.sh numbers a new plot at the next ten after the highest number" {

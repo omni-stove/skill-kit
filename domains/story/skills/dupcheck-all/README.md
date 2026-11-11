@@ -1,9 +1,5 @@
 # dupcheck-all
 
-Finds expressions that overlap in meaning across every .txt file in a directory, including between files, and fixes them.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   bundle[gather every .txt file<br/>in the directory]

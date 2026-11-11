@@ -1,9 +1,5 @@
 # judge-full
 
-A panel of final-round judges decides whether a complete manuscript wins the 大賞, discussing where they split.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   judges["judges (3 by default)<br/>each read the synopsis<br/>and the whole manuscript"]

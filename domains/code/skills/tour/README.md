@@ -1,9 +1,5 @@
 # tour
 
-Walks a new member through what an app does, feature group by feature group, from its @feature JSDoc.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   collect{"app has @feature JSDoc?"}

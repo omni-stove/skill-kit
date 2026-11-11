@@ -1,9 +1,5 @@
 # setup
 
-Adapts the kit to this repo by recording the engine's real facts: source folders, logs, error formats, and build and run commands.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   detect[detect the engine, source,<br/>logs and build commands]

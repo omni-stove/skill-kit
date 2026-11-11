@@ -1,9 +1,5 @@
 # character
 
-Creates or edits a character setting through dialogue.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the project readme<br/>and existing characters]

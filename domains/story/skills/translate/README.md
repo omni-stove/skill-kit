@@ -1,9 +1,5 @@
 # translate
 
-Translates a Japanese manuscript file, or every file in a directory, into English.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   gloss{glossary exists?}

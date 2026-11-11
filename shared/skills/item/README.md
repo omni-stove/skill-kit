@@ -1,9 +1,5 @@
 # item
 
-Creates or edits an item setting through dialogue.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the project readme<br/>and existing items]

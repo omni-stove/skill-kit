@@ -1,9 +1,5 @@
 # proofread
 
-Proofreads every .txt file in a directory for typos, tense confusion and notation variance.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   input[list the .txt files<br/>in the given directory<br/>or the given file's]

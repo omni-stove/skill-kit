@@ -1,9 +1,5 @@
 # line-break
 
-Breaks narration lines in a story file where the context shifts.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the file]

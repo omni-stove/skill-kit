@@ -1,8 +1,7 @@
 #!/bin/sh
 # Usage: paths.sh <base> <slug>...   (one kebab-case slug per confirmed segment, in order)
-# Writes the plot file skeleton to one path per slug and prints the path:
-# story/plot/NNN-<base>-<slug>.md. NNN is three digits stepping by 10, starting after the highest leading number already in story/plot/
-# rounded up to the next ten (010 when there is none). Then how to fill them.
+# Prints one path per slug: story/plot/NNN-<base>-<slug>.md. NNN is three digits stepping by 10, starting after the highest leading number already in story/plot/
+# rounded up to the next ten (010 when there is none). Then the command that writes each plot file, with the plot file rules.
 set -eu
 . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 dir=story/plot
@@ -25,5 +24,5 @@ for s in "$@"; do
   n=$((n + 10))
 done
 printf '%s\n' "$@"
-prompt paths
-sh "$(dirname -- "$0")/../../../refs/plot-skeleton.sh" "$@"
+prompt paths skeleton="$(dirname -- "$0")/../../../refs/plot-skeleton.sh"
+cat "$(dirname -- "$0")/../../../refs/plot-format.txt"

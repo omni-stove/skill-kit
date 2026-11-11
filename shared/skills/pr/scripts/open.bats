@@ -33,7 +33,7 @@ STUB
   run --separate-stderr "$SCRIPT" '[chore] title' 'Closes #7' 'null guard' 'open the list page'
   [ "$status" -eq 0 ]
   [ "$output" = "https://github.com/o/r/pull/1" ]
-  [[ "$stderr" == *"report the PR URL"* ]]
+  [[ "$stderr" == *"Report the PR URL"* ]]
   grep -q 'gh pr create --base main --title \[chore\] title --assignee @me --body-file' "$CALLS"
 }
 

@@ -1,9 +1,5 @@
 # synopsis
 
-Writes the story's synopsis (梗概), or revises the existing one.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   read[read the story's settings<br/>and characters]

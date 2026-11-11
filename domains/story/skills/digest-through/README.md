@@ -1,9 +1,5 @@
 # digest-through
 
-Digests every file in a directory one at a time, then gives an overall understanding of the whole.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   next{file left<br/>to digest?}

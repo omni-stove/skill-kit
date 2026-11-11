@@ -2,14 +2,18 @@
 // for each one that fails. One browser and one page per worker, CPU-count workers, each
 // loading mermaid once: mmdc launches a browser per file and lays out every diagram.
 // MMDC_DIR is the mermaid-cli install from `mise where`; mermaid and puppeteer are
-// resolved from its real path, since the install links them in from a shared store.
-import { readFileSync, realpathSync } from 'node:fs'
+// resolved from its real path, since the install links them in from a shared store. The
+// package sits under node_modules or lib/node_modules, by the package manager mise used.
+import { existsSync, readFileSync, realpathSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { availableParallelism } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-const cli = createRequire(realpathSync(join(process.env.MMDC_DIR, 'node_modules/@mermaid-js/mermaid-cli/package.json')))
+const pkg = ['node_modules', 'lib/node_modules']
+  .map((dir) => join(process.env.MMDC_DIR, dir, '@mermaid-js/mermaid-cli/package.json'))
+  .find(existsSync)
+const cli = createRequire(realpathSync(pkg))
 const { default: puppeteer } = await import(pathToFileURL(cli.resolve('puppeteer')).href)
 const mermaid = cli.resolve('mermaid/dist/mermaid.min.js')
 

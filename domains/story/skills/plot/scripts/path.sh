@@ -6,7 +6,7 @@
 # plot's `Output:` path, with the action to take when it already exists. The path is the existing plot
 # with that slug, or else story/plot/NNN-<slug>.md, where NNN is three digits: the
 # highest leading number already in story/plot/ rounded up to the next ten (010 when
-# there is none). Then the command that writes the plot file skeleton there.
+# there is none). Then the command that writes the plot file there, with the plot file rules.
 set -eu
 . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 dir=story/plot
@@ -42,3 +42,4 @@ else
   echo "Output: $out"
 fi
 prompt write skeleton="$(dirname -- "$0")/../../../refs/plot-skeleton.sh" out="$out"
+cat "$(dirname -- "$0")/../../../refs/plot-format.txt"

@@ -1,9 +1,5 @@
 # init
 
-Puts the repo on mise and make, so every command runs as `make <name>`.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   create[create the make and mise<br/>files the repo lacks]

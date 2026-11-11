@@ -1,9 +1,5 @@
 # create-skill
 
-ユーザーが伝えた名前・用途・起動のきっかけから、このキットに新しいskillを作る。
-
-平行四辺形はユーザーに見えて、答えるもの。
-
 ```mermaid
 flowchart TD
   domain{ドメインは明らか?}

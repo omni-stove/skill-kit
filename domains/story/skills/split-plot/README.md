@@ -1,9 +1,5 @@
 # split-plot
 
-Splits one source file into a plot skeleton file per scene or section.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   split[try ways to split<br/>the source file]

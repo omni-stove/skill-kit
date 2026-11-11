@@ -1,9 +1,5 @@
 # task
 
-Adds or changes a command so it runs as `make <name>`.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   write[write the task and install<br/>any tool it newly needs]

@@ -73,7 +73,7 @@ MD
   [[ "$output" == *"== bullets (2) =="* ]]
   [[ "$output" == *"== blocks (5) =="* ]]
   [[ "$output" == *"== markers: no split =="* ]]
-  [[ "$output" != *"【場面3】"* ]]
+  [[ "$output" == *"$(printf '5\t【場面3】')"* ]]
   [[ "$output" == *"paths.sh <base name>"* ]]
 }
 
@@ -82,9 +82,10 @@ MD
   [ "$status" -eq 1 ]
 }
 
-@test "paths.sh writes the plot file skeleton at each path" {
+@test "paths.sh prints the command that writes each plot file and the plot file rules, and writes nothing" {
   run sh "$PATHS" co arrival first-night
   [ "$status" -eq 0 ]
-  grep -qx '## セリフ' story/plot/010-co-arrival.md
-  grep -qx '## 参照' story/plot/020-co-first-night.md
+  [[ "$output" == *"/refs/plot-skeleton.sh <path> --body <text>"* ]]
+  [[ "$output" == *"Write the plot body above the first heading"* ]]
+  [ ! -e story/plot/010-co-arrival.md ]
 }

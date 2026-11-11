@@ -1,9 +1,5 @@
 # unnatural
 
-Checks the narration of a Japanese fiction file or directory for unnatural wording and syntax, leaving dialogue out.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   input{file or directory?}

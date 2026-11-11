@@ -1,3 +1,3 @@
 Before editing an LLM-facing instruction file, read `shared/refs/llm-instruction-rules.md`; after the edit, reread it and check each changed line against it.
 
-When you add or change a skill, update `README.md` and `README.ja.md` beside its `SKILL.md` in the shape of `domains/story/skills/write/README.md`: only what the user sees, with no implementation.
+When you add or change a skill, update `README.md` and `README.ja.md` beside its `SKILL.md` in the shape of `domains/story/skills/write/README.md`: the skill name as the heading and a flowchart of the branches the user meets, what the user is asked and what the user gets, with no prose. Leave out what the user cannot observe from outside the skill and the rules the skill follows when writing its output. When a change alters none of that, leave the README as it is.

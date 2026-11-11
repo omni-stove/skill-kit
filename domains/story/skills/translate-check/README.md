@@ -1,9 +1,5 @@
 # translate-check
 
-Checks an English translation against its Japanese source in both directions, for a file or a directory.
-
-Parallelograms are what the user sees and answers.
-
 ```mermaid
 flowchart TD
   pairs[match each source<br/>with its translation]

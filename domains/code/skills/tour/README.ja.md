@@ -1,9 +1,5 @@
 # tour
 
-アプリの@feature JSDocをもとに、新しいメンバーにアプリでできることを機能グループごとに案内する。
-
-平行四辺形はユーザーに見えて、答えるもの。
-
 ```mermaid
 flowchart TD
   collect{"アプリに@feature JSDocがある?"}

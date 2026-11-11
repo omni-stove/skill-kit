@@ -2,8 +2,8 @@
 # PreToolUse hook for Claude Code and Codex: deny reading a skill's script (a .sh under
 # .agents/skills/, .agents/refs/ or .claude/skills/), so the model runs it as the skill says
 # instead of opening it first. A Read counts, and so does any tool call whose
-# tool_input.command (a string, or an argv array, either maybe wrapped in sh -c) starts its first segment with a file
-# viewer naming such a script — whatever the shell tool is called. Anything else passes
+# tool_input.command (a string, or an argv array, either maybe wrapped in sh -c) has a segment
+# that starts with a file viewer naming such a script — whatever the shell tool is called. Anything else passes
 # through with no output.
 set -euo pipefail
 
@@ -30,17 +30,20 @@ case "$tool" in
         else tostring end' 2>/dev/null || true)"
     # A string that wraps the command in sh -c, as Codex sends it.
     cmd="$(printf '%s' "$cmd" | sed -E "s/^[[:space:]]*([^[:space:]]*\/)?(ba|z)?sh -l?c [\"']?//")"
-    first="${cmd%%[|;&<>]*}"
-    read -r -a words <<<"$first" || true
-    case "${words[0]:-}" in
-      cat | head | tail | sed | less | more | bat | nl | awk | view)
-        for w in "${words[@]:1}"; do
-          w="${w#[\"\']}"
-          w="${w%[\"\']}"
-          if is_script "$w"; then script="$w"; break; fi
-        done
-        ;;
-    esac
+    # Every segment counts, so `cd repo && cat script` is caught; a segment ends at a redirect.
+    while IFS= read -r seg; do
+      seg="${seg%%[<>]*}"
+      read -r -a words <<<"$seg" || true
+      case "${words[0]:-}" in
+        cat | head | tail | sed | less | more | bat | nl | awk | view | grep | rg)
+          for w in "${words[@]:1}"; do
+            w="${w#[\"\']}"
+            w="${w%[\"\']}"
+            if is_script "$w"; then script="$w"; break 2; fi
+          done
+          ;;
+      esac
+    done < <(printf '%s\n' "$cmd" | tr ';&|()`' '\n')
     ;;
 esac
 [ -n "$script" ] || exit 0

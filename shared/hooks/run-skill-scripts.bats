@@ -50,6 +50,12 @@ passed() {
   denied .agents/skills/write/scripts/source.sh
   run bash_cmd "sed -n '1,40p' '.agents/refs/others.sh' | head"
   denied .agents/refs/others.sh
+  run bash_cmd "cd /repo && cat .agents/skills/write/scripts/others.sh; ls"
+  denied .agents/skills/write/scripts/others.sh
+  run bash_cmd "ls .agents/skills/pr; sed -n 40,80p .agents/skills/pr/scripts/open.sh"
+  denied .agents/skills/pr/scripts/open.sh
+  run bash_cmd "grep -n body .agents/skills/pr/scripts/open.sh"
+  denied .agents/skills/pr/scripts/open.sh
 }
 
 @test "running a script passes, with stdin from a viewer too" {
@@ -58,6 +64,10 @@ passed() {
   run bash_cmd "cat report.md | .agents/skills/staging/scripts/save.sh a.txt"
   passed
   run bash_cmd "cat"
+  passed
+  run bash_cmd "cd /repo && .agents/skills/write/scripts/source.sh plot/01.md 2>&1 | tail -30"
+  passed
+  run bash_cmd "cat > .agents/skills/x/scripts/label.sh <<'EOF'"
   passed
 }
 

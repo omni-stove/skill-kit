@@ -6,5 +6,5 @@ flowchart TD
   list --> pick[pick what this repo takes]
   pick --> ask[/"which features to turn on?<br/>auto-fix, auto-merge,<br/>issue worker, ..."/]
   ask --> install[install each the way<br/>its README says,<br/>with the chosen features on]
-  install --> done[/"what was installed +<br/>what is left to the user:<br/>secrets, labels, rulesets,<br/>App installs"/]
+  install --> done[/"what was installed +<br/>what is left to the user:<br/>secrets, labels, rulesets,<br/>App installs<br/>+ with auto-merge: squash-merges<br/>once the CI Gate passes,<br/>say if you want it otherwise"/]
 ```

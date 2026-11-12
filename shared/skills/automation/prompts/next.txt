@@ -3,3 +3,4 @@ Ask the user in one question which features those leave off by default to turn o
 Install each the way its README says, with the chosen features on and the inputs filled from this repo's tasks and tools.
 Set review-allowed-bots, even where the install leaves it empty, to the Apps under "Apps that open PRs"; with none listed, to the App the README sets up to open PRs.
 Hand the user what the README leaves to them — secrets, labels, rulesets, App installs.
+With auto-merge on, tell the user it squash-merges a PR once the CI Gate passes, and to say so if they want it otherwise.

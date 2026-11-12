@@ -6,5 +6,5 @@ flowchart TD
   list --> pick[このリポジトリに<br/>入れるものを選ぶ]
   pick --> ask[/"どの機能を有効にするか?<br/>自動修正、auto-merge、<br/>issue worker など"/]
   ask --> install[選んだ機能を有効にして<br/>それぞれをREADMEどおりに<br/>導入する]
-  install --> done[/"導入したもの +<br/>ユーザーに任せる作業:<br/>シークレット、ラベル、<br/>ルールセット、Appの導入"/]
+  install --> done[/"導入したもの +<br/>ユーザーに任せる作業:<br/>シークレット、ラベル、<br/>ルールセット、Appの導入<br/>+ auto-merge を選んだとき:<br/>CI Gate を通ったら squash で<br/>マージする、違えば申し出る"/]
 ```

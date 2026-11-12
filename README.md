@@ -1,70 +1,39 @@
 # skill-kit
 
-Skills for coding agents, in three domains that share one core:
+Skills for coding agents. Each repo takes one domain, and every domain also gets the shared
+skills in `shared/skills/`.
 
 - **[game](domains/game/README.md)** — game development, on any engine (Unity, Godot, Unreal, custom).
 - **[story](domains/story/README.md)** — writing fiction, in any language.
 - **[code](domains/code/README.md)** — working in a software repo, in any language.
 
-Each domain's guide shows the order to use its skills in and where their files go. Every
-domain also gets the shared skills: `init` and `task` for make commands, `cap`, `pr`,
-`fix-pr`, `delegate`, `unblock` and `automation` for git and GitHub, and `character`, `world`, `item` and `outline` for settings.
-
-Each skill's `README.md` (`shared/skills/<name>/`, `domains/<domain>/skills/<name>/`) shows
-what it asks and what it gives back.
-
 [日本語](README.ja.md)
 
-## Requirements
+## Getting started
 
-`git`, `curl` and [mise](https://mise.jdx.dev). The target is a git repository.
+You need `git`, `curl` and [mise](https://mise.jdx.dev).
 
-## Install
+1. Put `skill-kit` in `~/.local/bin`.
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/omni-stove/skill-kit/main/install.sh | sh
-```
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/omni-stove/skill-kit/main/install.sh | sh
+   ```
 
-This puts `skill-kit` in `~/.local/bin`.
+2. In the target git repo, sync a domain.
 
-## Set up a repo
+   ```sh
+   skill-kit code sync     # or game / story
+   ```
 
-The first time, in the repo:
+3. Run the `init` skill. In a game repo, also run the `setup` skill.
+4. From then on, ask the `guide` skill what to use for what you want, or what to do next.
 
-```sh
-skill-kit code sync     # or game / story
-```
+Anyone who clones the repo runs `make setup`, and `make update` for the latest kit.
 
-Then run the `init` skill. It puts the repo's tools and commands on mise and
-make. In a game repo, also run the `setup` skill to fit the kit to the engine.
+## Changing a skill for one repo only
 
-After that, anyone who clones the repo runs `make setup`, and `make update` for the latest
-kit. Everything else is the agent's.
-
-To change a kit skill for one repo only, put a real file of the same name where the kit's
-link is (e.g. `.claude/skills/<name>/`). Sync leaves it alone.
-
-## Hooks
-
-**llm-instruction-rules** shows Claude the house rules for writing instructions whenever it
-edits a `SKILL.md`, `AGENTS.md` or a prompt. `init` registers it.
-
-**run-skill-scripts** stops Claude and Codex from opening a skill's scripts, so they run
-them straight away. `init` registers it for both. Codex runs it only once the repo is trusted
-and you have approved the new hook in Codex.
-
-**before-skill** runs a command before a skill and stops the skill when the command fails.
-Register it yourself in `.claude/settings.json`, under `hooks.PreToolUse`; this one runs
-`make check` before `pr`:
-
-```json
-{
-  "matcher": "Skill",
-  "hooks": [
-    { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/before-skill.sh\" pr make check", "timeout": 600 }
-  ]
-}
-```
+Put a real file of the same name where the kit's link is
+(e.g. `.claude/skills/<name>/`). Sync leaves it alone.
 
 ## Working on the kit
 

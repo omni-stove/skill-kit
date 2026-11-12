@@ -24,90 +24,58 @@ flowchart TD
   checks --> translate[translate<br/>translate-check]
 ```
 
-## Where the files go
-
-| What | Where |
-|---|---|
-| Characters | `characters/<main\|supporting\|antagonist\|archive>/<slug>.md` |
-| World settings | `world/` |
-| Items | `items/` |
-| Timeline and whole-story flow | `story/outline.md` |
-| Plot | `story/plot/NNN-<slug>.md` |
-| Text | `story/NNN.txt`, written from the plot file of the same number |
-| Report on drafting a plot into text | `story/report/NNN.md` |
-| Rough drafts of every plot | `draft/NNN.txt`, written from the plot file of the same number |
-| Report on those drafts | `draft/report.md` |
-| Synopsis | `story/synopsis.txt` |
-| English translation | `story/en/` |
-
 ## 1. Settings
 
-| Skill | What it does |
-|---|---|
-| [character](../../shared/skills/character/README.md) | Creates or edits a character, checking the name for collisions |
-| [world](../../shared/skills/world/README.md) | Creates or edits a world-setting element |
-| [item](../../shared/skills/item/README.md) | Creates or edits an item |
+- [character](../../shared/skills/character/README.md)
+- [world](../../shared/skills/world/README.md)
+- [item](../../shared/skills/item/README.md)
 
 ## 2. Plot
 
-| Skill | What it does |
-|---|---|
-| [outline](../../shared/skills/outline/README.md) | Puts the whole story's events in time order and in the order the story tells them, before the plot files |
-| [plot](skills/plot/README.md) | Develops the high-level plot with you, or checks a plot file |
-| [split-plot](skills/split-plot/README.md) | Splits one outline or memo into a plot file per scene |
-| [shorts-plot](skills/shorts-plot/README.md) | Develops the plot of a short story under `src/shorts/` |
+- [outline](../../shared/skills/outline/README.md)
+- [plot](skills/plot/README.md)
+- [split-plot](skills/split-plot/README.md)
+- [shorts-plot](skills/shorts-plot/README.md)
 
 ## 3. Drafting
 
-| Skill | What it does |
-|---|---|
-| [write](skills/write/README.md) | Writes the text from a plot file one Scene at a time, or revises a text file |
-| [draft](skills/draft/README.md) | Writes the text from a plot file in one pass, then points out what the plot lacks |
-| [draft-all](skills/draft-all/README.md) | Writes every plot out into `draft/` at once, filling in what the plots leave open without asking |
-| [load](skills/load/README.md) | Reads files and holds them for the next request |
+- [write](skills/write/README.md)
+- [draft](skills/draft/README.md)
+- [draft-all](skills/draft-all/README.md)
+- [load](skills/load/README.md)
 
 ## 4. Checking and fixing
 
-Each check takes one file; a skill ending in `-all` takes a whole directory.
-
-| Skill | What it does |
-|---|---|
-| [check](skills/check/README.md) | Contradictions with the settings and the files before and after |
-| [proofread](skills/proofread/README.md) | Typos, tense confusion, notation variance |
-| [dupcheck](skills/dupcheck/README.md) / [dupcheck-all](skills/dupcheck-all/README.md) | Expressions that overlap in meaning |
-| [unnatural](skills/unnatural/README.md) | Unnatural Japanese in narration |
-| [analyze](skills/analyze/README.md) | Stylistic habits and repetitions |
-| [staging](skills/staging/README.md) / [staging-all](skills/staging-all/README.md) | Description quality, scene by scene |
-| [format-check](skills/format-check/README.md) / [format-check-all](skills/format-check-all/README.md) | Japanese web novel format rules |
-| [block-breaks](skills/block-breaks/README.md) | Block breaks and blank lines |
-| [line-break](skills/line-break/README.md) | Line breaks in narration where the context shifts |
-| [layman](skills/layman/README.md) | Passages that need specialist knowledge |
-| [clarify](skills/clarify/README.md) | Rewrites those passages for readers without it |
+- [check](skills/check/README.md)
+- [proofread](skills/proofread/README.md)
+- [dupcheck](skills/dupcheck/README.md) / [dupcheck-all](skills/dupcheck-all/README.md)
+- [unnatural](skills/unnatural/README.md)
+- [analyze](skills/analyze/README.md)
+- [staging](skills/staging/README.md) / [staging-all](skills/staging-all/README.md)
+- [format-check](skills/format-check/README.md) / [format-check-all](skills/format-check-all/README.md)
+- [block-breaks](skills/block-breaks/README.md)
+- [line-break](skills/line-break/README.md)
+- [layman](skills/layman/README.md)
+- [clarify](skills/clarify/README.md)
 
 ## 5. Reading as someone else
 
-| Skill | What it does |
-|---|---|
-| [read](skills/read/README.md) / [read-through](skills/read-through/README.md) | Impressions as a first-time reader |
-| [digest](skills/digest/README.md) / [digest-through](skills/digest-through/README.md) | Only the facts the text shows, with no evaluation |
+- [read](skills/read/README.md) / [read-through](skills/read-through/README.md)
+- [digest](skills/digest/README.md) / [digest-through](skills/digest-through/README.md)
 
 ## 6. Synopsis and contests
 
 Before `judge` or `judge-full`, give the contest's rules in the conversation.
 `.agents/refs/contest-rules/` has rules for several prizes.
 
-| Skill | What it does |
-|---|---|
-| [synopsis](skills/synopsis/README.md) | Writes or revises the synopsis (梗概) |
-| [judge](skills/judge/README.md) | Screens the synopsis, then the opening |
-| [judge-full](skills/judge-full/README.md) | A panel of final-round judges decides the 大賞 on the whole manuscript |
+- [synopsis](skills/synopsis/README.md)
+- [judge](skills/judge/README.md)
+- [judge-full](skills/judge-full/README.md)
 
 ## 7. Translation and media
 
-| Skill | What it does |
-|---|---|
-| [translate](skills/translate/README.md) | Translates the Japanese text into English |
-| [translate-check](skills/translate-check/README.md) | Checks the translation against the source in both directions |
-| [tachie](skills/tachie/README.md) | An image prompt for a character's standing art |
-| [background](skills/background/README.md) | An image prompt for a background |
-| [bgm](skills/bgm/README.md) | A Suno prompt for a BGM track |
+- [translate](skills/translate/README.md)
+- [translate-check](skills/translate-check/README.md)
+- [tachie](skills/tachie/README.md)
+- [background](skills/background/README.md)
+- [bgm](skills/bgm/README.md)

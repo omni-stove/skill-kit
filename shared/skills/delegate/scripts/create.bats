@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# delegate scripts — argument checks, the label on creation or the waits, and the parent link.
+# delegate scripts — argument checks, the label on creation or the blockers, and the parent link.
 
 bats_require_minimum_version 1.5.0
 
@@ -18,9 +18,13 @@ case "\$1 \$2" in
       *url*) echo "https://github.com/o/r/issues/\$3" ;;
       *) echo "\${ISSUE_STATE:-OPEN}" ;;
     esac ;;
-  "issue list") echo '[{"number":1,"title":"old bug","labels":[{"name":"bug"}],"body":"","url":"u1"},{"number":2,"title":"idea","labels":[{"name":"question"}],"body":"x","url":"u2"},{"number":4,"title":"held","labels":[],"body":"親: #3\\n待ち: #1\\nラベル: \`bug\`（待ちのIssueがマージされたら付ける）","url":"u4"}]' | jq -r "\${@: -1}" ;;
+  "issue list") echo '[{"number":1,"title":"old bug","labels":[{"name":"bug"}],"url":"u1"},{"number":2,"title":"idea","labels":[{"name":"question"}],"url":"u2"},{"number":4,"title":"held","labels":[],"url":"u4"}]' ;;
+  "api --paginate") echo 4 ;;
   "api repos/{owner}/{repo}/issues/7") echo 123 ;;
-  "api repos/{owner}/{repo}/issues/3/sub_issues") echo '[{"title":"child","labels":[{"name":"implementation"}],"body":"親: #3","html_url":"u7"},{"title":"next","labels":[],"body":"親: #3\\n待ち: #7 #8\\nラベル: \`implementation\`（待ちのIssueがマージされたら付ける）\\n\\nbody","html_url":"u9"}]' | jq -r "\${@: -1}" ;;
+  "api repos/{owner}/{repo}/issues/5") echo 125 ;;
+  "api repos/{owner}/{repo}/issues/6") echo 126 ;;
+  "api repos/{owner}/{repo}/issues/3/sub_issues") echo '[{"number":7,"title":"child","labels":[{"name":"implementation"}],"type":null,"html_url":"u7"},{"number":9,"title":"next","labels":[],"type":{"name":"Bug"},"html_url":"u9"}]' | jq -r "\${@: -1}" ;;
+  "api repos/{owner}/{repo}/issues/9/dependencies/blocked_by") echo '#7 #8' ;;
 esac
 STUB
   chmod +x "$BATS_TEST_TMPDIR/gh"
@@ -45,14 +49,18 @@ STUB
   grep -q 'issues/3/sub_issues' "$CALLS"
 }
 
-@test "create.sh --after files the issue unlabeled, naming the waits and the label to add" {
+@test "create.sh --after files the issue unlabeled, blocked by the waits, a bug typed Bug" {
   run "$CREATE" --parent 3 --after 5,6 implementation "Title" "Body"
   [ "$status" -eq 0 ]
   [ "$output" = "https://github.com/o/r/issues/7" ]
   ! grep -q -- '--label' "$CALLS" || false
-  grep -q '待ち: #5 #6' "$CALLS"
-  grep -q 'ラベル: `implementation`' "$CALLS"
   grep -q 'issues/3/sub_issues' "$CALLS"
+  grep -q 'issues/7/dependencies/blocked_by -F issue_id=125' "$CALLS"
+  grep -q 'issues/7/dependencies/blocked_by -F issue_id=126' "$CALLS"
+  ! grep -q 'type=Bug' "$CALLS" || false
+  run "$CREATE" --parent 3 --after 5 bug "Title" "Body"
+  [ "$status" -eq 0 ]
+  grep -q 'PATCH repos/{owner}/{repo}/issues/7 -f type=Bug' "$CALLS"
 }
 
 @test "parent.sh creates an unlabeled parent and prints its number" {
@@ -91,7 +99,7 @@ STUB
   [ "$status" -eq 0 ]
   [[ "$output" == *"https://github.com/o/r/issues/3"* ]]
   [[ "$output" == *"$(printf 'implementation\tchild\tu7')"* ]]
-  [[ "$output" == *"$(printf 'later:implementation\tnext\tu9\t#7 #8')"* ]]
+  [[ "$output" == *"$(printf 'later:bug\tnext\tu9\t#7 #8')"* ]]
   run "$BATS_TEST_DIRNAME/report.sh" x
   [ "$status" -eq 2 ]
 }

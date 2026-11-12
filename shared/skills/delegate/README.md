@@ -10,7 +10,7 @@ flowchart TD
   comment --> create[file every issue<br/>under the parent]
   create --> wait{waits on<br/>another issue?}
   wait -- "no" --> now[labeled:<br/>the worker starts it]
-  wait -- "yes" --> later[unlabeled, naming<br/>the label to add and<br/>the issues to merge first]
+  wait -- "yes" --> later[unlabeled, blocked by<br/>the issues to merge first]
   parent --> create
   now --> report[/"parent + one line per issue<br/>+ the unlabeled ones with<br/>their label and waits +<br/>existing issues that<br/>replaced items"/]
   later --> report

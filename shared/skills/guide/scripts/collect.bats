@@ -5,7 +5,7 @@ bats_require_minimum_version 1.5.0
 
 setup() {
   COLLECT="$BATS_TEST_DIRNAME/collect.sh"
-  cd "$BATS_TEST_TMPDIR"
+  cd "$BATS_TEST_TMPDIR" || return
   mkdir -p .agents/refs .agents/skills/run .agents/skills/guide .agents/skills/notes
   printf -- '---\nname: run\ndescription: Build and run the game.\n---\n\nbody\n' > .agents/skills/run/SKILL.md
   printf -- '---\nname: guide\ndescription: Tell the user which skill.\n---\n' > .agents/skills/guide/SKILL.md

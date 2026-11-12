@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Print the report of one delegate run: the parent's URL and each child issue as
-# <label><TAB><title><TAB><url>, where an issue filed to wait shows `later:<label>` and
-# the issues it waits on as a fourth column.
+# <label><TAB><title><TAB><url>, where an unlabeled one filed to wait shows `later:<label>`
+# (bug for the Bug issue type) and the issues blocking it as a fourth column.
 # usage: report.sh <parent-number>
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
@@ -11,10 +11,14 @@ parent="$1"
 echo "==> parent"
 "${GH_CMD:-gh}" issue view "$parent" --json url -q .url
 echo "==> issues"
-"${GH_CMD:-gh}" api "repos/{owner}/{repo}/issues/${parent}/sub_issues" \
-  --jq '.[] | ([.labels[].name] | join(",")) as $l
-         | ([(.body // "") | capture("ラベル: `(?<t>[a-z]+)`")? | .t] | first) as $t
-         | if $l == "" and $t != null
-           then "later:\($t)\t\(.title)\t\(.html_url)\t\([(.body // "") | capture("待ち: (?<w>[^\n]*)")? | .w] | first // "")"
-           else "\($l)\t\(.title)\t\(.html_url)" end'
+"${GH_CMD:-gh}" api "repos/{owner}/{repo}/issues/${parent}/sub_issues" --paginate \
+  --jq '.[] | "\(.number)\t\([.labels[].name] | join(",") | if . == "" then "-" else . end)\t\(if .type.name == "Bug" then "bug" else "implementation" end)\t\(.title)\t\(.html_url)"' |
+while IFS=$'\t' read -r number labels type title url; do
+  if [ "$labels" != - ]; then
+    printf '%s\t%s\t%s\n' "$labels" "$title" "$url"
+  else
+    waits="$("${GH_CMD:-gh}" api "repos/{owner}/{repo}/issues/${number}/dependencies/blocked_by" --jq '[.[] | "#\(.number)"] | join(" ")')"
+    printf 'later:%s\t%s\t%s\t%s\n' "$type" "$title" "$url" "$waits"
+  fi
+done
 prompt report >&2

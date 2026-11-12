@@ -6,9 +6,12 @@
 #   waiting  a blocker is still open; <blockers> lists the open ones
 #   dropped  no blocker is open but one closed as not planned; <blockers> lists those
 #   unlinked no blocker is set, so nothing tells when it may start
-# The label is bug for an issue of type Bug and implementation otherwise.
+# The label is bug for an issue of type Bug and implementation otherwise. A sub-issue labeled manual
+# is the user's to do by hand and never gets a worker label; it prints as
+#   yours    no blocker is open; <blockers> lists the ones closed as not planned
+#   waiting  as above
 #   scan.sh [<parent>...]         scan these parents, or every open issue with open sub-issues
-#   scan.sh --force <number>...   add the label to these open unlabeled issues whatever their blockers
+#   scan.sh --force <number>...   add the label to these open unlabeled, non-manual issues whatever their blockers
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
 gh() { "${GH_CMD:-gh}" "$@"; }
@@ -22,15 +25,17 @@ if [ "${1:-}" = "--force" ]; then
 fi
 for n in "$@"; do [[ "$n" =~ ^[0-9]+$ ]] || usage; done
 
-# <number><TAB><label><TAB><title><TAB><url> of an issue still waiting for the worker's label
+# <number><TAB><label><TAB><title><TAB><url> of an issue still waiting for the worker's label, or of
+# an open manual one
 pending='select(.state == "open" and ([.labels[].name] | index("bug") or index("implementation") | not))
-         | "\(.number)\t\(if .type.name == "Bug" then "bug" else "implementation" end)\t\(.title)\t\(.html_url)"'
+         | "\(.number)\t\(if any(.labels[]; .name == "manual") then "manual" elif .type.name == "Bug" then "bug" else "implementation" end)\t\(.title)\t\(.html_url)"'
 
 if [ -n "$force" ]; then
   for n in "$@"; do
     line="$(gh api "repos/{owner}/{repo}/issues/$n" --jq "$pending")"
     [ -n "$line" ] || { echo "scan: #$n is closed or already labeled — run scan.sh to list the waiting issues" >&2; exit 1; }
     IFS=$'\t' read -r number label title url <<< "$line"
+    [ "$label" != manual ] || { echo "scan: #$n is manual, the user's to do by hand — leave it for the user" >&2; exit 1; }
     gh issue edit "$number" --add-label "$label" >/dev/null
     printf 'labeled\t%s\t%s\t%s\t%s\t\n' "$number" "$label" "$title" "$url"
   done
@@ -56,8 +61,9 @@ for p in ${parents[@]+"${parents[@]}"}; do
       if [ "$s" = open ]; then open="$open #$n"
       elif [ "$r" != completed ]; then dropped="$dropped #$n"; fi
     done <<< "$blockers"
-    if [ -z "$blockers" ]; then state=unlinked; left=
-    elif [ -n "$open" ]; then state=waiting; left="${open# }"
+    if [ -n "$open" ]; then state=waiting; left="${open# }"
+    elif [ "$label" = manual ]; then state=yours; left="${dropped# }"
+    elif [ -z "$blockers" ]; then state=unlinked; left=
     elif [ -n "$dropped" ]; then state=dropped; left="${dropped# }"
     else state=labeled; left=; fi
     [ "$state" = labeled ] && gh issue edit "$number" --add-label "$label" >/dev/null

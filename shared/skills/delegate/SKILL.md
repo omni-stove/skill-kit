@@ -1,15 +1,15 @@
 ---
 name: delegate
-description: Split a task too large for one session into independent issues labeled bug or implementation, under one parent issue, so the issue worker implements them in parallel. Takes the task description. Use when the user wants work handed to the remote agent as issues (e.g. "delegate", "Issue に分割して投げて", "これを自動実装に回して").
+description: Split a task too large for one session into independent issues labeled bug or implementation, under one parent issue, so the issue worker implements them in parallel, and the steps only the user can do on their machine as manual issues. Takes the task description. Use when the user wants work handed to the remote agent as issues (e.g. "delegate", "Issue に分割して投げて", "これを自動実装に回して").
 ---
 
 Take the task from the argument and the decisions already made in the conversation. Settle an open point yourself and write the choice into the issue body.
 
 Split the task into issues that can be implemented in parallel. An issue that depends on another's result waits on it, and is filed now too.
 
-Label each issue: `bug` fixes existing behavior, `implementation` is new work at production quality with real data access, error handling and tests. Size an `implementation` issue to about an hour of work, a `bug` to about half an hour.
+Label each issue: `bug` fixes existing behavior, `implementation` is new work at production quality with real data access, error handling and tests. `manual` is a step only the user can do on their own machine, by hand or with computer use. Size an `implementation` issue to about an hour of work, a `bug` to about half an hour.
 
-Write a body the worker can start from alone: the expected behavior and the done condition, the files and functions to start at, and the existing code to follow.
+Write a body the worker can start from alone: the expected behavior and the done condition, the files and functions to start at, and the existing code to follow. Write a `manual` body as the steps the user takes and how to confirm them done.
 
 Run `.agents/skills/delegate/scripts/similar.sh <keywords from the task>...`
 

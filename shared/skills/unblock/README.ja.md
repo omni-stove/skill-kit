@@ -2,8 +2,12 @@
 
 ```mermaid
 flowchart TD
-  scan[オープンな親Issue<br/>（指定があればその親）の<br/>ラベルのないサブIssueを調べる]
-  scan --> state{ブロックしている<br/>Issueは?}
+  scan[オープンな親Issue<br/>（指定があればその親）の<br/>ラベルのないサブIssueと<br/>manualのサブIssueを調べる]
+  scan --> kind{manual?}
+  kind -- "はい" --> mstate{ブロックしている<br/>Issueは?}
+  mstate -- "オープンなものはない" --> yours[ユーザーが今やるもの]
+  mstate -- "まだオープンがある" --> waiting
+  kind -- "いいえ" --> state{ブロックしている<br/>Issueは?}
   state -- "すべて完了" --> label[ラベルを付ける:<br/>ワーカーが着手]
   state -- "まだオープンがある" --> waiting[待ちのまま]
   state -- "見送りで<br/>クローズされた" --> ask[/聞く: このまま<br/>着手する?/]
@@ -12,7 +16,8 @@ flowchart TD
   judge -- "未完了" --> waiting
   ask -- "する" --> label
   ask -- "しない" --> keep[そのままにする]
-  label --> report[/"ラベルを付けたIssue +<br/>待ちのIssueとまだ待つもの +<br/>そのままにしたIssue"/]
+  yours --> report[/"手でやるmanualのIssueを先頭に:<br/>それぞれの内容 +<br/>見送りでクローズされた待ち<br/>+ ラベルを付けたIssue +<br/>待ちのIssueとまだ待つもの +<br/>そのままにしたIssue"/]
+  label --> report
   waiting --> report
   keep --> report
 ```

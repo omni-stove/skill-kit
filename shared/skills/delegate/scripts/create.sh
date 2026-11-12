@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Create one child issue linked to its parent and print its URL.
-#   create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation> <title> <body>
+#   create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> <body>
 # Without --after the label goes on at creation, so the worker's labeled event fires exactly once.
-# With --after the issue is filed unlabeled and marked blocked by those issues (GitHub's issue
-# dependencies), a bug also getting the Bug issue type, so its label can be added once they close.
+# With --after the issue is marked blocked by those issues (GitHub's issue dependencies); a bug or
+# implementation is filed unlabeled, a bug also getting the Bug issue type, so its label can be
+# added once they close. A manual issue is for the user, not the worker, so it is always labeled.
 set -euo pipefail
 
-usage() { echo "usage: create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation> <title> <body>" >&2; exit 2; }
+usage() { echo "usage: create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> <body>" >&2; exit 2; }
 [ "${1:-}" = "--parent" ] && [[ "${2:-}" =~ ^[0-9]+$ ]] || usage
 parent="$2"
 shift 2
@@ -22,9 +23,13 @@ title="$2"
 body="親: #${parent}
 
 $3"
-case "$type" in bug|implementation) ;; *) usage ;; esac
+case "$type" in bug|implementation|manual) ;; *) usage ;; esac
 
-if [ -n "$after" ]; then
+if [ "$type" = manual ]; then
+  # Repos set up for the worker have bug and implementation but not this one; it already exists after the first run.
+  "${GH_CMD:-gh}" label create manual --description "Done by hand on the user's machine, not by the issue worker" >/dev/null 2>&1 || true
+fi
+if [ -n "$after" ] && [ "$type" != manual ]; then
   url="$("${GH_CMD:-gh}" issue create --title "$title" --body "$body")"
 else
   url="$("${GH_CMD:-gh}" issue create --title "$title" --body "$body" --label "$type")"

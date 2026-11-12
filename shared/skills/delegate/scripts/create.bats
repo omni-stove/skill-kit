@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# delegate scripts — argument checks, the label on creation or the blockers, and the parent link.
+# delegate scripts — argument checks, the label on creation or the blockers, manual issues, and the parent link.
 
 bats_require_minimum_version 1.5.0
 
@@ -18,13 +18,14 @@ case "\$1 \$2" in
       *url*) echo "https://github.com/o/r/issues/\$3" ;;
       *) echo "\${ISSUE_STATE:-OPEN}" ;;
     esac ;;
-  "issue list") echo '[{"number":1,"title":"old bug","labels":[{"name":"bug"}],"url":"u1"},{"number":2,"title":"idea","labels":[{"name":"question"}],"url":"u2"},{"number":4,"title":"held","labels":[],"url":"u4"}]' ;;
+  "issue list") echo '[{"number":1,"title":"old bug","labels":[{"name":"bug"}],"url":"u1"},{"number":2,"title":"idea","labels":[{"name":"question"}],"url":"u2"},{"number":4,"title":"held","labels":[],"url":"u4"},{"number":8,"title":"by hand","labels":[{"name":"manual"}],"url":"u8"}]' ;;
   "api --paginate") echo 4 ;;
   "api repos/{owner}/{repo}/issues/7") echo 123 ;;
   "api repos/{owner}/{repo}/issues/5") echo 125 ;;
   "api repos/{owner}/{repo}/issues/6") echo 126 ;;
-  "api repos/{owner}/{repo}/issues/3/sub_issues") echo '[{"number":7,"title":"child","labels":[{"name":"implementation"}],"type":null,"html_url":"u7"},{"number":9,"title":"next","labels":[],"type":{"name":"Bug"},"html_url":"u9"}]' | jq -r "\${@: -1}" ;;
+  "api repos/{owner}/{repo}/issues/3/sub_issues") echo '[{"number":7,"title":"child","labels":[{"name":"implementation"}],"type":null,"html_url":"u7"},{"number":9,"title":"next","labels":[],"type":{"name":"Bug"},"html_url":"u9"},{"number":10,"title":"key","labels":[{"name":"manual"}],"type":null,"html_url":"u10"}]' | jq -r "\${@: -1}" ;;
   "api repos/{owner}/{repo}/issues/9/dependencies/blocked_by") echo '#7 #8' ;;
+  "api repos/{owner}/{repo}/issues/10/dependencies/blocked_by") echo '#7' ;;
 esac
 STUB
   chmod +x "$BATS_TEST_TMPDIR/gh"
@@ -63,6 +64,15 @@ STUB
   grep -q 'PATCH repos/{owner}/{repo}/issues/7 -f type=Bug' "$CALLS"
 }
 
+@test "create.sh files a manual issue labeled, creating the label, even when it waits" {
+  run "$CREATE" --parent 3 --after 5 manual "Title" "Body"
+  [ "$status" -eq 0 ]
+  grep -q 'label create manual' "$CALLS"
+  grep -q -- '--label manual' "$CALLS"
+  grep -q 'issues/7/dependencies/blocked_by -F issue_id=125' "$CALLS"
+  ! grep -q 'type=Bug' "$CALLS" || false
+}
+
 @test "parent.sh creates an unlabeled parent and prints its number" {
   run --separate-stderr "$PARENT" "Parent" "Body"
   [ "$status" -eq 0 ]
@@ -88,7 +98,8 @@ STUB
   grep -q -- '--search cache layer --state open' "$CALLS"
   [ "${lines[0]}" = "$(printf 'covers\t1\tbug\told bug\tu1')" ]
   [ "${lines[1]}" = "$(printf 'covers\t4\t\theld\tu4')" ]
-  [ "${lines[2]}" = "$(printf 'similar\t2\tquestion\tidea\tu2')" ]
+  [ "${lines[2]}" = "$(printf 'covers\t8\tmanual\tby hand\tu8')" ]
+  [ "${lines[3]}" = "$(printf 'similar\t2\tquestion\tidea\tu2')" ]
   [[ "$stderr" == *"parent.sh"* ]]
   run "$BATS_TEST_DIRNAME/similar.sh"
   [ "$status" -eq 2 ]
@@ -100,6 +111,7 @@ STUB
   [[ "$output" == *"https://github.com/o/r/issues/3"* ]]
   [[ "$output" == *"$(printf 'implementation\tchild\tu7')"* ]]
   [[ "$output" == *"$(printf 'later:bug\tnext\tu9\t#7 #8')"* ]]
+  [[ "$output" == *"$(printf 'manual\tkey\tu10\t#7')"* ]]
   run "$BATS_TEST_DIRNAME/report.sh" x
   [ "$status" -eq 2 ]
 }

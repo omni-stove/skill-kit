@@ -5,6 +5,7 @@
 # working files an earlier run left there.
 # Output, from where the plot sits: plot/<x>.md -> ../<leading number of x,
 # else x>.txt; plot.md -> index.txt beside it; another .md -> <stem>.txt beside it.
+# Then prints a Reference line for each file references.sh gives.
 set -eu
 [ $# -eq 1 ] || { echo "usage: source.sh <plot file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -32,5 +33,6 @@ mkdir -p "$(dirname -- "$check")"
 rm -f "$check" "$(report_file "$out" notes)"
 echo "Output: $out"
 prompt scope others="$(dirname -- "$0")/../../../refs/others.sh" file="$f"
+sh "$(dirname -- "$0")/../../../refs/references.sh" "$f" | sed 's/^/Reference: /'
 [ ! -f "$out" ] || prompt exists
 prompt report file="$f" draft="$(dirname -- "$0")/draft.sh" out="$out" check="$check"

@@ -13,7 +13,7 @@ echo "gh \$*" >> "$CALLS"
 issue() { echo "{\"number\":\$1,\"state\":\"\$2\",\"labels\":\$3,\"type\":\$4,\"title\":\"t\$1\",\"html_url\":\"u\$1\"}"; }
 reply() { case "\$*" in
   *"issues?state=open"*) echo '[{"number":3,"sub_issues_summary":{"total":9,"completed":1}},{"number":4,"sub_issues_summary":{"total":1,"completed":1}},{"number":5,"pull_request":{},"sub_issues_summary":{"total":1,"completed":0}}]' ;;
-  *"issues/3/sub_issues"*) echo "[\$(issue 10 open '[]' null),\$(issue 11 open '[]' '{"name":"Bug"}'),\$(issue 12 open '[]' null),\$(issue 13 open '[{"name":"implementation"}]' null),\$(issue 14 open '[]' null),\$(issue 15 closed '[]' null),\$(issue 16 open '[{"name":"manual"}]' null),\$(issue 17 open '[{"name":"manual"}]' null),\$(issue 18 open '[{"name":"manual"}]' null)]" ;;
+  *"issues/3/sub_issues"*) echo "[\$(issue 10 open '[]' null),\$(issue 11 open '[]' '{"name":"Bug"}'),\$(issue 12 open '[]' null),\$(issue 13 open '[{"name":"implementation"}]' null),\$(issue 14 open '[]' null),\$(issue 15 closed '[]' null),\$(issue 16 open '[{"name":"manual"}]' null),\$(issue 17 open '[{"name":"manual"}]' null),\$(issue 18 open '[{"name":"manual"}]' null),\$(issue 19 open '[{"name":"prototype"}]' null),\$(issue 20 open '[{"name":"security"}]' null)]" ;;
   *"issues/10/dependencies"*) echo '[{"number":1,"state":"closed","state_reason":"completed"},{"number":2,"state":"closed","state_reason":"completed"}]' ;;
   *"issues/11/dependencies"*) echo '[{"number":1,"state":"closed","state_reason":"completed"},{"number":5,"state":"open","state_reason":null}]' ;;
   *"issues/12/dependencies"*) echo '[{"number":6,"state":"closed","state_reason":"not_planned"}]' ;;
@@ -50,6 +50,13 @@ STUB
   [[ "$stderr" == *"scan.sh --force"* ]]
 }
 
+@test "scan.sh says there is nothing to do when no sub-issue is listed" {
+  run --separate-stderr "$SCAN" 4
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+  [[ "$stderr" == "Tell the user that no sub-issue"* ]]
+}
+
 @test "scan.sh scans only the named parents" {
   run --separate-stderr "$SCAN" 3
   [ "$status" -eq 0 ]
@@ -72,4 +79,24 @@ STUB
   [ "$status" -eq 2 ]
   run "$SCAN" extra
   [ "$status" -eq 2 ]
+}
+
+@test "scan.sh runs the gh on PATH when GH_CMD is unset" {
+  mkdir "$BATS_TEST_TMPDIR/bin"
+  mv "$BATS_TEST_TMPDIR/gh" "$BATS_TEST_TMPDIR/bin/gh"
+  unset GH_CMD
+  PATH="$BATS_TEST_TMPDIR/bin:$PATH" run --separate-stderr "$SCAN" 3
+  [ "$status" -eq 0 ]
+  [ "${#lines[@]}" -eq 7 ]
+}
+
+@test "scan.sh stops when a gh call fails instead of reporting no issues" {
+  printf '#!/usr/bin/env bash\nexit 1\n' > "$GH_CMD"
+  run --separate-stderr "$SCAN"
+  [ "$status" -ne 0 ]
+  [ -z "$output" ]
+  [[ "$stderr" != *"scan.sh --force"* ]]
+  run --separate-stderr "$SCAN" 3
+  [ "$status" -ne 0 ]
+  [[ "$stderr" != *"scan.sh --force"* ]]
 }

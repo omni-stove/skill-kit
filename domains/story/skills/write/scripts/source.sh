@@ -5,6 +5,7 @@
 # Output, from where the source sits: plot/<x>.md -> ../<leading number of x,
 # else x>.txt; plot.md -> index.txt beside it; another .md -> <stem>.txt beside
 # it; a .txt is the output itself and is revised in place.
+# Then prints a Reference line for each file references.sh gives.
 set -eu
 [ $# -eq 1 ] || { echo "usage: source.sh <file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../refs/local-path.sh"
@@ -15,10 +16,14 @@ dir=$(dirname -- "$f")
 stem=$(basename -- "$f")
 stem=${stem%.*}
 others="$(dirname -- "$0")/../../../refs/others.sh"
+refs() {
+  sh "$(dirname -- "$0")/../../../refs/references.sh" "$f" | sed 's/^/Reference: /'
+}
 case $f in
   *.txt)
     echo "Output: $f"
     prompt scope others="$others" file="$f"
+    refs
     prompt revise scene_check="$(dirname -- "$0")/scene-check.sh" file="$f"
     exit 0 ;;
 esac
@@ -34,4 +39,5 @@ out=${out#./}
 echo "Output: $out"
 [ ! -f "$out" ] || prompt exists
 prompt scope others="$others" file="$f"
+refs
 prompt report file="$f" scene="$(dirname -- "$0")/scene.sh" out="$out"

@@ -11,10 +11,11 @@
 #   yours    no blocker is open; <blockers> lists the ones closed as not planned
 #   waiting  as above
 #   scan.sh [<parent>...]         scan these parents, or every open issue with open sub-issues
-#   scan.sh --force <number>...   add the label to these open unlabeled, non-manual issues whatever their blockers
+#   scan.sh --force <number>...   add the label to these open, non-manual issues with no worker label whatever their blockers
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
-gh() { "${GH_CMD:-gh}" "$@"; }
+# command keeps gh from calling this function again when GH_CMD is unset
+gh() { command "${GH_CMD:-gh}" "$@"; }
 
 usage() { echo "usage: scan.sh [<parent>...] | scan.sh --force <number>..." >&2; exit 2; }
 force=
@@ -25,9 +26,9 @@ if [ "${1:-}" = "--force" ]; then
 fi
 for n in "$@"; do [[ "$n" =~ ^[0-9]+$ ]] || usage; done
 
-# <number><TAB><label><TAB><title><TAB><url> of an issue still waiting for the worker's label, or of
-# an open manual one
-pending='select(.state == "open" and ([.labels[].name] | index("bug") or index("implementation") | not))
+# <number><TAB><label><TAB><title><TAB><url> of an issue with none of the labels the issue worker
+# starts from (bug, security, prototype, implementation), or of an open manual one
+pending='select(.state == "open" and ([.labels[].name] - ["bug", "security", "prototype", "implementation"] == [.labels[].name]))
          | "\(.number)\t\(if any(.labels[]; .name == "manual") then "manual" elif .type.name == "Bug" then "bug" else "implementation" end)\t\(.title)\t\(.html_url)"'
 
 if [ -n "$force" ]; then
@@ -43,13 +44,17 @@ if [ -n "$force" ]; then
 fi
 
 parents=("$@")
+# Each gh list is read into a variable first, so a failed call stops the script under set -e
+# instead of reading as an empty list
 if [ ${#parents[@]} -eq 0 ]; then
-  while read -r p; do [ -n "$p" ] && parents+=("$p"); done < <(
-    gh api --paginate "repos/{owner}/{repo}/issues?state=open&per_page=100" \
-      --jq '.[] | select(.pull_request == null and .sub_issues_summary.total > .sub_issues_summary.completed) | .number')
+  open_parents="$(gh api --paginate "repos/{owner}/{repo}/issues?state=open&per_page=100" \
+    --jq '.[] | select(.pull_request == null and .sub_issues_summary.total > .sub_issues_summary.completed) | .number')"
+  while read -r p; do [ -n "$p" ] && parents+=("$p"); done <<< "$open_parents"
 fi
 
+found=
 for p in ${parents[@]+"${parents[@]}"}; do
+  subs="$(gh api "repos/{owner}/{repo}/issues/$p/sub_issues" --paginate --jq ".[] | $pending")"
   while IFS=$'\t' read -r number label title url; do
     [ -n "$number" ] || continue
     blockers="$(gh api "repos/{owner}/{repo}/issues/$number/dependencies/blocked_by" \
@@ -68,6 +73,7 @@ for p in ${parents[@]+"${parents[@]}"}; do
     else state=labeled; left=; fi
     [ "$state" = labeled ] && gh issue edit "$number" --add-label "$label" >/dev/null
     printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$state" "$number" "$label" "$title" "$url" "$left"
-  done < <(gh api "repos/{owner}/{repo}/issues/$p/sub_issues" --paginate --jq ".[] | $pending")
+    found=1
+  done <<< "$subs"
 done
-prompt scan >&2
+if [ -n "$found" ]; then prompt scan >&2; else prompt none >&2; fi

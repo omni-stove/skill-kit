@@ -4,7 +4,7 @@
 # GEMINI_API_KEY set, has that Gemini model (thinking high) list findings, in the
 # shape of check-schema.json, on the line-numbered output against the guard rules
 # and author-rules.md where it exists,
-# given the source, the report, README.md and the files the source's References names,
+# given the source, the report and the files references.sh gives,
 # and prints the findings whose
 # text is on the line they name, with a rule and a basis, and whose quote, where
 # they cite a file, is in that file; the rest are dropped. Without the model, or
@@ -38,8 +38,8 @@ check() {
     [ ! -f author-rules.md ] || prompt check-author rules="$(cat author-rules.md)"
   } > "$tmp/sys"
   {
-    printf '%s\n' "$src" "$report" README.md
-    sed -n '/^## References/,/^## /s/^- @//p' "$src"
+    printf '%s\n' "$src" "$report"
+    sh "$(dirname -- "$0")/../../../refs/references.sh" "$src"
   } | awk 'NF && !seen[$0]++' | while IFS= read -r p; do
     [ -f "$p" ] && [ "$p" != "$f" ] && printf '%s\n' "$p"
   done > "$tmp/files"

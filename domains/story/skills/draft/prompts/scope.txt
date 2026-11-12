@@ -1,2 +1,2 @@
-Of the story's plot and story files, story/outline.md, story/synopsis.txt, draft/ and
-story/en/ included, you and every Agent you launch open only the plot file, the output file, any file the user names, and the files that {others} --earlier "{file}" prints.
+You and every Agent you launch open only the plot file, the output file, any file the user names, the files that {others} --earlier "{file}" prints, and the files on the Reference lines.
+From a Reference file, take only what the plot file or the earlier files already reveal to the reader.

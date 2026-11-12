@@ -55,9 +55,19 @@ setup() {
   run sh "$SOURCE" story/plot/arrival.md
   [[ "$output" != *"Read the output file, ask"* ]]
   [[ "$output" == *'others.sh --earlier "story/plot/arrival.md"'* ]]
-  [[ "$output" == *'story/outline.md, story/synopsis.txt, draft/ and'* ]]
   [[ "$output" == *'scene.sh "story/plot/arrival.md" "story/arrival.txt" <the report file>'* ]]
   [[ "$output" != *"Write 1 Scene"* ]]
+}
+
+@test "source.sh prints a Reference line for each setting file the plot references" {
+  printf '本文\n\n## Prohibited\n- @story/not-this.md\n\n## References\n- @story/characters/aki.md\n- @story/world/port.md\n' > story/plot/010-co-arrival.md
+  run sh "$SOURCE" story/plot/010-co-arrival.md
+  [[ "$output" == *$'Reference: story/characters/aki.md\nReference: story/world/port.md'* ]]
+  [[ "$output" != *"not-this"* ]]
+  : > story/010.txt
+  run sh "$SOURCE" story/010.txt
+  [[ "$output" == *"Reference: story/characters/aki.md"* ]]
+  [[ "$output" == *"revise it"* ]]
 }
 
 @test "scene.sh prints the writing step only once the report is saved" {
@@ -116,7 +126,8 @@ reply() {
   [[ "$(jq -r .system_instruction request.json)" == *rule-style* ]]
   in=$(jq -r .input request.json)
   [[ "$in" == *"2	　右手でペンを取った。"* ]]
-  [[ "$in" == *"=== story/plot/arrival.md"*プロット本文*"=== report.txt"*レポート本文*"=== README.md"*港町*"=== characters/minato.md"*左利き* ]]
+  [[ "$in" == *"=== story/plot/arrival.md"*プロット本文*"=== report.txt"*レポート本文*"=== characters/minato.md"*左利き* ]]
+  [[ "$in" != *港町* ]]
 }
 
 @test "check.sh sends author-rules.md as overriding the guard rules when it exists" {
@@ -192,9 +203,11 @@ reply() {
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
   [[ "$output" == *"[Scene name] complete."* ]]
   [[ "$output" == *'check.sh "story/plot/arrival.md" "story/010.txt" "report.txt" instead'* ]]
+  [[ "$output" == *'then run '*'scene-check.sh "story/plot/arrival.md" "story/010.txt" "report.txt".'* ]]
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [[ "$output" == *"[Output file] revised."* ]]
   [[ "$output" == *'y: run '*'check.sh "story/010.txt" "story/010.txt"'* ]]
+  [[ "$output" == *'then run '*'scene-check.sh "story/010.txt" "story/010.txt".'* ]]
   [[ "$output" != *"next Scene"* ]]
 }
 

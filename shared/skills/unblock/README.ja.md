@@ -2,7 +2,8 @@
 
 ```mermaid
 flowchart TD
-  scan[オープンな親Issue<br/>（指定があればその親）の<br/>ラベルのないサブIssueと<br/>manualのサブIssueを調べる]
+  scan[オープンな親Issue<br/>（指定があればその親）の<br/>ワーカーのラベルのない<br/>サブIssueと<br/>manualのサブIssueを調べる]
+  scan -- "見つからない" --> none[/着手するものも<br/>やるものもない/]
   scan --> kind{manual?}
   kind -- "はい" --> mstate{ブロックしている<br/>Issueは?}
   mstate -- "オープンなものはない" --> yours[ユーザーが今やるもの]

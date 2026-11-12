@@ -2,7 +2,8 @@
 
 ```mermaid
 flowchart TD
-  scan[check the unlabeled and the manual<br/>sub-issues of each open parent issue,<br/>or of the parents named]
+  scan[check the sub-issues with no worker label<br/>and the manual ones under each open parent issue<br/>or the parents named]
+  scan -- "none found" --> none[/nothing to start or do/]
   scan --> kind{manual?}
   kind -- "yes" --> mstate{the issues<br/>blocking it?}
   mstate -- "none still open" --> yours[the user's to do now]

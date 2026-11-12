@@ -8,12 +8,12 @@ setup() {
 }
 
 @test "source.sh drafts plot/<x>.md into the dir holding plot, named by the leading number" {
-  : > story/plot/010-arrival.md
+  printf '本文\n\n## References\n- @story/characters/aki.md\n' > story/plot/010-arrival.md
   run sh "$BATS_TEST_DIRNAME/source.sh" story/plot/010-arrival.md
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "Output: story/010.txt" ]
-  [[ "$output" == *'others.sh --earlier "story/plot/010-arrival.md"'* ]]
-  [[ "$output" == *'story/outline.md, story/synopsis.txt, draft/ and'* ]]
+  [[ "$output" == *'others.sh --earlier "story/plot/010-arrival.md", and the files on the Reference lines.'* ]]
+  [[ "$output" == *"Reference: story/characters/aki.md"* ]]
   [[ "$output" == *'save to story/report/.010.check.md'* ]]
   [[ "$output" == *'draft.sh "story/plot/010-arrival.md" "story/010.txt" "story/report/.010.check.md"'* ]]
   [[ "$output" != *"Overwrite"* ]]

@@ -48,10 +48,12 @@ if [ -n "$fmt" ]; then
   prompt format
   printf '%s\n' "$fmt"
 fi
-check="$(dirname -- "$0")/check.sh \"$src\" \"$f\""
-[ $# -eq 2 ] || check="$check \"$3\""
+args="\"$src\" \"$f\""
+[ $# -eq 2 ] || args="$args \"$3\""
+check="$(dirname -- "$0")/check.sh $args"
+again="$0 $args"
 if [ "$src" = "$f" ]; then
-  prompt hand-off-revise check="$check"
+  prompt hand-off-revise check="$check" again="$again"
 else
-  prompt hand-off check="$check"
+  prompt hand-off check="$check" again="$again"
 fi

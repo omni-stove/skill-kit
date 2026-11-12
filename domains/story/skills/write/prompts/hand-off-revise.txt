@@ -1,4 +1,4 @@
 
 Then reply with the hand-off alone:
 [Output file] revised. Reply y to finish, or say what to revise.
-y: run {check}. Anything else: revise the file as the input says, then run this script again.
+y: run {check}. Anything else: revise the file as the input says, then run {again}.

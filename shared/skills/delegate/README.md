@@ -1,4 +1,4 @@
-# remote-issue
+# delegate
 
 ```mermaid
 flowchart TD

@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# remote-issue scripts — argument checks, the label on creation or the waits, and the parent link.
+# delegate scripts — argument checks, the label on creation or the waits, and the parent link.
 
 bats_require_minimum_version 1.5.0
 

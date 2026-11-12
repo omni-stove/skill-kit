@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prepare the parent issue that groups one remote-issue run's children, print its number, and
+# Prepare the parent issue that groups one delegate run's children, print its number, and
 # say what to do next.
 #   parent.sh <title> <body>                create a new, unlabeled parent
 #   parent.sh --issue <number> <body>       use an existing open issue; the body is added as a comment

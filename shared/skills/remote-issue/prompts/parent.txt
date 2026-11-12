@@ -1,1 +1,0 @@
-Run .agents/skills/remote-issue/scripts/create.sh --parent {parent} <bug|implementation> "<title>" "<body>" per issue that can start now, then .agents/skills/remote-issue/scripts/create.sh --parent {parent} --after <numbers,...> <bug|implementation> "<title>" "<body>" per issue that waits, naming the issues it waits on, then .agents/skills/remote-issue/scripts/report.sh {parent}

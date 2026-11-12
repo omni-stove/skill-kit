@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Find the open issues filed to wait (remote-issue's `待ち: #n ...` and `ラベル: `<label>`` body
+# Find the open issues filed to wait (delegate's `待ち: #n ...` and `ラベル: `<label>`` body
 # lines, no worker label yet), add the label to each one whose waits are all closed as completed,
 # and print one line per waiting issue as <state><TAB><number><TAB><label><TAB><title><TAB><url><TAB><waits>:
 #   labeled  every wait completed; the label was added now

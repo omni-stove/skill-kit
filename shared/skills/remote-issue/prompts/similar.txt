@@ -1,1 +1,0 @@
-A covers line that already covers an item replaces that item; link the similar lines from the parent's body. Then run .agents/skills/remote-issue/scripts/parent.sh

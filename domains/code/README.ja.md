@@ -11,7 +11,7 @@ flowchart TD
   jsdoc[feature-jsdoc] --> tour[tour]
   work{作業の大きさは?}
   work -- "1セッションに収まる" --> change[コードを変える]
-  work -- "大きすぎる" --> issue[remote-issue]
+  work -- "大きすぎる" --> issue[delegate]
   issue --> unblock[unblock<br/>待ちのIssueを着手させる]
   change --> pr[pr]
   pr --> review[レビューとCI]
@@ -41,5 +41,5 @@ flowchart TD
 | [cap](../../shared/skills/cap/README.ja.md) | すべてをコミットして今のブランチにpushする |
 | [pr](../../shared/skills/pr/README.ja.md) | Pull Requestを作る。ブランチにすでにあれば更新する |
 | [fix-pr](../../shared/skills/fix-pr/README.ja.md) | レビューの指摘、CIの失敗、コンフリクトを直し、指摘ごとに返信する |
-| [remote-issue](../../shared/skills/remote-issue/README.ja.md) | 1セッションに収まらない作業を、Issueワーカーが並行して実装するIssueに分ける |
+| [delegate](../../shared/skills/delegate/README.ja.md) | 1セッションに収まらない作業を、Issueワーカーが並行して実装するIssueに分ける |
 | [unblock](../../shared/skills/unblock/README.ja.md) | 待ち先が片付いた待ちのIssueにラベルを付け、Issueワーカーに着手させる |

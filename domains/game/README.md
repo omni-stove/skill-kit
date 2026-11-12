@@ -50,7 +50,7 @@ Run `setup` once per repo. Every other skill uses the engine facts it records.
 | [cap](../../shared/skills/cap/README.md) | Commits everything and pushes to the current branch |
 | [pr](../../shared/skills/pr/README.md) | Opens a pull request, or updates the branch's existing one |
 | [fix-pr](../../shared/skills/fix-pr/README.md) | Fixes review threads, failing CI and conflicts, then answers each thread |
-| [remote-issue](../../shared/skills/remote-issue/README.md) | Splits work too large for one session into issues the issue worker implements in parallel |
+| [delegate](../../shared/skills/delegate/README.md) | Splits work too large for one session into issues the issue worker implements in parallel |
 | [unblock](../../shared/skills/unblock/README.md) | Labels the waiting issues whose waits are done, so the issue worker starts them |
 | [automation](../../shared/skills/automation/README.md) | Sets up the org's shared GitHub Actions and configs |
 

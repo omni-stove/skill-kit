@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Print the report of one remote-issue run: the parent's URL and each child issue as
+# Print the report of one delegate run: the parent's URL and each child issue as
 # <label><TAB><title><TAB><url>, where an issue filed to wait shows `later:<label>` and
 # the issues it waits on as a fourth column.
 # usage: report.sh <parent-number>

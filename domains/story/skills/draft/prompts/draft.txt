@@ -1,6 +1,6 @@
 Write every Scene of the plot file in one pass by the loaded rules: the plot file leads,
 open another file only for a fact {report} lacks, and deliver its Intent through
-events alone. Bring the whole text to at least the length under its ## Length.
+events alone.
 
 Note and mark places by the loaded rules.
 

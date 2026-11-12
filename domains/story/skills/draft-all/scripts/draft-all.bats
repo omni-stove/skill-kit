@@ -1,9 +1,10 @@
 #!/usr/bin/env bats
-# plots.sh — the plots to draft and the step to check them; write.sh — the drafting step, held until every report is saved; report.sh — draft/report.md built from the notes.
+# plots.sh — the plots to draft and the step to check them; write.sh — the drafting step, held until every report is saved; check.sh — each draft's format and length, then the step to save its notes; report.sh — draft/report.md built from the notes.
 
 setup() {
   PLOTS="$BATS_TEST_DIRNAME/plots.sh"
   WRITE="$BATS_TEST_DIRNAME/write.sh"
+  CHECK="$BATS_TEST_DIRNAME/check.sh"
   REPORT="$BATS_TEST_DIRNAME/report.sh"
   work="$BATS_TEST_TMPDIR/work"
   mkdir -p "$work/story/plot"
@@ -108,10 +109,40 @@ setup() {
   [[ "$output" == *"Launch one Agent per plot"* ]]
   [[ "$output" == *"read its report file and every .md file in story/plot"* ]]
   [[ "$output" == *"plays out each event of the plot body"* ]]
-  [[ "$output" == *"brings the whole text to at least the length under its plot's ## Length"* ]]
+  [[ "$output" != *"at least the length"* ]]
   [[ "$output" == *"notes and marks places by the loaded rules without asking"* ]]
-  [[ "$output" == *".agents/refs/length.sh <its plot file>"* ]]
+  [[ "$output" == *"check.sh <its plot file> <its output file> <its notes file>"* ]]
+  [[ "$output" != *"length.sh"* ]]
+  [[ "$output" != *"format.sh"* ]]
   [[ "$output" == *"report.sh"* ]]
+}
+
+@test "check.sh fixes the format, lists what is left, says when the draft is short, then asks for the notes" {
+  printf '本文\n\n## Length\n100字\n' > story/plot/010-a.md
+  mkdir draft
+  printf '彼は頷いた。\n「終わり。」\n　部屋は3つ。\n' > draft/010.txt
+  run sh "$CHECK" story/plot/010-a.md draft/010.txt draft/.report/010.notes.md
+  [ "$status" -eq 0 ]
+  [ "$(head -2 draft/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
+  [[ "$output" == *"Bring the lines listed below"*"3:　部屋は3つ。"*"passages that need more"*"/100字"*"Save the notes to draft/.report/010.notes.md"*"leaving story/plot/010-a.md as it is"* ]]
+}
+
+@test "check.sh goes straight to the notes when the draft holds the format and its length" {
+  printf '本文\n\n## Length\n3字\n' > story/plot/010-a.md
+  mkdir draft
+  printf '　彼は頷いた。\n' > draft/010.txt
+  run sh "$CHECK" story/plot/010-a.md draft/010.txt draft/.report/010.notes.md
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"Bring the lines"* ]]
+  [[ "$output" != *"shorter than the length"* ]]
+  [[ "$output" == "Save the notes to draft/.report/010.notes.md"* ]]
+}
+
+@test "check.sh fails until the draft is saved" {
+  : > story/plot/010-a.md
+  run sh "$CHECK" story/plot/010-a.md draft/010.txt draft/.report/010.notes.md
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"save the draft there"* ]]
 }
 
 @test "write.sh and report.sh fail before plots.sh has run" {

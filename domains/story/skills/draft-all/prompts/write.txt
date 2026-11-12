@@ -6,15 +6,9 @@ in one pass by the loaded rules: its plot file leads, the other plots give what 
 it, open another file only for a fact the report and the plots lack, and deliver its
 Intent through events alone.
 It plays out each event of the plot body on the page in action, dialogue, and the POV's
-reaction. It brings the whole text to at least the length under its plot's ## Length, giving
-the most length to the turns that change what the POV knows, wants, or does next, which
-it judges. At those turns the POV's perception and reaction stay even where the loaded
-rules would cut them for adding no new fact.
+reaction.
 It notes and marks places by the loaded rules without asking, adding only what an event of
 the plot needs in order to happen or what changes what the POV does next.
-It saves the text to its output file.
-It runs .agents/refs/length.sh <its plot file> <its output file> and, when that prints a count, marks the passages that need more to reach it.
-It runs .agents/refs/format.sh <its output file> and brings the lines listed within the loaded rules.
-It saves the notes to its notes file by the loaded rules, leaving its plot file as it is.
+It saves the text to its output file, then runs {check} <its plot file> <its output file> <its notes file>
 
 Once every agent has returned, run {report}

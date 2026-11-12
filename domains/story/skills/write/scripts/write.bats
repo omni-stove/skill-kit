@@ -195,12 +195,12 @@ reply() {
   [ "$status" -eq 1 ]
 }
 
-@test "scene-check.sh prints the four whole-file checks and hands the finished file to check.sh" {
+@test "scene-check.sh prints the five whole-file checks and hands the finished file to check.sh" {
   printf '　彼は頷いた。\n' > story/010.txt
   : > story/plot/arrival.md
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/plot/arrival.md story/010.txt report.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
   [[ "$output" == *"[Scene name] complete."* ]]
   [[ "$output" == *'check.sh "story/plot/arrival.md" "story/010.txt" "report.txt" instead'* ]]
   [[ "$output" == *'then run '*'scene-check.sh "story/plot/arrival.md" "story/010.txt" "report.txt".'* ]]
@@ -226,7 +226,7 @@ reply() {
   printf '　返事はなかった。\n「知らない。帰れ」\n　廊下には誰もいない。\n『来ない。』\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
   [[ "$output" == *"1:"*"返事はなかった。"* ]]
   [[ "$output" == *"3:"*"誰もいない。"* ]]
   [[ "$output" != *"知らない"* ]]
@@ -273,7 +273,7 @@ reply() {
   printf '彼は頷いた。\n「終わり。」\n「行く」と言った。\n　部屋は3つ……。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
   [ "$(head -2 story/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
   [[ "$output" == *"3:「行く」と言った。"* ]]
   [[ "$output" != *"部屋は3つ"* ]]

@@ -1,6 +1,7 @@
 Read the whole output file and fix each hit in place; you judge what is a hit.
 
 - Cut whole each narration sentence the loaded rules cut, sweeping for those that look back at earlier text or restate the sentence before.
+- Bring each name, term, or setting fact in narration within the loaded rules.
 - Absence check: bring each denial in narration within the loaded rules.
 - Rewrite, from what is known at that point, narration that draws on an answer the story gives only later.
 - In narration, restore a dropped object, subject, referent, or action where the lines before it do not supply it.

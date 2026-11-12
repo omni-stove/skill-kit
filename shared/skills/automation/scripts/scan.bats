@@ -36,6 +36,10 @@ JSON
   "r5": {"name": "local", "rootAction": null, "actions": null, "templates": null, "workflows": null}
 }}
 JSON
+  cat > "$repo/prs.json" <<'JSON'
+[{"author": {"login": "acme-agent[bot]", "type": "Bot"}}, {"author": {"login": "dependabot[bot]", "type": "Bot"}},
+ {"author": {"login": "acme-agent[bot]", "type": "Bot"}}, {"author": {"login": "alice", "type": "User"}}]
+JSON
   echo "# .github readme: uses: acme/.github/actions/setup@main" > "$repo/readme/.github"
   echo "# lint-config: npx @acme/lint-config" > "$repo/readme/lint-config"
   cat > "$repo/bin/gh" <<'STUB'
@@ -44,6 +48,8 @@ case "$1 $2" in
   "repo view") [ -n "$STUB_ORG" ] && echo "$STUB_ORG/me" || exit 1 ;;
   "repo list") echo "$3" > "$STUB_DIR/org"; jq -r "${@: -1}" "$STUB_DIR/repos.json" ;;
   "api graphql") cat "$STUB_DIR/trees.json" ;;
+  "search prs") jq -r "${@: -1}" "$STUB_DIR/prs.json" ;;
+  "api apps/"*) case "$2" in apps/acme-agent) echo acme ;; apps/dependabot) echo github ;; *) exit 1 ;; esac ;;
   "api -H") p="${4#repos/*/}"; cat "$STUB_DIR/readme/${p%/readme}" 2>/dev/null || { echo "gh: Not Found (HTTP 404)" >&2; exit 1; } ;;
 esac
 STUB
@@ -78,6 +84,7 @@ STUB
   [[ "$output" == *$'==> README acme/.github\n# .github readme'* ]]
   [[ "$output" == *$'==> README acme/lint-config\n# lint-config'* ]]
   [[ "$output" == *$'==> README acme/starter\n(no README)'* ]]
+  [[ "$output" == *$'==> acme\'s Apps that open PRs\nacme-agent\n==> this repo'* ]]
   [[ "$output" == *$'==> this repo: .github/workflows\n.github/workflows/ci.yml\n\tuses: acme/.github/.github/workflows/ci.yml@main\n\t- uses: actions/checkout@v4\n'* ]]
   [[ "$output" == *$'==> this repo: tasks\ninstall lint\n'* ]]
   [[ "$output" == *"Pick what this repo takes"* ]]
@@ -89,6 +96,9 @@ STUB
   [[ "$output" == *$'\napp\tthe app\n'* ]]
   [[ "$output" == *$'==> README acme/app\n(no README)'* ]]
   [[ "$output" == *"scan: nope is not a repository of acme"* ]]
+  echo '[]' > prs.json
+  run "$SCAN"
+  [[ "$output" == *$'==> acme\'s Apps that open PRs\n(none)\n'* ]]
   [[ "$output" == *$'==> this repo: .github/workflows\n(none)\n==> this repo: tasks\n(none)\n'* ]]
 }
 

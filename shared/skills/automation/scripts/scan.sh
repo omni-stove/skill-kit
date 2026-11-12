@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # List what the org shares: each repo that holds composite actions, reusable workflows,
 # workflow templates or a template repo, or whose description says shared, with its README
-# (the install instructions are the repo's own); then this repo's workflows and tasks, and
-# what to do next.
+# (the install instructions are the repo's own); the org's own Apps that open PRs; then this
+# repo's workflows and tasks, and what to do next.
 # usage: scan.sh [--org <org>] [repo...]
 #   org: the owner of this repo's origin. A repo named here is listed as shared whether or
 #   not it looks it.
@@ -100,6 +100,17 @@ cut -f1 "$tmp/shared" | while IFS= read -r name; do
   gh api -H "Accept: application/vnd.github.raw+json" "repos/$org/$name/readme" 2>/dev/null || echo "(no README)"
   echo
 done
+
+# The org's own Apps among the bots that opened PRs in the org: a shared review step refuses a
+# PR whose author it is not told to allow, so these are the names its allowed-bots input takes.
+echo "==> $org's Apps that open PRs"
+gh search prs --owner "$org" --limit 200 --json author --jq '.[].author | select(.type == "Bot") | .login' 2>/dev/null \
+  | sed 's/\[bot\]$//' | sort -u >"$tmp/bots" || true
+: >"$tmp/apps"
+while IFS= read -r slug; do
+  [ "$(gh api "apps/$slug" --jq .owner.login 2>/dev/null)" = "$org" ] && echo "$slug" >>"$tmp/apps"
+done <"$tmp/bots"
+[ -s "$tmp/apps" ] && cat "$tmp/apps" || echo "(none)"
 
 echo "==> this repo: .github/workflows"
 found=0

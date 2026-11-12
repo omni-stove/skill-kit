@@ -1,0 +1,1 @@
+For each dropped line, ask the user whether to start it as it stands, and run .agents/skills/unblock/scripts/scan.sh --force <number>... for the ones they name. Then report the labeled issues, the waiting ones with what they still wait on, and the dropped ones left as they are

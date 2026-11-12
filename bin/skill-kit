@@ -6,7 +6,7 @@
 #   - code  : skills for a software repo (analyze-repository, …)
 # `shared/` holds the pieces every domain uses verbatim (the LLM-instruction house
 # rules, the mise + make layer (init, task), the git and GitHub skills (cap, pr,
-# fix-pr, remote-issue, automation), and the setting skills). A sync always deploys
+# fix-pr, remote-issue, unblock, automation), and the setting skills). A sync always deploys
 # shared + the one domain you name, so a consuming repo only ever sees the skills it wants.
 # POSIX sh + git only. No Node/npm.
 set -eu

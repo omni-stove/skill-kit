@@ -7,7 +7,7 @@
 - **[code](domains/code/README.ja.md)** — ソフトウェアリポジトリでの作業。言語は問わない。
 
 各ドメインのガイドに、スキルを使う順番とファイルの置き場所がある。どのドメインにも共通スキルが入る:
-makeのコマンド用の `init` と `task`、gitとGitHub用の `cap`、`pr`、`fix-pr`、`remote-issue`、`automation`、設定用の `character`、`world`、`item`、`outline`。
+makeのコマンド用の `init` と `task`、gitとGitHub用の `cap`、`pr`、`fix-pr`、`remote-issue`、`unblock`、`automation`、設定用の `character`、`world`、`item`、`outline`。
 
 各スキルの `README.ja.md`（`shared/skills/<name>/`、`domains/<domain>/skills/<name>/`）に、
 そのスキルが何を聞き、何を返すかがある。

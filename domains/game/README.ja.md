@@ -50,6 +50,7 @@ flowchart TD
 | [pr](../../shared/skills/pr/README.ja.md) | Pull Requestを作る。ブランチにすでにあれば更新する |
 | [fix-pr](../../shared/skills/fix-pr/README.ja.md) | レビューの指摘、CIの失敗、コンフリクトを直し、指摘ごとに返信する |
 | [remote-issue](../../shared/skills/remote-issue/README.ja.md) | 1セッションに収まらない作業を、Issueワーカーが並行して実装するIssueに分ける |
+| [unblock](../../shared/skills/unblock/README.ja.md) | 待ち先が片付いた待ちのIssueにラベルを付け、Issueワーカーに着手させる |
 | [automation](../../shared/skills/automation/README.ja.md) | 組織の共通GitHub Actionsと設定を入れる |
 
 ## 4. ふりかえり

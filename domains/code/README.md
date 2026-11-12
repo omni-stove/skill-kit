@@ -13,6 +13,7 @@ flowchart TD
   work{size of the work?}
   work -- "fits one session" --> change[change the code]
   work -- "too large" --> issue[remote-issue]
+  issue --> unblock[unblock<br/>start the waiting issues]
   change --> pr[pr]
   pr --> review[review and CI]
   review -- "threads, failures, conflicts" --> fixpr[fix-pr]
@@ -42,3 +43,4 @@ flowchart TD
 | [pr](../../shared/skills/pr/README.md) | Opens a pull request, or updates the one the branch has |
 | [fix-pr](../../shared/skills/fix-pr/README.md) | Fixes review threads, failing CI and conflicts, then answers each thread |
 | [remote-issue](../../shared/skills/remote-issue/README.md) | Splits work too large for one session into issues the issue worker implements in parallel |
+| [unblock](../../shared/skills/unblock/README.md) | Labels the waiting issues whose waits are done, so the issue worker starts them |

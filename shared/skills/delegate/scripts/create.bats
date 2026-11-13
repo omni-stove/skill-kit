@@ -33,25 +33,31 @@ STUB
 }
 
 @test "create.sh rejects a missing parent or an unknown label" {
-  run "$CREATE" bug t b
+  run "$CREATE" bug t --task T --check C
   [ "$status" -eq 2 ]
-  run "$CREATE" --parent 3 chore t b
+  run "$CREATE" --parent 3 chore t --task T --check C
   [ "$status" -eq 2 ]
-  run "$CREATE" --parent 3 --after x bug t b
+  run "$CREATE" --parent 3 --after x bug t --task T --check C
+  [ "$status" -eq 2 ]
+  run "$CREATE" --parent 3 bug t --task T
+  [ "$status" -eq 2 ]
+  run "$CREATE" --parent 3 bug t b
   [ "$status" -eq 2 ]
 }
 
 @test "create.sh files the issue with its label, a parent line, and links it as a sub-issue" {
-  run "$CREATE" --parent 3 implementation "Title" "Body"
+  run "$CREATE" --parent 3 implementation "Title" --task T --check C
   [ "$status" -eq 0 ]
   [ "$output" = "https://github.com/o/r/issues/7" ]
   grep -q -- '--label implementation' "$CALLS"
-  grep -q '親: #3' "$CALLS"
+  grep -q -- '--body 親: #3' "$CALLS"
+  grep -qx '## やること' "$CALLS"
+  grep -qx '## 確認方法' "$CALLS"
   grep -q 'issues/3/sub_issues' "$CALLS"
 }
 
 @test "create.sh --after files the issue unlabeled, blocked by the waits, a bug typed Bug" {
-  run "$CREATE" --parent 3 --after 5,6 implementation "Title" "Body"
+  run "$CREATE" --parent 3 --after 5,6 implementation "Title" --task T --check C
   [ "$status" -eq 0 ]
   [ "$output" = "https://github.com/o/r/issues/7" ]
   ! grep -q -- '--label' "$CALLS" || false
@@ -59,13 +65,13 @@ STUB
   grep -q 'issues/7/dependencies/blocked_by -F issue_id=125' "$CALLS"
   grep -q 'issues/7/dependencies/blocked_by -F issue_id=126' "$CALLS"
   ! grep -q 'type=Bug' "$CALLS" || false
-  run "$CREATE" --parent 3 --after 5 bug "Title" "Body"
+  run "$CREATE" --parent 3 --after 5 bug "Title" --task T --check C
   [ "$status" -eq 0 ]
   grep -q 'PATCH repos/{owner}/{repo}/issues/7 -f type=Bug' "$CALLS"
 }
 
 @test "create.sh files a manual issue labeled, creating the label, even when it waits" {
-  run "$CREATE" --parent 3 --after 5 manual "Title" "Body"
+  run "$CREATE" --parent 3 --after 5 manual "Title" --task T --check C
   [ "$status" -eq 0 ]
   grep -q 'label create manual' "$CALLS"
   grep -q -- '--label manual' "$CALLS"

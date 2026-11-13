@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # Create one child issue linked to its parent and print its URL.
-#   create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> <body>
+#   create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> --task <text> --check <text>
+# The body is a parent line, then the task and how a person checks it done, under fixed headings.
 # Without --after the label goes on at creation, so the worker's labeled event fires exactly once.
 # With --after the issue is marked blocked by those issues (GitHub's issue dependencies); a bug or
 # implementation is filed unlabeled, a bug also getting the Bug issue type, so its label can be
 # added once they close. A manual issue is for the user, not the worker, so it is always labeled.
 set -euo pipefail
 
-usage() { echo "usage: create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> <body>" >&2; exit 2; }
+usage() { echo "usage: create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> --task <text> --check <text>" >&2; exit 2; }
 [ "${1:-}" = "--parent" ] && [[ "${2:-}" =~ ^[0-9]+$ ]] || usage
 parent="$2"
 shift 2
@@ -17,12 +18,18 @@ if [ "${1:-}" = "--after" ]; then
   after="$2"
   shift 2
 fi
-[ $# -eq 3 ] || usage
+[ $# -eq 6 ] && [ "$3" = --task ] && [ -n "$4" ] && [ "$5" = --check ] && [ -n "$6" ] || usage
 type="$1"
 title="$2"
 body="親: #${parent}
 
-$3"
+## やること
+
+$4
+
+## 確認方法
+
+$6"
 case "$type" in bug|implementation|manual) ;; *) usage ;; esac
 
 if [ "$type" = manual ]; then

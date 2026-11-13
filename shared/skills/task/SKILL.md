@@ -1,6 +1,6 @@
 ---
 name: task
-description: Add or change a mise task so it runs as `make <name>` (= `mise run <name>`). Use when the user wants a new command in the repo, or an existing script turned into one (e.g. "タスク追加して", "make lint で動くようにして", "add a task for X").
+description: Add or change a mise task so it runs as `make <name>`. Use when the user wants a new command in the repo, or a script turned into one.
 ---
 
 Run `.agents/skills/task/refs.sh`

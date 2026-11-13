@@ -1,6 +1,6 @@
 ---
 name: translate-check
-description: Cross-check an existing English translation against its Japanese source, in both directions. Accepts a source file, a translation file, or a directory. Use when the user wants a finished translation verified (e.g. 「翻訳をチェックして」, "check the translation against the source").
+description: Cross-check an English translation against its Japanese source in both directions. Use when the user wants a finished translation verified.
 ---
 
 Run `.agents/skills/translate-check/refs.sh`

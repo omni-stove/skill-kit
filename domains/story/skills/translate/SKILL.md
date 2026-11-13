@@ -1,6 +1,6 @@
 ---
 name: translate
-description: Translate an existing Japanese manuscript into English. Accepts a file or a directory. Use when the user asks to render a Japanese story file into English (e.g. 「英訳して」, "translate this into English").
+description: Translate a Japanese manuscript into English. Use when the user wants a story file or directory rendered in English.
 ---
 
 Run `.agents/skills/translate/refs.sh`

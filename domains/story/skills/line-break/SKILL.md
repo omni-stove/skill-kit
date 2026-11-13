@@ -1,6 +1,6 @@
 ---
 name: line-break
-description: 地の文を文脈の変わり目で改行する。Use when the user asks to insert meaning-unit line breaks into a Japanese fiction file's narrative prose.
+description: Break narrative prose where the context shifts. Use when the user wants meaning-unit line breaks in a Japanese fiction file.
 ---
 
 The user specifies the target file path.

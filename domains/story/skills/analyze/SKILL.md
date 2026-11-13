@@ -1,6 +1,6 @@
 ---
 name: analyze
-description: 引数で指定されたファイルの文体癖と繰り返しを調査する。Use when the user wants to investigate a Japanese fiction file's stylistic habits and repetitions (文体癖・繰り返し) and names a target file.
+description: Investigate a Japanese fiction file's stylistic habits and repetitions. Use when the user wants a file's writing habits (文体癖) examined.
 ---
 
 The user specifies the target file path to investigate.

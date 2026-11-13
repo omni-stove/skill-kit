@@ -1,6 +1,6 @@
 ---
 name: tachie
-description: Build an image-generation prompt for a character's standing art (立ち絵). Use when the user wants a tachie / standing-art prompt for a character, giving the character.
+description: Build an image-generation prompt for a character's standing art (立ち絵). Use when the user wants standing art for a character.
 ---
 
 Run `.agents/skills/tachie/refs.sh`

@@ -1,6 +1,6 @@
 ---
 name: unnatural
-description: Detect unnatural Japanese expressions at the lexical and syntactic levels. Use when the user asks to check a Japanese fiction file or directory for unnatural wording/syntax (不自然な日本語) in narration.
+description: Detect unnatural Japanese at the lexical and syntactic levels. Use when the user wants a fiction file or directory checked for unnatural wording.
 ---
 
 The user provides a file path or a directory path:

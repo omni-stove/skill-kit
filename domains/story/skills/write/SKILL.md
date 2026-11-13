@@ -1,6 +1,6 @@
 ---
 name: write
-description: Write story content from a plot file, or revise a story file. Use when the user wants to draft a story scene/chapter from a plot file, or revise a written story file.
+description: Write story content from a plot file, or revise a story file. Use when the user wants a scene or chapter drafted from a plot, or a story file revised.
 ---
 
 Run `.agents/skills/write/refs.sh`

@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Adapt the kit to this repo by generating this repo's real .agents/refs/engine.sh whose functions return this engine's actual facts. Use when setting up skill-kit in a game repo — a new repo or a non-default engine (e.g. "setup", "このリポジトリ用に設定して", "Godot用に合わせて").
+description: Adapt the kit to this repo's game engine. Use when setting up skill-kit in a new game repo or one on a non-default engine.
 ---
 
 Run `.agents/skills/setup/refs.sh`

@@ -1,6 +1,6 @@
 ---
 name: read
-description: Read a document without any context and provide honest reader impressions. Use when the user wants a first-time-reader reaction to a single file or to text pasted straight into the prompt, with no reference to settings (e.g. "読んで感想を", "この文章読んで", "read this as a fresh reader").
+description: Read a text with no context and give honest first-reader impressions. Use when the user wants a fresh reader's reaction to a file or pasted text.
 ---
 
 Run `.agents/skills/read/refs.sh`

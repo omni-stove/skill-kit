@@ -1,6 +1,6 @@
 ---
 name: staging-all
-description: Run the scene staging check in parallel on every .txt file in a directory. Use when the user asks to staging-check all files in a directory (e.g. "全ファイルにstagingチェックして").
+description: Run the scene staging check on every .txt file in a directory. Use when the user wants a whole directory staging-checked.
 ---
 
 Run `.agents/skills/staging-all/refs.sh`

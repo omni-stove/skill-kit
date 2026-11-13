@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Split a task too large for one session into independent issues labeled bug or implementation, under one parent issue, so the issue worker implements them in parallel, and the steps only the user can do on their machine as manual issues. Takes the task description. Use when the user wants work handed to the remote agent as issues (e.g. "delegate", "Issue に分割して投げて", "これを自動実装に回して").
+description: Split a task too large for one session into issues for the remote issue worker, with the steps only the user can do as manual issues. Use when the user wants work handed to the remote agent.
 ---
 
 Take the task from the argument and the decisions already made in the conversation. Settle an open point yourself and write the choice into the issue body.

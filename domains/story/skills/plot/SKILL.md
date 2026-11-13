@@ -1,6 +1,6 @@
 ---
 name: plot
-description: Create abstract plot concepts and story structure through dialogue. Use when the user wants to develop or check a high-level plot (e.g. "プロットを作って", "develop the plot").
+description: Develop abstract plot concepts and story structure through dialogue. Use when the user wants a high-level plot developed or checked.
 ---
 
 Run `.agents/skills/plot/refs.sh`

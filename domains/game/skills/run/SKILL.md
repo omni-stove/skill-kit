@@ -1,6 +1,6 @@
 ---
 name: run
-description: Build and/or run the game so a change can be seen working, using this repo's engine build/run commands. Use when the user asks to run, launch, build, or play-test the game, or to confirm a change works in the actual running game (e.g. "動かして", "ビルドして", "run the game", "play-test this").
+description: Build and run the game so a change can be seen working. Use when the user wants the game run, built or play-tested.
 ---
 
 Run `.agents/skills/run/refs.sh`

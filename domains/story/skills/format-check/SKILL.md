@@ -1,6 +1,6 @@
 ---
 name: format-check
-description: Check write output against japanese-web-novel-format rules and report only lines with issues. Use when the user wants a single file checked against Japanese web novel formatting conventions.
+description: Check a file against the Japanese web novel format rules and report the offending lines. Use when the user wants a single file format-checked.
 ---
 
 Run `.agents/skills/format-check/refs.sh`

@@ -1,6 +1,6 @@
 ---
 name: judge
-description: Screen a work as a contest judge — the synopsis first, then the opening text. Use when the user asks for a contest-judge evaluation of a work.
+description: Screen a work as a contest judge, the synopsis first and then the opening text. Use when the user wants a contest-judge evaluation of a work.
 argument-hint: <synopsis-path> <synopsis-limit> <manuscript-dir>
 ---
 

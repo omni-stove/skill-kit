@@ -1,6 +1,6 @@
 ---
 name: shorts-plot
-description: src/shorts/ 配下の短編のプロットを作成する。Use when the user wants to develop a plot for a short story under src/shorts/ and gives a short id.
+description: Develop the plot of a short story under src/shorts/. Use when the user wants a short story's plot made.
 ---
 
 Run `.agents/skills/shorts-plot/refs.sh`

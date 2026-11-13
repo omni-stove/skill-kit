@@ -1,6 +1,6 @@
 ---
 name: block-breaks
-description: Fix block breaks and blank lines in Japanese fiction text. Use when the user asks to correct paragraph/block breaks or blank-line spacing in a Japanese fiction file and names a target file.
+description: Fix block breaks and blank lines in Japanese fiction text. Use when a story file's paragraph breaks or blank-line spacing need correcting.
 ---
 
 Run `.agents/skills/block-breaks/refs.sh`

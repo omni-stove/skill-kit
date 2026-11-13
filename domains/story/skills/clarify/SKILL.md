@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: 専門知識がない読者にもわかりやすい表現に書き換える。Use when the user wants to rewrite difficult or jargon-heavy passages in a text into expressions readable by non-specialists, naming a target file.
+description: Rewrite jargon-heavy passages so a reader without specialist knowledge can follow them. Use when the user wants a text made easier for non-specialists.
 ---
 
 The user specifies the target file path to clarify.

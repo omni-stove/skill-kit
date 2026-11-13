@@ -12,7 +12,7 @@ Hold only what the LLM must judge.
 - Order the body by the reader's workflow; order carries sequence. Add a heading or step number only where it scopes a rule set or is referenced by name elsewhere; otherwise a plain lead-in line is enough.
 - Define each thing once. State what it does in one place; let the steps carry the rest.
 - Lead each step with the command; only its arguments are left to decide.
-- Keep the frontmatter `description` to the trigger and the shape of the work, not the full procedure.
+- Write the frontmatter `description` as two sentences: what the skill does, then `Use when` and the situation it fits. Leave out example phrases, arguments, and how the skill works.
 
 ## SKILL.md only
 

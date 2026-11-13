@@ -1,6 +1,6 @@
 ---
 name: bgm
-description: Build a Suno prompt for a BGM track from a story project's settings or a described scene/mood. Use when the user wants a BGM生成プロンプト for a scene, an opening/ending, a character theme, or a described mood, giving what the track is for.
+description: Build a Suno prompt for a BGM track. Use when the user wants music for a scene, an opening or ending, a character theme or a mood.
 ---
 
 The user supplies what the track is for (a scene, an opening/ending, a character theme, a work-session loop, etc.) .

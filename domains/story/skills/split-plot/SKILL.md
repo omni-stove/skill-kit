@@ -1,6 +1,6 @@
 ---
 name: split-plot
-description: Split a single source file into individual plot skeleton files per scene/section. Use when the user has a long plot draft, scenario memo, or outline and wants it broken into one plot skeleton file per scene (e.g. "プロットを分割して", "split this outline into plot files").
+description: Split one source file into a plot skeleton file per scene. Use when the user wants a long plot draft, memo or outline broken into scenes.
 ---
 
 Run `.agents/skills/split-plot/scripts/segments.sh <the source file the user gave>`

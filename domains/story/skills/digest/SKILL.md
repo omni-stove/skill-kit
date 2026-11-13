@@ -1,6 +1,6 @@
 ---
 name: digest
-description: Read a file and output only the factual information understood from it — no evaluation, just comprehension. Use when the user wants a factual digest of a single file based only on its own contents.
+description: State only the facts a file conveys, with no evaluation. Use when the user wants a factual digest of a single file.
 ---
 
 The user provides the path to a single file to digest.

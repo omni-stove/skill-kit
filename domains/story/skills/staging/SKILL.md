@@ -1,6 +1,6 @@
 ---
 name: staging
-description: Check scene-level description quality in a single story file. Use when the user asks to staging-check a file (e.g. "stagingチェックして").
+description: Check scene-level description quality in a single story file. Use when the user wants a file staging-checked.
 ---
 
 Run `.agents/skills/staging/refs.sh`

@@ -1,6 +1,6 @@
 ---
 name: character
-description: Create or edit a character setting through dialogue. Use when the user wants to create or edit a character setting, giving an optional character overview.
+description: Create or edit a character setting through dialogue. Use when the user wants a character setting made or changed.
 ---
 
 Run `.agents/skills/character/refs.sh`

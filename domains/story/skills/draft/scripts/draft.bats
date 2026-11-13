@@ -12,7 +12,7 @@ setup() {
   run sh "$BATS_TEST_DIRNAME/source.sh" story/plot/010-arrival.md
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "Output: story/010.txt" ]
-  [[ "$output" == *'others.sh --earlier "story/plot/010-arrival.md", and the files on the Reference lines.'* ]]
+  [[ "$output" == *'others.sh --earlier "story/plot/010-arrival.md" prints, and the files on the Reference lines.'* ]]
   [[ "$output" == *"Reference: story/characters/aki.md"* ]]
   [[ "$output" == *'save to story/report/.010.check.md'* ]]
   [[ "$output" == *'draft.sh "story/plot/010-arrival.md" "story/010.txt" "story/report/.010.check.md"'* ]]

@@ -1,1 +1,1 @@
-A covers line that already covers an item replaces that item; link the similar lines from the parent's body. Then run .agents/skills/delegate/scripts/parent.sh
+A covers line that already covers an item replaces that item; link the similar lines from the parent's body, and have an item that touches the files of a similar line's issue wait on it. Then run .agents/skills/delegate/scripts/parent.sh

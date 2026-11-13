@@ -2,8 +2,8 @@
 
 ```mermaid
 flowchart TD
-  split["作業を独立したIssueに分ける:<br/>bug・implementation・<br/>ユーザーが手元でしかできない<br/>ものはmanual"]
-  split --> similar[項目をすでにカバーする<br/>オープンなIssueを探す]
+  split["作業をファイルが重ならない<br/>Issueに分ける:<br/>bug・implementation・<br/>ユーザーが手元でしかできない<br/>ものはmanual、<br/>先頭にコード変更が待つ<br/>インターフェース整備のIssue"]
+  split --> similar[項目をすでにカバーする・<br/>同じファイルを触る<br/>オープンなIssueを探す]
   similar --> origin{作業の元になった<br/>Issueがある?}
   origin -- "ある" --> comment[そのIssueを親にして<br/>計画を追記する]
   origin -- "ない" --> parent[親Issueを作る]

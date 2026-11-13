@@ -1,6 +1,6 @@
 ---
 name: create-skill
-description: Scaffold a new skill in this kit. Use when the user wants a new skill for the game, story or code domain.
+description: Scaffold a new skill in this kit.
 ---
 
 This is the kit repo's own skill — new skills are authored here and reach consuming

@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: Rewrite jargon-heavy passages so a reader without specialist knowledge can follow them. Use when the user wants a text made easier for non-specialists.
+description: Rewrite jargon-heavy passages so a reader without specialist knowledge can follow them.
 ---
 
 The user specifies the target file path to clarify.

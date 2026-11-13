@@ -1,6 +1,6 @@
 ---
 name: format-check-all
-description: Check every .txt file in a directory against the Japanese web novel format rules. Use when the user wants a whole directory format-checked.
+description: Check every .txt file in a directory against the Japanese web novel format rules.
 ---
 
 Run `.agents/skills/format-check-all/refs.sh`

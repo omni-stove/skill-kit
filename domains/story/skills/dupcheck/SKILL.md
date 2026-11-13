@@ -1,6 +1,6 @@
 ---
 name: dupcheck
-description: Detect semantically overlapping expressions within one Japanese fiction file. Use when the user wants a story file checked for repetition.
+description: Detect semantically overlapping expressions within one Japanese fiction file.
 ---
 
 Run `.agents/skills/dupcheck/refs.sh`

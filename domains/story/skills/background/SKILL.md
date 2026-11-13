@@ -1,6 +1,6 @@
 ---
 name: background
-description: Build an image-generation prompt for a background or scenery image. Use when the user wants background art for a location or scene.
+description: Build an image-generation prompt for a background or scenery image.
 ---
 
 Run `.agents/skills/background/refs.sh`

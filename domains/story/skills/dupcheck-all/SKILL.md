@@ -1,6 +1,6 @@
 ---
 name: dupcheck-all
-description: Detect semantically overlapping expressions across every .txt file in a directory. Use when the user wants a whole directory checked for repetition.
+description: Detect semantically overlapping expressions across every .txt file in a directory.
 ---
 
 Run `.agents/skills/dupcheck-all/refs.sh`

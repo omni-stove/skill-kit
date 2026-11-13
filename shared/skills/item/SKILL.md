@@ -1,6 +1,6 @@
 ---
 name: item
-description: Create or edit an item setting through dialogue. Use when the user wants an item setting made or changed.
+description: Create or edit an item setting through dialogue.
 ---
 
 Run `.agents/skills/item/refs.sh`

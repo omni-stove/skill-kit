@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Split a task too large for one session into issues for the remote issue worker, with the steps only the user can do as manual issues. Use when the user wants work handed to the remote agent.
+description: Split a task too large for one session into issues for the remote issue worker, with the steps only the user can do as manual issues.
 ---
 
 Take the task from the argument and the decisions already made in the conversation. Settle an open point yourself and write the choice into the issue body.

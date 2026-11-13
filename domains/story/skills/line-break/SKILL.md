@@ -1,6 +1,6 @@
 ---
 name: line-break
-description: Break narrative prose where the context shifts. Use when the user wants meaning-unit line breaks in a Japanese fiction file.
+description: Break Japanese narrative prose where the context shifts.
 ---
 
 The user specifies the target file path.

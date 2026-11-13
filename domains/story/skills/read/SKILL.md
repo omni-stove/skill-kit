@@ -1,6 +1,6 @@
 ---
 name: read
-description: Read a text with no context and give honest first-reader impressions. Use when the user wants a fresh reader's reaction to a file or pasted text.
+description: Read a file or pasted text with no context and give honest first-reader impressions.
 ---
 
 Run `.agents/skills/read/refs.sh`

@@ -1,6 +1,6 @@
 ---
 name: layman
-description: Flag passages a reader without specialist knowledge cannot follow. Use when the user wants to know whether a non-expert can follow a story file or directory.
+description: Flag passages in a story file or directory that a reader without specialist knowledge cannot follow.
 ---
 
 Run `.agents/skills/layman/scripts/files.sh <the file or directory path the user gave>`

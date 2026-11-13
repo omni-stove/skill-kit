@@ -1,6 +1,6 @@
 ---
 name: world
-description: Create or edit a world-setting element through dialogue. Use when the user wants a world setting made or changed.
+description: Create or edit a world-setting element through dialogue.
 ---
 
 Run `.agents/skills/world/refs.sh`

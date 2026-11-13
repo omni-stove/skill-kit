@@ -1,6 +1,6 @@
 ---
 name: translate
-description: Translate a Japanese manuscript into English. Use when the user wants a story file or directory rendered in English.
+description: Translate a Japanese story file or directory into English.
 ---
 
 Run `.agents/skills/translate/refs.sh`

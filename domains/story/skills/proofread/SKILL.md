@@ -1,6 +1,6 @@
 ---
 name: proofread
-description: Proofread story text for typos, tense confusion and notation variance. Use when the user wants a file or directory proofread.
+description: Proofread a story file or directory for typos, tense confusion and notation variance.
 ---
 
 Run `.agents/skills/proofread/scripts/files.sh <the file or directory path the user gave>`

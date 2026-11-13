@@ -1,6 +1,6 @@
 ---
 name: judge-full
-description: Decide by a panel of final-round contest judges whether a complete manuscript wins the grand prize. Use when the user wants a final-round judgment of a complete work.
+description: Decide by a panel of final-round contest judges whether a complete manuscript wins the grand prize.
 argument-hint: <synopsis-path> <synopsis-limit> <manuscript-path> [judges]
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: unnatural
-description: Detect unnatural Japanese at the lexical and syntactic levels. Use when the user wants a fiction file or directory checked for unnatural wording.
+description: Detect unnatural Japanese at the lexical and syntactic levels in a fiction file or directory.
 ---
 
 The user provides a file path or a directory path:

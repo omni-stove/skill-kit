@@ -1,6 +1,6 @@
 ---
 name: shorts-plot
-description: Develop the plot of a short story under src/shorts/. Use when the user wants a short story's plot made.
+description: Develop the plot of a short story under src/shorts/.
 ---
 
 Run `.agents/skills/shorts-plot/refs.sh`

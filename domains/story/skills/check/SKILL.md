@@ -1,6 +1,6 @@
 ---
 name: check
-description: Check a story file for contradictions with the settings and adjacent files. Use when the user wants a story file verified for continuity.
+description: Check a story file for contradictions with the settings and adjacent files.
 ---
 
 The user specifies the target story file path to check.

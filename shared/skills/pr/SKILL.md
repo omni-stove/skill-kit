@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Open a pull request from the current branch. Use when the user wants a PR made from their changes.
+description: Open a pull request from the current branch.
 ---
 
 Run `.agents/skills/pr/scripts/state.sh [base]`

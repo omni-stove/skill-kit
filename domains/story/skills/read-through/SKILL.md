@@ -1,6 +1,6 @@
 ---
 name: read-through
-description: Read every .txt file in a directory one at a time, with an impression of each. Use when the user wants a directory read through in order.
+description: Read every .txt file in a directory one at a time, with an impression of each.
 ---
 
 Run `.agents/skills/read-through/refs.sh`

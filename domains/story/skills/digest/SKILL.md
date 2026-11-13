@@ -1,6 +1,6 @@
 ---
 name: digest
-description: State only the facts a file conveys, with no evaluation. Use when the user wants a factual digest of a single file.
+description: State only the facts a file conveys, with no evaluation.
 ---
 
 The user provides the path to a single file to digest.

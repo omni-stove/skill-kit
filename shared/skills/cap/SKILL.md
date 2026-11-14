@@ -12,7 +12,7 @@ Then, from the repo root:
 - Stage all changes (`git add -A`).
 - If there are no changes, do nothing and stop.
 - Commit with a concise message generated from the diff (follow existing commit message style).
-- Push to the current branch with a plain `git push` (never force-push, never create a new branch — commit and push to the current branch as-is, including `main`).
+- Run `.agents/skills/cap/scripts/push.sh`. Never force-push or create a new branch; push to the current branch as-is, including `main`.
 
 Perform only history-preserving operations. Display the result and confirm.
 

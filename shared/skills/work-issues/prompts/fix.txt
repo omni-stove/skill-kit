@@ -1,4 +1,4 @@
 Send the agent that opened {pr} this prompt, or launch an Agent in the background with it when no agent of this session holds {pr}:
-Run every command as cd {worktree} && <command>, starting with .agents/refs/pr-fix/scripts/fetch.sh {pr}. Where a step says to ask the user, stop and return the question. Return what you fixed, what you skipped and why.
+Run every command as cd {worktree} && <command>, starting with .agents/refs/pr-fix/scripts/fetch.sh {pr}. Where a step says to ask the user, stop and return the question. Return only a question, or the reasons you could not fix, in a line each.
 
 When it returns, run .agents/skills/work-issues/scripts/wait.sh {parent} {pr} in the background again; when it returned a question, or the same reasons come back after it said it could not fix them, ask the user first.

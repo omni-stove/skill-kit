@@ -5,10 +5,9 @@
 
 setup() {
   SCRIPT="$BATS_TEST_DIRNAME/commit-push.sh"
-  KIT="$(cd "$BATS_TEST_DIRNAME/../../../.." && pwd)"
   repo="$BATS_TEST_TMPDIR/repo"
-  mkdir -p "$repo/.agents/refs" "$repo/bin"
-  ln -s "$KIT/shared/refs/push-with-merge.sh" "$repo/.agents/refs/push-with-merge.sh"
+  # No .agents in the repo, as in a worktree without the kit: the script finds its refs beside it
+  mkdir -p "$repo/bin"
   CALLS="$BATS_TEST_TMPDIR/calls"
   : > "$CALLS"
   echo 0 > "$BATS_TEST_TMPDIR/pushes"

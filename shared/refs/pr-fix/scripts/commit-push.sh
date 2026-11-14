@@ -15,7 +15,7 @@ check() {
 }
 
 # shellcheck source=/dev/null
-source .agents/refs/push-with-merge.sh
+source "$(dirname -- "$0")/../../push-with-merge.sh"
 
 if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
   echo "==> finishing the in-progress merge" >&2

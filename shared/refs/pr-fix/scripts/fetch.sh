@@ -39,7 +39,7 @@ echo "==> merge latest origin/${base_ref}"
 git fetch origin "$base_ref"
 git merge "origin/${base_ref}" || { echo "fetch: merge conflict — resolve the conflicts, then continue with commit-push.sh" >&2; exit 3; }
 
-.agents/refs/review-threads.sh "$pr" --active
+"$(dirname -- "$0")/../../review-threads.sh" "$pr" --active
 
 echo "==> CI checks"
 gh pr checks "$pr" || true

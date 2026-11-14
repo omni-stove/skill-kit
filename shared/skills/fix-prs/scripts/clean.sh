@@ -12,7 +12,6 @@ common="$(git rev-parse --path-format=absolute --git-common-dir)"
 for dir in "$common"/fix-prs/*/; do
   [ -d "$dir" ] || continue
   dir="${dir%/}"
-  [ -L "$dir/.agents" ] && rm "$dir/.agents"
   ahead=0
   if git -C "$dir" symbolic-ref -q HEAD >/dev/null; then
     ahead="$(git -C "$dir" rev-list --count '@{u}..HEAD' 2>/dev/null || echo unknown)"
@@ -22,7 +21,6 @@ for dir in "$common"/fix-prs/*/; do
     && [ "$ahead" = 0 ]; then
     git worktree remove "$dir"
   else
-    ln -s "$(git rev-parse --show-toplevel)/.agents" "$dir/.agents" 2>/dev/null || true
     printf 'unpushed\t%s\t%s\n' "$(basename -- "$dir")" "$dir"
   fi
 done

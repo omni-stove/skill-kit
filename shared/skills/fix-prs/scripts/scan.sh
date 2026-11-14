@@ -12,7 +12,6 @@ gh() { command "${GH_CMD:-gh}" "$@"; }
 
 for n in "$@"; do [[ "$n" =~ ^[0-9]+$ ]] || { echo "usage: scan.sh [<pr number>...]" >&2; exit 2; }; done
 
-root="$(git rev-parse --show-toplevel)"
 common="$(git rev-parse --path-format=absolute --git-common-dir)"
 
 named="$(printf '%s\n' "$@" | jq -Rsc 'split("\n") | map(select(. != "") | tonumber)')"
@@ -60,15 +59,7 @@ while IFS=$'\t' read -r number reasons title url; do
     git worktree add --detach "$dir" >/dev/null 2>&1 \
       || { echo "scan: could not add the worktree $dir for #$number — remove what is there, then rerun" >&2; exit 1; }
   fi
-  # The kit's files under .agents are untracked, so the worktree checks out only the tracked
-  # rest: link each untracked path in and exclude it so no commit takes it. Git reads no
-  # .gitignore that is a link, so the exclude stands in for the kit's .gitignore files.
-  git -C "$root" ls-files --others --directory -z -- .agents | while IFS= read -r -d '' p; do
-    p="${p%/}"
-    [ "$(basename -- "$p")" != .gitignore ] || continue
-    [ -e "$dir/$p" ] || [ -L "$dir/$p" ] || { mkdir -p "$(dirname -- "$dir/$p")"; ln -s "$root/$p" "$dir/$p"; }
-    git -C "$dir" check-ignore -q "$p" || echo "/$p" >> "$common/info/exclude"
-  done
+  "$(dirname -- "$0")/../../../refs/link-agents.sh" "$dir"
   printf '%s\t%s\t%s\t%s\t%s\n' "$number" "$reasons" "$dir" "$title" "$url"
   found=1
 done <<< "$prs"

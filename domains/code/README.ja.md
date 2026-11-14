@@ -13,6 +13,7 @@ flowchart TD
   work -- "1セッションに収まる" --> change[コードを変える]
   work -- "大きすぎる" --> issue[delegate]
   issue --> unblock[unblock<br/>待ちのIssueを着手させる]
+  issue --> local[work-issues<br/>Issueを手元で進める]
   change --> pr[pr]
   pr --> review[レビューとCI]
   review -- "指摘、失敗、コンフリクト" --> fixpr[fix-pr]
@@ -40,3 +41,4 @@ flowchart TD
 - [fix-prs](../../shared/skills/fix-prs/README.ja.md)
 - [delegate](../../shared/skills/delegate/README.ja.md)
 - [unblock](../../shared/skills/unblock/README.ja.md)
+- [work-issues](../../shared/skills/work-issues/README.ja.md)

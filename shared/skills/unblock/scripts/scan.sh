@@ -12,8 +12,10 @@
 #   waiting  as above
 #   scan.sh [<parent>...]         scan these parents, or every open issue with open sub-issues
 #   scan.sh --force <number>...   add the label to these open, non-manual issues with no worker label whatever their blockers
+# With ISSUE_WORKER=off it adds no label and only says so.
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
+if [ "${ISSUE_WORKER:-}" = off ]; then prompt off >&2; exit 0; fi
 # command keeps gh from calling this function again when GH_CMD is unset
 gh() { command "${GH_CMD:-gh}" "$@"; }
 

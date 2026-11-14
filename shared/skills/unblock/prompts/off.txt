@@ -1,0 +1,1 @@
+Tell the user the issue worker is off here (ISSUE_WORKER=off), so no sub-issue gets a worker label

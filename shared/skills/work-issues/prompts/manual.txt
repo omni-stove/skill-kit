@@ -1,0 +1,1 @@
+Tell the user the manual lines above are theirs to do by hand: what each asks, and that closing it as completed lets the issues waiting on it start.

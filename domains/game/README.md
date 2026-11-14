@@ -39,6 +39,7 @@ flowchart TD
 - [fix-prs](../../shared/skills/fix-prs/README.md)
 - [delegate](../../shared/skills/delegate/README.md)
 - [unblock](../../shared/skills/unblock/README.md)
+- [work-issues](../../shared/skills/work-issues/README.md)
 - [automation](../../shared/skills/automation/README.md)
 
 ## 4. Looking back

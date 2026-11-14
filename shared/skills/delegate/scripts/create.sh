@@ -5,7 +5,9 @@
 # Without --after the label goes on at creation, so the worker's labeled event fires exactly once.
 # With --after the issue is marked blocked by those issues (GitHub's issue dependencies); a bug or
 # implementation is filed unlabeled, a bug also getting the Bug issue type, so its label can be
-# added once they close. A manual issue is for the user, not the worker, so it is always labeled.
+# added once they close. With ISSUE_WORKER=off every bug and implementation is filed that way, so
+# no worker starts it and it is done on this machine. A manual issue is for the user, not the
+# worker, so it is always labeled.
 set -euo pipefail
 
 usage() { echo "usage: create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> --task <text> --check <text>" >&2; exit 2; }
@@ -36,7 +38,9 @@ if [ "$type" = manual ]; then
   # Repos set up for the worker have bug and implementation but not this one; it already exists after the first run.
   "${GH_CMD:-gh}" label create manual --description "Done by hand on the user's machine, not by the issue worker" >/dev/null 2>&1 || true
 fi
-if [ -n "$after" ] && [ "$type" != manual ]; then
+unlabeled=
+if [ "$type" != manual ] && { [ -n "$after" ] || [ "${ISSUE_WORKER:-}" = off ]; }; then unlabeled=1; fi
+if [ -n "$unlabeled" ]; then
   url="$("${GH_CMD:-gh}" issue create --title "$title" --body "$body")"
 else
   url="$("${GH_CMD:-gh}" issue create --title "$title" --body "$body" --label "$type")"
@@ -55,7 +59,7 @@ for a in ${after//,/ }; do
     "${GH_CMD:-gh}" api --method POST "repos/{owner}/{repo}/issues/${number}/dependencies/blocked_by" -F "issue_id=${id}" >/dev/null ||
     echo "warning: could not mark ${url} as blocked by #${a}" >&2
 done
-if [ -n "$after" ] && [ "$type" = bug ]; then
+if [ -n "$unlabeled" ] && [ "$type" = bug ]; then
   "${GH_CMD:-gh}" api --method PATCH "repos/{owner}/{repo}/issues/${number}" -f type=Bug >/dev/null ||
     echo "warning: could not set the Bug type on ${url}; it will be labeled implementation when unblocked" >&2
 fi

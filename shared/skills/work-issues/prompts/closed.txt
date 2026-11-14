@@ -1,0 +1,1 @@
+Stop the agent that opened {pr} with TaskStop, and tell the user {pr} closed without merging; its issue stays open with its worktree and shows as working on the next run of .agents/skills/work-issues/scripts/next.sh {parent}

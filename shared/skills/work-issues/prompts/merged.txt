@@ -1,0 +1,1 @@
+Stop the agent that opened {pr} with TaskStop, then run .agents/skills/work-issues/scripts/next.sh {parent}

@@ -50,6 +50,14 @@ STUB
   [[ "$stderr" == *"scan.sh --force"* ]]
 }
 
+@test "scan.sh adds no label with ISSUE_WORKER=off" {
+  ISSUE_WORKER=off run --separate-stderr "$SCAN"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+  [ ! -s "$CALLS" ]
+  [[ "$stderr" == *"ISSUE_WORKER=off"* ]]
+}
+
 @test "scan.sh says there is nothing to do when no sub-issue is listed" {
   run --separate-stderr "$SCAN" 4
   [ "$status" -eq 0 ]

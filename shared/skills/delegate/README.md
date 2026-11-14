@@ -11,10 +11,13 @@ flowchart TD
   create --> kind{manual?}
   kind -- "yes" --> manual[labeled manual,<br/>blocked by its waits:<br/>the user does it]
   kind -- "no" --> wait{waits on<br/>another issue?}
-  wait -- "no" --> now[labeled:<br/>the worker starts it]
+  wait -- "no" --> off{ISSUE_WORKER=off?}
+  off -- "no" --> now[labeled:<br/>the worker starts it]
+  off -- "yes" --> local[unlabeled:<br/>done on this machine]
   wait -- "yes" --> later[unlabeled, blocked by<br/>the issues to merge first]
   parent --> create
   now --> report[/"parent + one line per issue<br/>+ the unlabeled ones with<br/>their label and waits +<br/>the manual ones to do by hand,<br/>those with no waits first +<br/>existing issues that<br/>replaced items"/]
   later --> report
+  local --> report
   manual --> report
 ```

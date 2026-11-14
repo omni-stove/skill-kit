@@ -2,6 +2,7 @@
 # Print the report of one delegate run: the parent's URL and each child issue as
 # <label><TAB><title><TAB><url>, where an unlabeled one filed to wait shows `later:<label>`
 # (bug for the Bug issue type) and the issues blocking it as a fourth column, as does a manual one.
+# With ISSUE_WORKER=off the report says the unlabeled ones are done on this machine.
 # usage: report.sh <parent-number>
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
@@ -24,4 +25,4 @@ while IFS=$'\t' read -r number labels type title url; do
     printf 'later:%s\t%s\t%s\t%s\n' "$type" "$title" "$url" "$waits"
   fi
 done
-prompt report >&2
+if [ "${ISSUE_WORKER:-}" = off ]; then prompt report-local >&2; else prompt report >&2; fi

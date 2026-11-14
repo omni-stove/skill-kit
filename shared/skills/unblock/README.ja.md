@@ -2,6 +2,8 @@
 
 ```mermaid
 flowchart TD
+  off{ISSUE_WORKER=off?} -- "はい" --> offr[/ラベルは付けない/]
+  off -- "いいえ" --> scan
   scan[オープンな親Issue<br/>（指定があればその親）の<br/>ワーカーのラベルのない<br/>サブIssueと<br/>manualのサブIssueを調べる]
   scan -- "見つからない" --> none[/着手するものも<br/>やるものもない/]
   scan --> kind{manual?}

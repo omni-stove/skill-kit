@@ -14,6 +14,7 @@ flowchart TD
   work -- "fits one session" --> change[change the code]
   work -- "too large" --> issue[delegate]
   issue --> unblock[unblock<br/>start the waiting issues]
+  issue --> local[work-issues<br/>do the issues here]
   change --> pr[pr]
   pr --> review[review and CI]
   review -- "threads, failures, conflicts" --> fixpr[fix-pr]
@@ -41,3 +42,4 @@ flowchart TD
 - [fix-prs](../../shared/skills/fix-prs/README.md)
 - [delegate](../../shared/skills/delegate/README.md)
 - [unblock](../../shared/skills/unblock/README.md)
+- [work-issues](../../shared/skills/work-issues/README.md)

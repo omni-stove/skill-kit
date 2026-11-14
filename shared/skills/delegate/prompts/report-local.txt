@@ -1,0 +1,1 @@
+Report the above with one line per issue on what it does, the later: issues apart as the ones done on this machine with the issues to merge first, the manual issues apart as the user's to do by hand, those with no waits first, and that closing one as completed lets the issues waiting on it start, plus the existing issues that replaced items

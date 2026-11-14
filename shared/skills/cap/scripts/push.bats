@@ -19,11 +19,11 @@ STUB
   remote="$BATS_TEST_TMPDIR/remote.git"
   git init -q --bare -b main "$remote"
   git clone -q "$remote" "$BATS_TEST_TMPDIR/other" 2>/dev/null
-  cd "$BATS_TEST_TMPDIR/other"
+  cd "$BATS_TEST_TMPDIR/other" || exit
   echo base > a; echo base > b
   git add -A; git commit -qm base; git push -q origin main
   git clone -q "$remote" "$BATS_TEST_TMPDIR/repo"
-  cd "$BATS_TEST_TMPDIR/repo"
+  cd "$BATS_TEST_TMPDIR/repo" || exit
 }
 
 advance_remote() { # file content

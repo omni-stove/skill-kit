@@ -2,6 +2,8 @@
 
 ```mermaid
 flowchart TD
+  off{ISSUE_WORKER=off?} -- "yes" --> offr[/no label is added/]
+  off -- "no" --> scan
   scan[check the sub-issues with no worker label<br/>and the manual ones under each open parent issue<br/>or the parents named]
   scan -- "none found" --> none[/nothing to start or do/]
   scan --> kind{manual?}

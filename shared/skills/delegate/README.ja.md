@@ -11,10 +11,13 @@ flowchart TD
   create --> kind{manual?}
   kind -- "はい" --> manual[manualラベル付き・<br/>待ちにブロックされる:<br/>ユーザーがやる]
   kind -- "いいえ" --> wait{ほかのIssueを<br/>待つ?}
-  wait -- "待たない" --> now[ラベル付き:<br/>ワーカーが着手]
+  wait -- "待たない" --> off{ISSUE_WORKER=off?}
+  off -- "いいえ" --> now[ラベル付き:<br/>ワーカーが着手]
+  off -- "はい" --> local[ラベルなし:<br/>手元で進める]
   wait -- "待つ" --> later[ラベルなし:<br/>先にマージするIssueに<br/>ブロックされる]
   parent --> create
   now --> report[/"親 + Issueごとに1行 +<br/>ラベルなしのIssueの<br/>付けるラベルと待ち +<br/>手でやるmanualのIssue<br/>（待ちのないものから） +<br/>項目を置き換えた既存Issue"/]
   later --> report
+  local --> report
   manual --> report
 ```

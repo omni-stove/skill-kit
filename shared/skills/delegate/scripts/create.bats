@@ -70,6 +70,27 @@ STUB
   grep -q 'PATCH repos/{owner}/{repo}/issues/7 -f type=Bug' "$CALLS"
 }
 
+@test "create.sh files a bug unlabeled and typed Bug with ISSUE_WORKER=off, and still labels a manual one" {
+  ISSUE_WORKER=off run "$CREATE" --parent 3 bug "Title" --task T --check C
+  [ "$status" -eq 0 ]
+  ! grep -q -- '--label' "$CALLS" || false
+  grep -q -- '-f type=Bug' "$CALLS"
+  : > "$CALLS"
+  ISSUE_WORKER=off run "$CREATE" --parent 3 manual "Title" --task T --check C
+  [ "$status" -eq 0 ]
+  grep -q -- '--label manual' "$CALLS"
+  : > "$CALLS"
+  ISSUE_WORKER='' run "$CREATE" --parent 3 implementation "Title" --task T --check C
+  [ "$status" -eq 0 ]
+  grep -q -- '--label implementation' "$CALLS"
+}
+
+@test "report.sh says the unlabeled issues are done on this machine with ISSUE_WORKER=off" {
+  ISSUE_WORKER=off run --separate-stderr "$BATS_TEST_DIRNAME/report.sh" 3
+  [ "$status" -eq 0 ]
+  [[ "$stderr" == *"done on this machine"* ]]
+}
+
 @test "create.sh files a manual issue labeled, creating the label, even when it waits" {
   run "$CREATE" --parent 3 --after 5 manual "Title" --task T --check C
   [ "$status" -eq 0 ]

@@ -2,7 +2,7 @@
 
 ```mermaid
 flowchart TD
-  split["split the task into<br/>issues on separate files:<br/>bug, implementation,<br/>or manual for what only<br/>the user can do by hand,<br/>led by an interface issue<br/>the code changes wait on"]
+  split["split the task into<br/>issues on separate files:<br/>bug, implementation,<br/>or manual for what only<br/>the user can do by hand,<br/>led by one issue making<br/>every change to shared files<br/>(schema, migrations, deps,<br/>registries, interfaces)<br/>the code changes wait on"]
   split --> similar[look for open issues<br/>that already cover an item<br/>or touch the same files]
   similar --> origin{task comes from<br/>an existing issue?}
   origin -- "yes" --> comment[add the plan to that<br/>issue as the parent]

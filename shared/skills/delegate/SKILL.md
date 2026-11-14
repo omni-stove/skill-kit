@@ -5,7 +5,9 @@ description: Split a task too large for one session into issues for the remote i
 
 Take the task from the argument and the decisions already made in the conversation. Settle an open point yourself.
 
-Split the task into issues that can be implemented in parallel, each touching files no other issue touches. Open the split with an `implementation` issue that reshapes the code the rest will change without changing behavior: split the files they share, and add the types, signatures and extension points each later change plugs into, so each later issue only adds to its own files. Every other issue that changes code waits on it. When the task holds several large tasks, put what they share into that one first issue. Leave it out when the issues already touch separate files.
+Read the code the task changes and list the files each item would change, including the schema, migrations, generated types, dependency manifests, registries, config and message catalogs every change appends to.
+
+Split the task into issues that can be implemented in parallel, each touching files no other issue touches. When two lists share a file, open the split with an `implementation` issue that, without changing behavior, makes every change the task needs to the shared files, splits a file the later changes would edit in the middle, and adds the types, signatures and extension points they plug into. Every other issue that changes code waits on it.
 
 An issue that still touches a file another issue touches, or depends on another's result, waits on it, and is filed now too.
 
@@ -15,4 +17,4 @@ Write each issue's task as what to do and its check as how a person confirms it 
 
 Run `.agents/skills/delegate/scripts/similar.sh <keywords from the task>...`
 
-Run `.agents/skills/delegate/scripts/parent.sh "<title>" "<body>"`, or `.agents/skills/delegate/scripts/parent.sh --issue <number> "<body>"` when the conversation points at an existing issue as the task's origin. The body holds the goal, the decisions, and how the work was split.
+Run `.agents/skills/delegate/scripts/parent.sh "<title>" "<body>"`, or `.agents/skills/delegate/scripts/parent.sh --issue <number> "<body>"` when the conversation points at an existing issue as the task's origin. The body holds the goal, the decisions, and how the work was split with the files each issue changes.

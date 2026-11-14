@@ -1,0 +1,1 @@
+Report to the user by PR what was fixed, what was skipped and why, and the question an agent stopped on, then the unpushed worktrees

@@ -2,6 +2,7 @@
 # Sourced by a skill's scripts/*.sh to print what the reader does next from the skill's
 # prompts/<name>.txt, kept beside scripts/ so the words live apart from the code:
 #   . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"   (from shared/skills/: four ..)
+#   . "$(dirname -- "$0")/../../prompt.sh"   (from a refs/<name>/scripts/ directory)
 #   prompt <name> [key=value]...
 # Each {key} in the file is replaced by its value; the rest is printed as it stands.
 prompt() {

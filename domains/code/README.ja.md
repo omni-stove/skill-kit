@@ -17,6 +17,8 @@ flowchart TD
   pr --> review[レビューとCI]
   review -- "指摘、失敗、コンフリクト" --> fixpr[fix-pr]
   fixpr --> review
+  review -- "止まったPRが複数" --> fixprs[fix-prs<br/>止まったPRを並列で直す]
+  fixprs --> review
 ```
 
 ## 1. リポジトリの準備
@@ -35,5 +37,6 @@ flowchart TD
 - [cap](../../shared/skills/cap/README.ja.md)
 - [pr](../../shared/skills/pr/README.ja.md)
 - [fix-pr](../../shared/skills/fix-pr/README.ja.md)
+- [fix-prs](../../shared/skills/fix-prs/README.ja.md)
 - [delegate](../../shared/skills/delegate/README.ja.md)
 - [unblock](../../shared/skills/unblock/README.ja.md)

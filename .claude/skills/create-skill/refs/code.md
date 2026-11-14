@@ -12,11 +12,12 @@ Conventions the existing code skills establish — follow them when scaffolding 
 - **Keep what a script says to the reader in `prompts/<step>.txt`** beside `scripts/`, one file per
   message. The script sources `. "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"` and
   prints a file with `prompt <step> key=value...`; `{key}` in the file is the value the script
-  fills in. `fix-pr` is a working example.
+  fills in. `fix-prs` is a working example.
 - **Load the mise/make rules** through a `` Run `.agents/skills/<name>/refs.sh` `` line right after
   the frontmatter when the skill writes a task, adds a tool, or touches the Makefile; `refs.sh` cats
   `.agents/refs/mise-rules.md`. `chmod +x` the refs.sh. The shared `init` skill is a working example.
 - **Share PR plumbing through refs:** `.agents/refs/review-threads.sh`, `.agents/refs/reply-review-thread.sh`,
   `.agents/refs/resolve-review-thread.sh` and `.agents/refs/push-with-merge.sh` are called or
-  sourced from a skill's scripts; `fix-pr` is a working example.
+  sourced from a skill's scripts; `fix-pr` and `fix-prs` start from
+  `.agents/refs/pr-fix/scripts/fetch.sh <pr>`.
 - **Keep each skill self-contained** — never name another skill from the body.

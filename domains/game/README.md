@@ -36,6 +36,7 @@ flowchart TD
 - [cap](../../shared/skills/cap/README.md)
 - [pr](../../shared/skills/pr/README.md)
 - [fix-pr](../../shared/skills/fix-pr/README.md)
+- [fix-prs](../../shared/skills/fix-prs/README.md)
 - [delegate](../../shared/skills/delegate/README.md)
 - [unblock](../../shared/skills/unblock/README.md)
 - [automation](../../shared/skills/automation/README.md)

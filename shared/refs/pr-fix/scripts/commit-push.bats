@@ -1,7 +1,8 @@
 #!/usr/bin/env bats
 # commit-push.sh with git and make stubs: lint + test, add + commit + push, the empty commit
 # with no files, the retry through push-with-merge when the remote is ahead, and finishing an
-# in-progress merge.
+# in-progress merge, with the empty commit on top only when the PR has an active thread or a
+# failing check.
 
 setup() {
   SCRIPT="$BATS_TEST_DIRNAME/commit-push.sh"
@@ -17,7 +18,7 @@ echo "git \$*" >> "$CALLS"
 if [ "\$1" = "rev-parse" ]; then
   case "\$*" in
     *MERGE_HEAD*) [ "\${GIT_MERGE_IN_PROGRESS:-0}" = 1 ] && { echo deadbeef; exit 0; }; exit 1 ;;
-    *HEAD^2*) exit 1 ;;
+    *HEAD^2*) [ "\${GIT_HEAD_IS_MERGE:-0}" = 1 ] && { echo cafe; exit 0; }; exit 1 ;;
   esac
   echo main; exit 0
 fi
@@ -35,7 +36,13 @@ exit 0
 STUB
   cat > "$repo/bin/gh" <<'STUB'
 #!/usr/bin/env bash
-echo 12
+case "$*" in
+  "api graphql"*) [ "${GH_ACTIVE_THREAD:-0}" = 1 ] && echo '### T1 a.ts:3 [active]' ;;
+  "pr checks"*) [ "${GH_FAILING_CHECK:-0}" = 1 ] && { echo pass; echo fail; exit 1; }; echo pass ;;
+  "repo view"*) echo owner ;;
+  *) echo 12 ;;
+esac
+exit 0
 STUB
   chmod +x "$repo/bin/git" "$repo/bin/make" "$repo/bin/gh"
   PATH="$repo/bin:$PATH"
@@ -85,4 +92,23 @@ STUB
   grep -q '^git add -A$' "$CALLS"
   grep -q 'commit --no-edit' "$CALLS"
   ! grep -q '^git add a.ts' "$CALLS" || false
+}
+
+@test "finishing a merge that only resolved a conflict pushes no empty commit" {
+  GIT_MERGE_IN_PROGRESS=1 GIT_HEAD_IS_MERGE=1 run "$SCRIPT"
+  [ "$status" -eq 0 ]
+  ! grep -q 'commit --allow-empty' "$CALLS" || false
+  grep -q '^git push$' "$CALLS"
+}
+
+@test "finishing a merge on a PR with an active thread pushes the empty commit" {
+  GIT_MERGE_IN_PROGRESS=1 GIT_HEAD_IS_MERGE=1 GH_ACTIVE_THREAD=1 run "$SCRIPT"
+  [ "$status" -eq 0 ]
+  grep -q 'commit --allow-empty --no-verify -m chore: trigger code review after merge' "$CALLS"
+}
+
+@test "finishing a merge on a PR with a failing check pushes the empty commit" {
+  GIT_MERGE_IN_PROGRESS=1 GIT_HEAD_IS_MERGE=1 GH_FAILING_CHECK=1 run "$SCRIPT"
+  [ "$status" -eq 0 ]
+  grep -q 'commit --allow-empty --no-verify -m chore: trigger code review after merge' "$CALLS"
 }

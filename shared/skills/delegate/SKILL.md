@@ -7,7 +7,9 @@ Take the task from the argument and the decisions already made in the conversati
 
 Read the code the task changes and list the files each item would change, including the schema, migrations, generated types, dependency manifests, registries, config and message catalogs every change appends to.
 
-Split the task into issues that can be implemented in parallel, each touching files no other issue touches. When two lists share a file, open the split with an `implementation` issue that, without changing behavior, makes every change the task needs to the shared files, splits a file the later changes would edit in the middle, and adds the types, signatures and extension points they plug into. Every other issue that changes code waits on it.
+Split the task into issues that can be implemented in parallel, each touching files no other issue touches. When two lists share a file, open the split with an `implementation` issue that, without changing behavior, prepares the shared files, splits a file the later changes would edit in the middle, and adds the types, signatures and extension points they plug into. Every other issue that changes code waits on it.
+
+For new behavior, keep the parallel issues disconnected from existing entry points. File a final `implementation` issue that waits on the preceding code issues, connects their work to the existing behavior, and checks the complete path.
 
 An issue that still touches a file another issue touches, or depends on another's result, waits on it, and is filed now too.
 

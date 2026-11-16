@@ -2,22 +2,21 @@
 
 ```mermaid
 flowchart TD
-  split["作業をファイルが重ならない<br/>Issueに分ける:<br/>bug・implementation・<br/>ユーザーが手元でしかできない<br/>ものはmanual、<br/>先頭にスキーマ・マイグレーション・<br/>依存・登録箇所など<br/>共有ファイルの変更を<br/>先にまとめるIssue"]
-  split --> similar[項目をすでにカバーする・<br/>同じファイルを触る<br/>オープンなIssueを探す]
-  similar --> origin{作業の元になった<br/>Issueがある?}
-  origin -- "ある" --> comment[そのIssueを親にして<br/>計画を追記する]
-  origin -- "ない" --> parent[親Issueを作る]
-  comment --> create[親の下に<br/>すべてのIssueを登録]
-  create --> kind{manual?}
-  kind -- "はい" --> manual[manualラベル付き・<br/>待ちにブロックされる:<br/>ユーザーがやる]
-  kind -- "いいえ" --> wait{ほかのIssueを<br/>待つ?}
-  wait -- "待たない" --> off{ISSUE_WORKER=off?}
-  off -- "いいえ" --> now[ラベル付き:<br/>ワーカーが着手]
-  off -- "はい" --> local[ラベルなし:<br/>手元で進める]
-  wait -- "待つ" --> later[ラベルなし:<br/>先にマージするIssueに<br/>ブロックされる]
-  parent --> create
-  now --> report[/"親 + Issueごとに1行 +<br/>ラベルなしのIssueの<br/>付けるラベルと待ち +<br/>手でやるmanualのIssue<br/>（待ちのないものから） +<br/>項目を置き換えた既存Issue"/]
+  task[作業] --> preview[/作成予定・再利用するIssue:<br/>作業・種別・変更ファイル・待ち、<br/>新しい動作は最後に配線するIssue/]
+  preview --> origin{作業の元になった<br/>Issueがある?}
+  origin -- "ある" --> existing[そのIssueに計画を追記]
+  origin -- "ない" --> parent[親Issueを作成]
+  existing --> issues[子Issueを登録]
+  parent --> issues
+  issues --> kind{manual Issue?}
+  kind -- "はい" --> manual[手元で行う手順を受け取る]
+  kind -- "いいえ" --> wait{別のIssueを待つ?}
+  wait -- "はい" --> later[待ちが終わるまで<br/>ラベルなし]
+  wait -- "いいえ" --> worker{ISSUE_WORKER=off?}
+  worker -- "はい" --> local[手元で進める<br/>ラベルなしIssue]
+  worker -- "いいえ" --> now[ワーカー向けの<br/>ラベル付きIssue]
+  manual --> report[/親へのリンク・子Issue・<br/>待ち・手でやる手順・<br/>再利用したIssue/]
   later --> report
   local --> report
-  manual --> report
+  now --> report
 ```

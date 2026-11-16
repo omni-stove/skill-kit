@@ -2,22 +2,21 @@
 
 ```mermaid
 flowchart TD
-  split["split the task into<br/>issues on separate files:<br/>bug, implementation,<br/>or manual for what only<br/>the user can do by hand,<br/>led by one issue making<br/>every change to shared files<br/>(schema, migrations, deps,<br/>registries, interfaces)<br/>the code changes wait on"]
-  split --> similar[look for open issues<br/>that already cover an item<br/>or touch the same files]
-  similar --> origin{task comes from<br/>an existing issue?}
-  origin -- "yes" --> comment[add the plan to that<br/>issue as the parent]
-  origin -- "no" --> parent[create a parent issue]
-  comment --> create[file every issue<br/>under the parent]
-  create --> kind{manual?}
-  kind -- "yes" --> manual[labeled manual,<br/>blocked by its waits:<br/>the user does it]
-  kind -- "no" --> wait{waits on<br/>another issue?}
-  wait -- "no" --> off{ISSUE_WORKER=off?}
-  off -- "no" --> now[labeled:<br/>the worker starts it]
-  off -- "yes" --> local[unlabeled:<br/>done on this machine]
-  wait -- "yes" --> later[unlabeled, blocked by<br/>the issues to merge first]
-  parent --> create
-  now --> report[/"parent + one line per issue<br/>+ the unlabeled ones with<br/>their label and waits +<br/>the manual ones to do by hand,<br/>those with no waits first +<br/>existing issues that<br/>replaced items"/]
+  task[task] --> preview[/planned and reused issues:<br/>task, type, files, waits;<br/>a final wiring issue for new behavior/]
+  preview --> origin{task came from<br/>an existing issue?}
+  origin -- "yes" --> existing[plan added to that issue]
+  origin -- "no" --> parent[parent issue created]
+  existing --> issues[child issues filed]
+  parent --> issues
+  issues --> kind{manual issue?}
+  kind -- "yes" --> manual[user gets the steps<br/>to do by hand]
+  kind -- "no" --> wait{blocked by another issue?}
+  wait -- "yes" --> later[unlabeled until<br/>its blockers close]
+  wait -- "no" --> worker{ISSUE_WORKER=off?}
+  worker -- "yes" --> local[unlabeled issue<br/>for local work]
+  worker -- "no" --> now[labeled issue<br/>for the worker]
+  manual --> report[/parent link, child issues,<br/>waits, manual steps<br/>and reused issues/]
   later --> report
   local --> report
-  manual --> report
+  now --> report
 ```

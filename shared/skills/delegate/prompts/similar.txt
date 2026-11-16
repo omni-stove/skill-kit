@@ -1,1 +1,5 @@
-A covers line that already covers an item replaces that item; link the similar lines from the parent's body, and have an item that touches the files of a similar line's issue wait on it. Then run .agents/skills/delegate/scripts/parent.sh
+Run gh issue view <number> --json title,body,labels
+Reuse an issue when its task, check and affected files cover the whole planned item. Keep remaining work as an issue that waits on issues touching the same files.
+Show the user a table of planned and reused items with their task, type, files and waits.
+Link reused and overlapping issues in the parent's body.
+Run .agents/skills/delegate/scripts/parent.sh

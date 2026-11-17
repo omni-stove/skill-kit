@@ -21,7 +21,7 @@ setup() {
   git commit -qm init
   git remote add origin "$remote"
   git push -q origin main
-  common="$(git rev-parse --path-format=absolute --git-common-dir)"
+  trees="$(pwd -P)-work-issues"
   PR_STATE="${PR_STATE:-OPEN}"
   cat > "$BATS_TEST_TMPDIR/gh" <<STUB
 #!/usr/bin/env bash
@@ -61,7 +61,7 @@ STUB
 @test "next.sh starts the ready sub-issues in worktrees and lists the rest" {
   run --separate-stderr "$NEXT" 3
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "$(printf 'start\t10\tt10\t%s' "$common/work-issues/10")" ]
+  [ "${lines[0]}" = "$(printf 'start\t10\tt10\t%s' "$trees/10")" ]
   [ "${lines[1]}" = "$(printf 'waiting\t11\tt11\t#10')" ]
   [ "${lines[2]}" = "$(printf 'dropped\t12\tt12\t#6')" ]
   [ "${lines[3]}" = "$(printf 'manual\t13\tt13\t')" ]
@@ -69,8 +69,8 @@ STUB
   [ "${lines[5]}" = "$(printf 'worker\t16\tt16\t')" ]
   [ "${#lines[@]}" -eq 6 ]
   ! grep -q 'issues/16/dependencies' "$CALLS" || false
-  [ "$(git -C "$common/work-issues/10" rev-parse --abbrev-ref HEAD)" = issue-10 ]
-  [ -e "$common/work-issues/10/.agents/skills/x" ] && [ -z "$(git -C "$common/work-issues/10" status --porcelain)" ]
+  [ "$(git -C "$trees/10" rev-parse --abbrev-ref HEAD)" = issue-10 ]
+  [ -e "$trees/10/.agents/skills/x" ] && [ -z "$(git -C "$trees/10" status --porcelain)" ]
   grep -q 'issue edit 10 --add-assignee @me' "$CALLS"
   [ "$(grep -c 'issue edit' "$CALLS")" -eq 1 ]
   [[ "$stderr" == "Launch one Agent"* ]]
@@ -82,8 +82,8 @@ STUB
   "$NEXT" 3 2>/dev/null
   run --separate-stderr "$NEXT" 3 12
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "$(printf 'working\t10\tt10\t%s' "$common/work-issues/10")" ]
-  [ "${lines[2]}" = "$(printf 'start\t12\tt12\t%s' "$common/work-issues/12")" ]
+  [ "${lines[0]}" = "$(printf 'working\t10\tt10\t%s' "$trees/10")" ]
+  [ "${lines[2]}" = "$(printf 'start\t12\tt12\t%s' "$trees/12")" ]
   [ "$(grep -c 'issue edit 10' "$CALLS")" -eq 1 ]
 }
 
@@ -106,7 +106,7 @@ STUB
   run --separate-stderr "$WAIT" 3 7
   [ "$status" -eq 0 ]
   [ "$output" = threads ]
-  [[ "$stderr" == *"cd $common/work-issues/10 && <command>"* ]]
+  [[ "$stderr" == *"cd $trees/10 && <command>"* ]]
   [[ "$stderr" == *"wait.sh 3 pr7"* ]]
 }
 
@@ -159,17 +159,17 @@ STUB
   echo MERGED > "$BATS_TEST_TMPDIR/state"
   run --separate-stderr "$WAIT" 3 7
   [ "$status" -eq 0 ]
-  [ ! -d "$common/work-issues/10" ]
+  [ ! -e "$trees" ]
   ! git show-ref --verify --quiet refs/heads/issue-10 || false
   [[ "$stderr" == "Stop the agent that opened pr7"*"next.sh 3"* ]]
 }
 
 @test "wait.sh keeps a merged issue's worktree that holds changes" {
   "$NEXT" 3 2>/dev/null
-  echo x > "$common/work-issues/10/new"
+  echo x > "$trees/10/new"
   echo MERGED > "$BATS_TEST_TMPDIR/state"
   run --separate-stderr "$WAIT" 3 7
   [ "$status" -eq 0 ]
-  [ -d "$common/work-issues/10" ]
+  [ -d "$trees/10" ]
   [[ "$stderr" == *"is kept"* ]]
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Find the open, non-draft PRs held up by a merge conflict, a failing check or an active review
-# thread, give each its own worktree under <git common dir>/fix-prs/<number> with the repo's
-# untracked .agents files linked in, and print one line per PR as
+# thread, give each its own worktree at <main checkout>-fix-prs/<number>, beside the main
+# checkout, with the repo's untracked .agents files linked in, and print one line per PR as
 #   <number><TAB><reasons><TAB><worktree><TAB><title><TAB><url>
 # <reasons> is a comma list of conflict, failing and threads. Ends with what to do next.
 # usage: scan.sh [<pr number>...]   (none: every open PR)
@@ -12,7 +12,8 @@ gh() { command "${GH_CMD:-gh}" "$@"; }
 
 for n in "$@"; do [[ "$n" =~ ^[0-9]+$ ]] || { echo "usage: scan.sh [<pr number>...]" >&2; exit 2; }; done
 
-common="$(git rev-parse --path-format=absolute --git-common-dir)"
+# Beside the main checkout, not under .git/, where a repo's tools skip the files or fail on them
+trees="$(git worktree list --porcelain | sed -n '1s/^worktree //p')-fix-prs"
 
 named="$(printf '%s\n' "$@" | jq -Rsc 'split("\n") | map(select(. != "") | tonumber)')"
 
@@ -54,7 +55,7 @@ prs="$(jq -r --argjson named "$named" "$checked | $jq_expr" <<< "$nodes")"
 found=
 while IFS=$'\t' read -r number reasons title url; do
   [ -n "$number" ] || continue
-  dir="$common/fix-prs/$number"
+  dir="$trees/$number"
   if ! git worktree list --porcelain | grep -qxF "worktree $dir"; then
     git worktree add --detach "$dir" >/dev/null 2>&1 \
       || { echo "scan: could not add the worktree $dir for #$number — remove what is there, then rerun" >&2; exit 1; }

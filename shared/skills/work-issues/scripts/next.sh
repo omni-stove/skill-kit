@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Under a parent issue, give each open sub-issue that can start now its own worktree under
-# <git common dir>/work-issues/<number> on the branch issue-<number> from the default branch, with
-# the repo's untracked .agents files linked in, assign it to the caller, and print one line per
-# open sub-issue as <state><TAB><number><TAB><title><TAB><detail>:
+# <main checkout>-work-issues/<number>, beside the main checkout, on the branch issue-<number>
+# from the default branch, with the repo's untracked .agents files linked in, assign it to the
+# caller, and print one line per open sub-issue as <state><TAB><number><TAB><title><TAB><detail>:
 #   start    every blocker closed as completed; the worktree was added now and is <detail>
 #   working  its worktree exists and no open PR closes it yet; <detail> is the worktree
 #   review   an open PR closes it; <detail> is the PR's URL
@@ -23,7 +23,8 @@ for n in "$@"; do [[ "$n" =~ ^[0-9]+$ ]] || usage; done
 parent="$1"
 shift
 forced=" $* "
-common="$(git rev-parse --path-format=absolute --git-common-dir)"
+# Beside the main checkout, not under .git/, where a repo's tools skip the files or fail on them
+trees="$(git worktree list --porcelain | sed -n '1s/^worktree //p')-work-issues"
 
 # Read into a variable first, so a failed call stops the script under set -e instead of reading
 # as no sub-issue
@@ -49,7 +50,7 @@ while IFS=$'\t' read -r number owner title; do
     if [ "$s" = open ]; then open="$open #$n"
     elif [ "$r" != completed ]; then dropped="$dropped #$n"; fi
   done <<< "$blockers"
-  dir="$common/work-issues/$number"
+  dir="$trees/$number"
   if [ "$owner" = manual ]; then state=manual; detail="${open# }"; manual_left=1
   elif [ -n "$open" ]; then state=waiting; detail="${open# }"
   elif [ -n "$dropped" ] && [[ "$forced" != *" $number "* ]]; then state=dropped; detail="${dropped# }"; dropped_left=1

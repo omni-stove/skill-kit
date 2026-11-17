@@ -6,9 +6,9 @@
 # itself (CI Gate's auto-fix, its regenerated outputs) pushes first and its push starts the wait
 # over, and a repo with no workflow still gets its threads fixed; a conflict holds it up at once,
 # since GitHub runs no pull_request workflow on a conflicting PR.
-# On a merge it removes the issue's worktree under <git common dir>/work-issues/ and its branch
-# when nothing is left in them; when held up it prints <reasons>, a comma list of conflict,
-# failing and threads.
+# On a merge it removes the issue's worktree under <main checkout>-work-issues/ and its branch
+# when nothing is left in them, and that directory once it is empty; when held up it prints
+# <reasons>, a comma list of conflict, failing and threads.
 # usage: wait.sh <parent> <pr number or url>
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
@@ -17,7 +17,8 @@ gh() { command "${GH_CMD:-gh}" "$@"; }
 [ $# -eq 2 ] && [[ "$1" =~ ^[0-9]+$ ]] || { echo "usage: wait.sh <parent> <pr number or url>" >&2; exit 2; }
 parent="$1"
 pr="$(gh pr view "$2" --json number --jq .number)"
-common="$(git rev-parse --path-format=absolute --git-common-dir)"
+# Beside the main checkout, not under .git/, where a repo's tools skip the files or fail on them
+trees="$(git worktree list --porcelain | sed -n '1s/^worktree //p')-work-issues"
 
 # Empty fields print as - so that read, which merges runs of tabs, keeps the columns in place
 read -r -d '' jq_expr <<'JQ' || true
@@ -46,12 +47,13 @@ while :; do
 }' --jq "$jq_expr")"
   IFS=$'\t' read -r state head url oid ci conflict held <<< "$line"
   if [ "$oid" != "$seen" ]; then seen="$oid"; seen_at=$SECONDS; fi
-  dir="$common/work-issues/${head#issue-}"
+  dir="$trees/${head#issue-}"
   case "$state" in
     MERGED)
       if git worktree list --porcelain | grep -qxF "worktree $dir"; then
         git worktree remove "$dir" 2>/dev/null && git branch -D "$head" >/dev/null 2>&1 \
           || echo "wait: $dir holds changes or untracked files, so it is kept" >&2
+        rmdir "$trees" 2>/dev/null || true
       fi
       prompt merged pr="$url" parent="$parent" >&2
       exit 0 ;;

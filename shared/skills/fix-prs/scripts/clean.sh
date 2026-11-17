@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
-# Remove each worktree scan.sh added under <git common dir>/fix-prs/ that holds nothing left to
-# push: no change, no merge in progress and no commit ahead of its upstream. Print one line per
-# worktree kept as unpushed<TAB><number><TAB><worktree>, then what to do next.
+# Remove each worktree scan.sh added under <main checkout>-fix-prs/ that holds nothing left to
+# push: no change, no merge in progress and no commit ahead of its upstream, then that directory
+# once it is empty. Print one line per worktree kept as unpushed<TAB><number><TAB><worktree>,
+# then what to do next.
 # usage: clean.sh
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
 
 [ $# -eq 0 ] || { echo "usage: clean.sh" >&2; exit 2; }
-common="$(git rev-parse --path-format=absolute --git-common-dir)"
+# Beside the main checkout, not under .git/, where a repo's tools skip the files or fail on them
+trees="$(git worktree list --porcelain | sed -n '1s/^worktree //p')-fix-prs"
 
-for dir in "$common"/fix-prs/*/; do
+for dir in "$trees"/*/; do
   [ -d "$dir" ] || continue
   dir="${dir%/}"
   ahead=0
@@ -25,4 +27,5 @@ for dir in "$common"/fix-prs/*/; do
   fi
 done
 git worktree prune
+rmdir "$trees" 2>/dev/null || true
 prompt clean >&2

@@ -38,20 +38,20 @@ echo "$out" | jq -r "$2"
 STUB
   chmod +x "$BATS_TEST_TMPDIR/gh"
   export GH_CMD="$BATS_TEST_TMPDIR/gh" FIX_PRS_WAIT=0
-  common="$(git rev-parse --path-format=absolute --git-common-dir)"
+  trees="$(pwd -P)-fix-prs"
 }
 
 @test "scan.sh lists the non-draft PRs with a conflict, a failing check or an active thread" {
   run --separate-stderr "$SCAN"
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "$(printf '2\tconflict\t%s\tt2\tu2' "$common/fix-prs/2")" ]
-  [ "${lines[1]}" = "$(printf '3\tfailing,threads\t%s\tt3\tu3' "$common/fix-prs/3")" ]
-  [ "${lines[2]}" = "$(printf '7\tconflict\t%s\tt7\tu7' "$common/fix-prs/7")" ]
+  [ "${lines[0]}" = "$(printf '2\tconflict\t%s\tt2\tu2' "$trees/2")" ]
+  [ "${lines[1]}" = "$(printf '3\tfailing,threads\t%s\tt3\tu3' "$trees/3")" ]
+  [ "${lines[2]}" = "$(printf '7\tconflict\t%s\tt7\tu7' "$trees/7")" ]
   [ "${#lines[@]}" -eq 3 ]
-  [ -L "$common/fix-prs/2/.agents/skills" ]
-  [ -f "$common/fix-prs/3/.agents/refs/pr-fix/scripts/fetch.sh" ]
-  [ -f "$common/fix-prs/3/.agents/refs/domain" ] && [ ! -L "$common/fix-prs/3/.agents/refs/domain" ]
-  [ -z "$(git -C "$common/fix-prs/3" status --porcelain)" ]
+  [ -L "$trees/2/.agents/skills" ]
+  [ -f "$trees/3/.agents/refs/pr-fix/scripts/fetch.sh" ]
+  [ -f "$trees/3/.agents/refs/domain" ] && [ ! -L "$trees/3/.agents/refs/domain" ]
+  [ -z "$(git -C "$trees/3" status --porcelain)" ]
   [[ "$stderr" != *warning* ]]
   [[ "$stderr" == *".agents/refs/pr-fix/scripts/fetch.sh"* ]]
   [[ "$stderr" == *"clean.sh"* ]]
@@ -61,7 +61,7 @@ STUB
   run --separate-stderr "$SCAN" 3
   [ "$status" -eq 0 ]
   [ "${#lines[@]}" -eq 1 ]
-  [ ! -e "$common/fix-prs/2" ]
+  [ ! -e "$trees/2" ]
   run --separate-stderr "$SCAN" 3
   [ "$status" -eq 0 ]
   [ "${#lines[@]}" -eq 1 ]
@@ -80,7 +80,7 @@ STUB
   UNKNOWN_CALLS=99 run --separate-stderr "$SCAN"
   [ "$status" -eq 1 ]
   [[ "$stderr" == *"#7"* ]]
-  [ ! -e "$common/fix-prs" ]
+  [ ! -e "$trees" ]
   UNKNOWN_CALLS=99 run --separate-stderr "$SCAN" 3
   [ "$status" -eq 0 ]
   [ "${#lines[@]}" -eq 1 ]
@@ -95,11 +95,11 @@ STUB
 
 @test "clean.sh removes the clean worktrees and keeps one with changes" {
   run --separate-stderr "$SCAN"
-  touch "$common/fix-prs/3/wip.txt"
+  touch "$trees/3/wip.txt"
   run --separate-stderr "$CLEAN"
   [ "$status" -eq 0 ]
-  [ "$output" = "$(printf 'unpushed\t3\t%s' "$common/fix-prs/3")" ]
-  [ ! -e "$common/fix-prs/2" ]
-  [ -L "$common/fix-prs/3/.agents/skills" ]
+  [ "$output" = "$(printf 'unpushed\t3\t%s' "$trees/3")" ]
+  [ ! -e "$trees/2" ]
+  [ -L "$trees/3/.agents/skills" ]
   [[ "$stderr" == "Report to the user"* ]]
 }

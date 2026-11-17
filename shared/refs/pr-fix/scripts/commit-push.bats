@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 # commit-push.sh with git and make stubs: lint + test, add + commit + push, the empty commit
 # with no files, the retry through push-with-merge when the remote is ahead, and finishing an
-# in-progress merge, with the empty commit on top only when the PR has an active thread or a
-# failing check.
+# in-progress merge, with lint, test and the empty commit on top only when the PR has an active
+# thread or a failing check.
 
 setup() {
   SCRIPT="$BATS_TEST_DIRNAME/commit-push.sh"
@@ -21,6 +21,9 @@ if [ "\$1" = "rev-parse" ]; then
     *HEAD^2*) [ "\${GIT_HEAD_IS_MERGE:-0}" = 1 ] && { echo cafe; exit 0; }; exit 1 ;;
   esac
   echo main; exit 0
+fi
+if [ "\$1" = "diff" ]; then
+  printf '%b' "\${GIT_UNMERGED:-}"; exit 0
 fi
 if [ "\$1" = "push" ]; then
   n=\$(cat "$BATS_TEST_TMPDIR/pushes"); echo \$((n + 1)) > "$BATS_TEST_TMPDIR/pushes"
@@ -86,7 +89,7 @@ STUB
 }
 
 @test "finishes an in-progress merge instead of committing files" {
-  GIT_MERGE_IN_PROGRESS=1 run "$SCRIPT" a.ts
+  GIT_MERGE_IN_PROGRESS=1 GH_ACTIVE_THREAD=1 run "$SCRIPT" a.ts
   [ "$status" -eq 0 ]
   grep -q '^make test$' "$CALLS"
   grep -q '^git add -A$' "$CALLS"
@@ -94,9 +97,14 @@ STUB
   ! grep -q '^git add a.ts' "$CALLS" || false
 }
 
-@test "finishing a merge that only resolved a conflict pushes no empty commit" {
-  GIT_MERGE_IN_PROGRESS=1 GIT_HEAD_IS_MERGE=1 run "$SCRIPT"
+@test "finishing a merge that only resolved a conflict commits the conflicted paths without lint, test or an empty commit" {
+  GIT_MERGE_IN_PROGRESS=1 GIT_HEAD_IS_MERGE=1 GIT_UNMERGED='a b.ts\0c.ts\0' run "$SCRIPT"
   [ "$status" -eq 0 ]
+  ! grep -q '^make' "$CALLS" || false
+  ! grep -q '^git add -A$' "$CALLS" || false
+  grep -q '^git add -A -- a b.ts$' "$CALLS"
+  grep -q '^git add -A -- c.ts$' "$CALLS"
+  grep -q 'commit --no-edit' "$CALLS"
   ! grep -q 'commit --allow-empty' "$CALLS" || false
   grep -q '^git push$' "$CALLS"
 }
@@ -111,4 +119,11 @@ STUB
   GIT_MERGE_IN_PROGRESS=1 GIT_HEAD_IS_MERGE=1 GH_FAILING_CHECK=1 run "$SCRIPT"
   [ "$status" -eq 0 ]
   grep -q 'commit --allow-empty --no-verify -m chore: trigger code review after merge' "$CALLS"
+}
+
+@test "finishing a merge merges the upstream and pushes again when the remote is ahead" {
+  GIT_MERGE_IN_PROGRESS=1 GIT_PUSH_FAIL_TIMES=1 run "$SCRIPT"
+  [ "$status" -eq 0 ]
+  grep -q 'git pull --no-rebase --no-edit origin main' "$CALLS"
+  [ "$(grep -c '^git push$' "$CALLS")" -eq 2 ]
 }

@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # Run make lint and make test, commit the given files and push; with no files, push an
 # empty commit that reruns CI without running them. A merge left in progress by fetch.sh is
-# committed first, as resolved, with an empty commit on top to rerun the review unless the
-# PR has no active review thread and no failing check, as when a conflict was its only
-# problem. Ends with what to do next.
+# committed as resolved. When the PR has an active review thread or a failing check, it runs
+# make lint and make test, commits every change and puts an empty commit on top to rerun the
+# review. When a conflict was the PR's only problem, it commits only the conflicted paths
+# without lint, test or the empty commit, so CI Gate's precheck sees a resolution-only push,
+# skips Code Review and leaves lint and test to CI. Every push merges the remote head and
+# pushes again when the remote is ahead. Ends with what to do next.
 # usage: commit-push.sh [file...]
 set -euo pipefail
 . "$(dirname -- "$0")/../../prompt.sh"
@@ -32,18 +35,18 @@ source "$(dirname -- "$0")/../../push-with-merge.sh"
 
 if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
   echo "==> finishing the in-progress merge" >&2
-  check
-  git add -A
-  git commit --no-edit
   if more_than_conflict; then
+    check
+    git add -A
+    git commit --no-edit
     add_empty_commit_if_merge_head
+  else
+    while IFS= read -r -d '' path; do
+      git add -A -- "$path"
+    done < <(git diff -z --name-only --diff-filter=U)
+    git commit --no-edit
   fi
-  git push
-  next
-  exit 0
-fi
-
-if [ "$#" -eq 0 ]; then
+elif [ "$#" -eq 0 ]; then
   git commit --allow-empty --only --no-verify -m "chore: rerun CI"
 else
   check

@@ -39,7 +39,8 @@ reply() { case "\$*" in
   *"n=10 "*) echo '{"data":{"repository":{"issue":{"closedByPullRequestsReferences":{"nodes":[]}}}}}' ;;
   *"n=12 "*) echo '{"data":{"repository":{"issue":{"closedByPullRequestsReferences":{"nodes":[]}}}}}' ;;
   *"n=14 "*) echo '{"data":{"repository":{"issue":{"closedByPullRequestsReferences":{"nodes":[{"url":"pr14"}]}}}}}' ;;
-  *"n=7 "*) echo "{\"data\":{\"repository\":{\"pullRequest\":{\"state\":\"\$(cat "$BATS_TEST_TMPDIR/state")\",\"mergeable\":\"MERGEABLE\",\"headRefName\":\"issue-10\",\"url\":\"pr7\",\"reviewThreads\":{\"nodes\":\$(cat "$BATS_TEST_TMPDIR/threads")},\"commits\":{\"nodes\":[{\"commit\":{\"statusCheckRollup\":null}}]}}}}}" ;;
+  *"n=7 "*) echo "{\"data\":{\"repository\":{\"pullRequest\":{\"state\":\"\$(cat "$BATS_TEST_TMPDIR/state")\",\"mergeable\":\"\$(cat "$BATS_TEST_TMPDIR/mergeable")\",\"headRefName\":\"issue-10\",\"url\":\"pr7\",\"reviewThreads\":{\"nodes\":\$(cat "$BATS_TEST_TMPDIR/threads")},\"commits\":{\"nodes\":[{\"commit\":{\"oid\":\"abc\",\"statusCheckRollup\":{\"state\":\"\$(cat "$BATS_TEST_TMPDIR/rollup")\"},\"checkSuites\":{\"nodes\":\$(cat "$BATS_TEST_TMPDIR/suites")}}}]}}}}}"
+    if [ -f "$BATS_TEST_TMPDIR/merge-next" ]; then echo MERGED > "$BATS_TEST_TMPDIR/state"; fi ;;
   *"repo view"*) echo '{"defaultBranchRef":{"name":"main"}}' ;;
   *"pr view"*) echo '{"number":7}' ;;
 esac; }
@@ -51,6 +52,9 @@ STUB
   export GH_CMD="$BATS_TEST_TMPDIR/gh"
   echo OPEN > "$BATS_TEST_TMPDIR/state"
   echo '[]' > "$BATS_TEST_TMPDIR/threads"
+  echo SUCCESS > "$BATS_TEST_TMPDIR/rollup"
+  echo MERGEABLE > "$BATS_TEST_TMPDIR/mergeable"
+  echo '[{"status":"COMPLETED","workflowRun":{"id":1}}]' > "$BATS_TEST_TMPDIR/suites"
   export WORK_ISSUES_WAIT=0
 }
 
@@ -104,6 +108,50 @@ STUB
   [ "$output" = threads ]
   [[ "$stderr" == *"cd $common/work-issues/10 && <command>"* ]]
   [[ "$stderr" == *"wait.sh 3 pr7"* ]]
+}
+
+@test "wait.sh says a failing check holds a PR up once every workflow run finished" {
+  echo FAILURE > "$BATS_TEST_TMPDIR/rollup"
+  echo '[{"status":"COMPLETED","workflowRun":{"id":1}},{"status":"QUEUED","workflowRun":null}]' > "$BATS_TEST_TMPDIR/suites"
+  run --separate-stderr "$WAIT" 3 7
+  [ "$status" -eq 0 ]
+  [ "$output" = failing ]
+}
+
+@test "wait.sh keeps waiting while a workflow run on the head commit is still going" {
+  echo FAILURE > "$BATS_TEST_TMPDIR/rollup"
+  echo '[{"isResolved":false,"isOutdated":false}]' > "$BATS_TEST_TMPDIR/threads"
+  echo '[{"status":"IN_PROGRESS","workflowRun":{"id":1}}]' > "$BATS_TEST_TMPDIR/suites"
+  touch "$BATS_TEST_TMPDIR/merge-next"
+  run --separate-stderr "$WAIT" 3 7
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+  [[ "$stderr" == "Stop the agent that opened pr7"* ]]
+}
+
+@test "wait.sh waits on threads while the head commit has no workflow run yet" {
+  echo '[{"isResolved":false,"isOutdated":false}]' > "$BATS_TEST_TMPDIR/threads"
+  echo '[]' > "$BATS_TEST_TMPDIR/suites"
+  touch "$BATS_TEST_TMPDIR/merge-next"
+  WORK_ISSUES_SETTLE=60 run --separate-stderr "$WAIT" 3 7
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "wait.sh says threads hold a PR up once a commit with no workflow run has settled" {
+  echo '[{"isResolved":false,"isOutdated":false}]' > "$BATS_TEST_TMPDIR/threads"
+  echo '[]' > "$BATS_TEST_TMPDIR/suites"
+  WORK_ISSUES_SETTLE=0 run --separate-stderr "$WAIT" 3 7
+  [ "$status" -eq 0 ]
+  [ "$output" = threads ]
+}
+
+@test "wait.sh says a conflict holds a PR up while a workflow run is going" {
+  echo '[{"status":"IN_PROGRESS","workflowRun":{"id":1}}]' > "$BATS_TEST_TMPDIR/suites"
+  echo CONFLICTING > "$BATS_TEST_TMPDIR/mergeable"
+  run --separate-stderr "$WAIT" 3 7
+  [ "$status" -eq 0 ]
+  [ "$output" = conflict ]
 }
 
 @test "wait.sh removes the issue's worktree and branch once the PR merges" {

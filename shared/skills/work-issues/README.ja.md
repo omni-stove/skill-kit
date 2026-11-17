@@ -15,7 +15,8 @@ flowchart TD
   question -- "要る" --> answer[/ユーザーに聞く/]
   answer --> start
   question -- "要らない" --> pr[PRを待つ]
-  pr -- "指摘・失敗したチェック・<br/>コンフリクト" --> fix[エージェントが直してプッシュ]
+  pr -- "CIが実行中・<br/>CIが自分で直している" --> pr
+  pr -- "CIが終わっても残る指摘・<br/>失敗したチェック、<br/>またはコンフリクト" --> fix[エージェントが直してプッシュ]
   fix --> pr
   pr -- "マージされた" --> stop[エージェントを止め<br/>ワークツリーを消す]
   stop --> scan

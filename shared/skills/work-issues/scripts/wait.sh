@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 # Wait until a PR merges, closes, or is held up by a merge conflict, a failing check or an active
-# review thread, then say what to do next. On a merge it removes the issue's worktree under
-# <git common dir>/work-issues/ and its branch when nothing is left in them; when held up it prints
-# <reasons>, a comma list of conflict, failing and threads.
+# review thread, then say what to do next. A failing check or a thread holds it up only once no
+# workflow run on the head commit is going and one has finished, or, when none has started,
+# WORK_ISSUES_SETTLE seconds (120) after this script first saw that commit, so a CI that fixes the PR
+# itself (CI Gate's auto-fix, its regenerated outputs) pushes first and its push starts the wait
+# over, and a repo with no workflow still gets its threads fixed; a conflict holds it up at once,
+# since GitHub runs no pull_request workflow on a conflicting PR.
+# On a merge it removes the issue's worktree under <git common dir>/work-issues/ and its branch
+# when nothing is left in them; when held up it prints <reasons>, a comma list of conflict,
+# failing and threads.
 # usage: wait.sh <parent> <pr number or url>
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
@@ -13,23 +19,33 @@ parent="$1"
 pr="$(gh pr view "$2" --json number --jq .number)"
 common="$(git rev-parse --path-format=absolute --git-common-dir)"
 
+# Empty fields print as - so that read, which merges runs of tabs, keeps the columns in place
 read -r -d '' jq_expr <<'JQ' || true
 .data.repository.pullRequest
-| [ (if .mergeable == "CONFLICTING" then "conflict" else empty end),
-    (if ((.commits.nodes[0].commit.statusCheckRollup.state // "") | IN("FAILURE", "ERROR")) then "failing" else empty end),
+| .commits.nodes[0].commit as $c
+| [$c.checkSuites.nodes[]? | select(.workflowRun != null)] as $runs
+| (if ($runs | length) == 0 then "none"
+   elif all($runs[]; .status == "COMPLETED") then "finished" else "running" end) as $ci
+| [ (if (($c.statusCheckRollup.state // "") | IN("FAILURE", "ERROR")) then "failing" else empty end),
     (if any(.reviewThreads.nodes[]; .isResolved == false and .isOutdated == false) then "threads" else empty end) ] as $r
-| "\(.state)\t\(.headRefName)\t\(.url)\t\($r | join(","))"
+| [.state, .headRefName, .url, ($c.oid // "-"), $ci,
+   (if .mergeable == "CONFLICTING" then "conflict" else "-" end), ($r | join(",") | if . == "" then "-" else . end)]
+| join("\t")
 JQ
 
+seen=
+seen_at=0
 while :; do
   # shellcheck disable=SC2016
   line="$(gh api graphql -F owner='{owner}' -F repo='{repo}' -F n="$pr" -f query='query($owner:String!,$repo:String!,$n:Int!){
   repository(owner:$owner,name:$repo){ pullRequest(number:$n){
     state mergeable headRefName url
     reviewThreads(first:100){ nodes{ isResolved isOutdated } }
-    commits(last:1){ nodes{ commit{ statusCheckRollup{ state } } } } } }
+    commits(last:1){ nodes{ commit{ oid statusCheckRollup{ state }
+      checkSuites(first:100){ nodes{ status workflowRun{ id } } } } } } } }
 }' --jq "$jq_expr")"
-  IFS=$'\t' read -r state head url reasons <<< "$line"
+  IFS=$'\t' read -r state head url oid ci conflict held <<< "$line"
+  if [ "$oid" != "$seen" ]; then seen="$oid"; seen_at=$SECONDS; fi
   dir="$common/work-issues/${head#issue-}"
   case "$state" in
     MERGED)
@@ -43,6 +59,11 @@ while :; do
       prompt closed pr="$url" parent="$parent" >&2
       exit 0 ;;
   esac
+  reasons=
+  [ "$conflict" = - ] || reasons=conflict
+  if [ "$held" != - ] && { [ "$ci" = finished ] || { [ "$ci" = none ] && [ $((SECONDS - seen_at)) -ge "${WORK_ISSUES_SETTLE:-120}" ]; }; }; then
+    reasons="${reasons:+$reasons,}$held"
+  fi
   if [ -n "$reasons" ]; then
     echo "$reasons"
     prompt fix pr="$url" parent="$parent" worktree="$dir" >&2

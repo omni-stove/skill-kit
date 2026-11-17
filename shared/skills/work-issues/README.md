@@ -15,7 +15,8 @@ flowchart TD
   question -- "yes" --> answer[/asks the user/]
   answer --> start
   question -- "no" --> pr[wait on the PR]
-  pr -- "review thread, failing check<br/>or conflict" --> fix[the agent fixes and pushes]
+  pr -- "CI is still running<br/>or fixing it itself" --> pr
+  pr -- "after CI finished: review thread<br/>or failing check; or a conflict" --> fix[the agent fixes and pushes]
   fix --> pr
   pr -- "merged" --> stop[stop the agent,<br/>remove the worktree]
   stop --> scan

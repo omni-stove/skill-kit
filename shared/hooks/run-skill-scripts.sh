@@ -52,6 +52,6 @@ jq -n --arg s "$script" '{
   hookSpecificOutput: {
     hookEventName: "PreToolUse",
     permissionDecision: "deny",
-    permissionDecisionReason: ("Run `" + $s + "` with the arguments the skill gives instead of reading it. Its output says what to do next; a failed run says how to fix it.")
+    permissionDecisionReason: ("Run `" + $s + "` instead of reading it.")
   }
 }'

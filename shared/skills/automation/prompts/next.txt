@@ -4,5 +4,5 @@ Install each the way its README says, with the chosen features on and the inputs
 Set review-allowed-bots, even where the install leaves it empty, to the Apps under "Apps that open PRs"; with none listed, to the App the README sets up to open PRs.
 With unblock on, add the same Apps to issue-worker.yml's allowed-bots, and to its allowed-users as <app>[bot] where that is set.
 Hand the user what the README leaves to them — secrets, labels, rulesets, App installs.
-With auto-merge on, tell the user it squash-merges a PR once the CI Gate passes, and to say so if they want it otherwise.
+With auto-merge on, tell the user their PR is squash-merged once the CI Gate passes and the reviewer approves it, that a skip-automerge label keeps a PR from being merged, and to say so if they want it otherwise.
 With unblock on, tell the user that closing an issue labels each sub-issue it blocked whose blockers all closed as completed.

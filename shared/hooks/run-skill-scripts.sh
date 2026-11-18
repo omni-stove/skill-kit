@@ -48,10 +48,10 @@ case "$tool" in
 esac
 [ -n "$script" ] || exit 0
 
-jq -n --arg s "$script" '{
+jq -n '{
   hookSpecificOutput: {
     hookEventName: "PreToolUse",
     permissionDecision: "deny",
-    permissionDecisionReason: ("Run `" + $s + "` instead of reading it.")
+    permissionDecisionReason: "Just run the script."
   }
 }'

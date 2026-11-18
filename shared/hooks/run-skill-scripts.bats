@@ -17,7 +17,7 @@ bash_cmd() {
 denied() {
   [ "$status" -eq 0 ]
   [ "$(printf '%s' "$output" | jq -r .hookSpecificOutput.permissionDecision)" = "deny" ]
-  [[ "$(printf '%s' "$output" | jq -r .hookSpecificOutput.permissionDecisionReason)" == "Run \`$1\`"* ]]
+  [ "$(printf '%s' "$output" | jq -r .hookSpecificOutput.permissionDecisionReason)" = "Just run the script." ]
 }
 
 passed() {
@@ -27,13 +27,13 @@ passed() {
 
 @test "reading a skill's script, refs.sh or a shared ref script is denied" {
   run read_file /repo/.agents/skills/write/scripts/source.sh
-  denied /repo/.agents/skills/write/scripts/source.sh
+  denied
   run read_file /repo/.agents/skills/write/refs.sh
-  denied /repo/.agents/skills/write/refs.sh
+  denied
   run read_file /repo/.agents/refs/others.sh
-  denied /repo/.agents/refs/others.sh
+  denied
   run read_file /repo/.claude/skills/write/scripts/source.sh
-  denied /repo/.claude/skills/write/scripts/source.sh
+  denied
 }
 
 @test "reading other files passes" {
@@ -47,15 +47,15 @@ passed() {
 
 @test "a viewer command on a script is denied" {
   run bash_cmd "cat .agents/skills/write/scripts/source.sh"
-  denied .agents/skills/write/scripts/source.sh
+  denied
   run bash_cmd "sed -n '1,40p' '.agents/refs/others.sh' | head"
-  denied .agents/refs/others.sh
+  denied
   run bash_cmd "cd /repo && cat .agents/skills/write/scripts/others.sh; ls"
-  denied .agents/skills/write/scripts/others.sh
+  denied
   run bash_cmd "ls .agents/skills/pr; sed -n 40,80p .agents/skills/pr/scripts/open.sh"
-  denied .agents/skills/pr/scripts/open.sh
+  denied
   run bash_cmd "grep -n body .agents/skills/pr/scripts/open.sh"
-  denied .agents/skills/pr/scripts/open.sh
+  denied
 }
 
 @test "running a script passes, with stdin from a viewer too" {
@@ -73,13 +73,13 @@ passed() {
 
 @test "a shell tool under another name, or with an argv array, is checked too" {
   run bash -c "jq -n '{tool_name: \"shell\", tool_input: {command: \"cat .agents/refs/others.sh\"}}' | bash '$HOOK'"
-  denied .agents/refs/others.sh
+  denied
   run bash -c "jq -n '{tool_name: \"shell\", tool_input: {command: [\"sed\", \"-n\", \"1,9p\", \".agents/refs/others.sh\"]}}' | bash '$HOOK'"
-  denied .agents/refs/others.sh
+  denied
   run bash -c "jq -n '{tool_name: \"shell\", tool_input: {command: [\"bash\", \"-lc\", \"cat .agents/refs/others.sh\"]}}' | bash '$HOOK'"
-  denied .agents/refs/others.sh
+  denied
   run bash_cmd "/bin/zsh -lc 'head .agents/refs/others.sh'"
-  denied .agents/refs/others.sh
+  denied
   run bash -c "jq -n '{tool_name: \"shell\", tool_input: {command: [\"bash\", \"-lc\", \".agents/refs/others.sh a.txt\"]}}' | bash '$HOOK'"
   passed
 }

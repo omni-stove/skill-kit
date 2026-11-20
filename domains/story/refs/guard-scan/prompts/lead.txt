@@ -1,1 +1,1 @@
-Read the whole output file and fix each hit in place by the loaded rules; you judge what is a hit.
+Read the whole output file and fix each hit in place by the loaded rules, so the line reads as first written; you judge what is a hit.

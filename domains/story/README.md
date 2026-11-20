@@ -79,3 +79,9 @@ Before `judge` or `judge-full`, give the contest's rules in the conversation.
 - [tachie](skills/tachie/README.md)
 - [background](skills/background/README.md)
 - [bgm](skills/bgm/README.md)
+
+## 8. Experimental
+
+Skills on trial, kept in `experimental/skills/`.
+
+- [write-gemini](experimental/skills/write-gemini/README.md)

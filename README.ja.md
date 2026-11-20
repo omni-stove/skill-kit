@@ -34,6 +34,11 @@
 キットのリンクがある場所（例: `.claude/skills/<name>/`）に
 同じ名前の実ファイルを置く。syncはそれに触れない。
 
+## 実験中のスキル
+
+試している途中のスキルは `domains/<domain>/experimental/skills/<name>/` に置く。
+ほかのスキルと同じくドメインと一緒にsyncされる。
+
 ## キット自体の開発
 
 clone後に `make setup`、pullと再syncには `make update` を実行する。

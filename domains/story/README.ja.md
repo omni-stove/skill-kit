@@ -79,3 +79,9 @@ flowchart TD
 - [tachie](skills/tachie/README.ja.md)
 - [background](skills/background/README.ja.md)
 - [bgm](skills/bgm/README.ja.md)
+
+## 8. 実験中
+
+試している途中のスキル。`experimental/skills/` にある。
+
+- [write-gemini](experimental/skills/write-gemini/README.ja.md)

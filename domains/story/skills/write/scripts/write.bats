@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 # shellcheck disable=SC2030,SC2031 # each @test runs in its own subshell, and run sets $output afresh in each
-# source.sh — deterministic resolution of the source and its output file; scene.sh — the writing step, held until the report is saved; scene-check.sh — the format fix and the checks before each hand-off; check.sh — the external model's findings over the finished file, through a stub curl.
+# source.sh — deterministic resolution of the source and its output file; scene.sh — the writing step, held until the report is saved; scene-check.sh — the format fix and the checks before each hand-off; check.sh — the format fix and the whole-file checks over the finished file.
 
 setup() {
   SOURCE="$BATS_TEST_DIRNAME/source.sh"
@@ -93,52 +93,6 @@ setup() {
   [[ "$output" == *"Read the output file, ask"* ]]
 }
 
-stub_curl() {
-  mkdir -p bin .agents/refs
-  echo "rule-style" > .agents/refs/japanese-web-novel-sentence-guard.md
-  printf '%s' "$1" > response.json
-  cat > bin/curl <<'STUB'
-#!/bin/sh
-cat > request.json
-cat response.json
-STUB
-  chmod +x bin/curl
-  PATH="$work/bin:$PATH"
-  mkdir -p characters
-  printf '湊は左利き。\n' > characters/minato.md
-  printf 'プロット本文\n## References\n- @characters/minato.md\n' > story/plot/arrival.md
-  printf 'レポート本文\n' > report.txt
-  printf '　俺は扉を開けた。\n　右手でペンを取った。\n' > story/arrival.txt
-}
-
-reply() {
-  jq -n --arg t "$1" '{status: "completed", steps: [{type: "thought"}, {type: "model_output", content: [{type: "text", text: $t}]}]}'
-}
-
-@test "check.sh sends the numbered Scene, the guard rules and the cited files" {
-  stub_curl "$(reply '{"findings": []}')"
-  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [ "$status" -eq 0 ]
-  [ "$(jq -r .model request.json)" = gemini-4-argon ]
-  [ "$(jq -r .generation_config.thinking_level request.json)" = high ]
-  [ "$(jq -r .response_format.mime_type request.json)" = application/json ]
-  [ "$(jq -r '.response_format.schema.properties.findings.type' request.json)" = array ]
-  [[ "$(jq -r .system_instruction request.json)" == *rule-style* ]]
-  in=$(jq -r .input request.json)
-  [[ "$in" == *"2	　右手でペンを取った。"* ]]
-  [[ "$in" == *"=== story/plot/arrival.md"*プロット本文*"=== report.txt"*レポート本文*"=== characters/minato.md"*左利き* ]]
-  [[ "$in" != *港町* ]]
-}
-
-@test "check.sh sends author-rules.md as overriding the guard rules when it exists" {
-  stub_curl "$(reply '{"findings": []}')"
-  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [[ "$(jq -r .system_instruction request.json)" != *"override"* ]]
-  printf '体言止めを使ってよい\n' > author-rules.md
-  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [[ "$(jq -r .system_instruction request.json)" == *rule-style*"override the guard rules"*体言止めを使ってよい* ]]
-}
-
 @test "refs.sh adds author-rules.md after the default rules only when it exists" {
   mkdir -p .agents/refs
   for r in japanese-web-novel-sentence-guard japanese-web-novel-narration-guard; do echo "$r" > ".agents/refs/$r.md"; done
@@ -152,42 +106,13 @@ reply() {
   [[ "$output" == *narration-guard*lead*mine* ]]
 }
 
-@test "check.sh keeps only findings with a matching line, rule, basis and quote" {
-  stub_curl "$(reply '{"findings": [
- {"line": 2, "text": "右手で", "kind": "contradiction", "rule": "設定", "basis": "湊は左利き", "file": "characters/minato.md", "quote": "湊は左利き。"},
- {"line": 2, "text": "右手で", "kind": "contradiction", "rule": "設定", "basis": "引用なし"},
- {"line": 2, "text": "右手で", "kind": "contradiction", "rule": "設定", "basis": "捏造の引用", "file": "characters/minato.md", "quote": "湊は右利き。"},
- {"line": 1, "text": "右手で", "kind": "repetition", "rule": "重複", "basis": "行が違う"},
- {"line": 9, "text": "扉", "kind": "repetition", "rule": "重複", "basis": "範囲外"},
- {"line": 1, "text": "扉", "kind": "ending", "rule": "", "basis": "ルールなし"},
- {"line": 1, "text": "扉を開けた", "kind": "continuity", "rule": "位置", "basis": "前の行と食い違う"}
-]}')"
-  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
+@test "check.sh prints the whole-file checks and the hand-off" {
+  printf '　彼は頷いた。\n' > story/010.txt
+  : > story/plot/arrival.md
+  run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/010.txt
   [ "$status" -eq 0 ]
-  [[ "$output" == *"1: 扉を開けた [位置] 前の行と食い違う"*"2: 右手で [設定] 湊は左利き — characters/minato.md:「湊は左利き。」"* ]]
-  [[ "$output" != *引用なし* ]]
-  [[ "$output" != *捏造の引用* ]]
-  [[ "$output" != *行が違う* ]]
-  [[ "$output" != *範囲外* ]]
-  [[ "$output" != *ルールなし* ]]
-  [[ "$output" != *"Where the same wording appears twice"* ]]
-  [[ "$output" == *"[Output file] complete."* ]]
-}
-
-@test "check.sh runs the checks in the harness when the model fails or is not set" {
-  stub_curl '{"error":{"code":404,"message":"not found"}}'
-  printf '　静かな夜だった。\n' > story/arrival.txt
-  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt report.txt
-  [ "$status" -eq 0 ]
-  [[ "$output" == *"gemini-4-argon failed"*"not found"* ]]
-  [[ "$output" == *"Where the same wording appears twice"*"1:　静かな夜だった。"* ]]
-  stub_curl "$(reply 'no list here')"
-  WRITE_CHECK_MODEL=gemini-4-argon GEMINI_API_KEY=k run sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt
-  [[ "$output" == *"no findings list"* ]]
-  run env -u WRITE_CHECK_MODEL GEMINI_API_KEY=k sh "$BATS_TEST_DIRNAME/check.sh" story/plot/arrival.md story/arrival.txt
-  [ "$status" -eq 0 ]
-  [[ "$output" != *"failed"* ]]
-  [[ "$output" == *"Where the same wording appears twice"* ]]
+  [[ "$output" == *"Where the same wording appears twice"*"[Output file] complete."* ]]
+  [[ "$output" != *"だった"* ]]
 }
 
 @test "source.sh fails on a missing source" {
@@ -211,9 +136,9 @@ reply() {
   [[ "$output" != *"next Scene"* ]]
 }
 
-@test "check.sh lists narration sentences ending on the copula, not dialogue, when the model is not set" {
+@test "check.sh lists narration sentences ending on the copula, not dialogue, " {
   printf '　彼は頷いた。覚悟を決めた目だった。\n「嘘だった」\n　静かな夜だった。\n　鍵は古い真鍮のようだった。\n' > story/010.txt
-  run env -u WRITE_CHECK_MODEL sh "$BATS_TEST_DIRNAME/check.sh" story/010.txt story/010.txt
+  run sh "$BATS_TEST_DIRNAME/check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
   [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
   [[ "$output" == *"1:"*"目だった。"* ]]

@@ -35,6 +35,11 @@ Anyone who clones the repo runs `make setup`, and `make update` for the latest k
 Put a real file of the same name where the kit's link is
 (e.g. `.claude/skills/<name>/`). Sync leaves it alone.
 
+## Experimental skills
+
+A skill on trial goes in `domains/<domain>/experimental/skills/<name>/`.
+It syncs with the domain like any other skill.
+
 ## Working on the kit
 
 Run `make setup` after cloning and `make update` to pull and re-sync.

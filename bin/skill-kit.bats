@@ -171,6 +171,16 @@ make_git_kit() {
   [[ "$output" != *"already up to date"* ]]
 }
 
+@test "sync links the domain's experimental skills, the domain's own skill winning a name clash" {
+  mkdir -p "$kit/domains/story/experimental/skills/sexp" "$kit/domains/story/experimental/skills/sfoo"
+  echo exp > "$kit/domains/story/experimental/skills/sexp/SKILL.md"
+  SKILL_KIT_HOME="$kit" "$CLI" story sync
+  [ "$(readlink .agents/skills/sexp)" = "$kit/domains/story/experimental/skills/sexp" ]
+  [ "$(readlink .claude/skills/sexp)" = "$kit/domains/story/experimental/skills/sexp" ]
+  [ "$(readlink .agents/skills/sfoo)" = "$kit/domains/story/skills/sfoo" ]
+  grep -qx sexp .agents/skills/.gitignore
+}
+
 @test "self-detects the kit repo when run from its own checkout" {
   env -u SKILL_KIT_HOME "$REPO_ROOT/bin/skill-kit" story sync
   [ -L .agents/skills/write ]

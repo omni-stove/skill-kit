@@ -8,6 +8,7 @@
 # rules, the mise + make layer (init, task), the git and GitHub skills (cap, pr,
 # fix-pr, fix-prs, delegate, unblock, work-issues, automation), guide, and the setting skills). A sync always deploys
 # shared + the one domain you name, so a consuming repo only ever sees the skills it wants.
+# A domain's experimental/skills/ holds skills still on trial; they sync with the domain.
 # POSIX sh + git only. No Node/npm.
 set -eu
 
@@ -97,9 +98,10 @@ cmd_sync() {
 	[ -d "$KIT_HOME" ] || die "kit not found at $KIT_HOME — run the installer first"
 	shd="$KIT_HOME/shared"
 	dom="$KIT_HOME/domains/$domain"
-	# shared listed first so a shared entry wins any name clash with the domain.
-	link_srcs ".agents/skills" "$shd/skills" "$dom/skills"
-	link_srcs ".claude/skills" "$shd/skills" "$dom/skills"
+	# shared listed first so a shared entry wins any name clash with the domain,
+	# and the domain's skills win one with its experimental ones.
+	link_srcs ".agents/skills" "$shd/skills" "$dom/skills" "$dom/experimental/skills"
+	link_srcs ".claude/skills" "$shd/skills" "$dom/skills" "$dom/experimental/skills"
 	link_srcs ".agents/hooks" "$shd/hooks" "$dom/hooks"
 	link_srcs ".claude/hooks" "$shd/hooks" "$dom/hooks"
 	link_srcs ".agents/refs" "$shd/refs" "$dom/refs"

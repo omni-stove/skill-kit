@@ -1,11 +1,12 @@
 #!/bin/sh
 # Usage: write.sh <plot file>
-# Sends the plot file's text alone, with no system instruction, rules or references,
-# to the Gemini model named by WRITE_GEMINI_MODEL (default gemini-4-neon; GEMINI_API_KEY,
-# thinking high) through the Interactions API, and writes the reply to the output write
-# would use with .gemini before .txt: plot/<x>.md -> ../<leading number of x, else
-# x>.gemini.txt; plot.md -> index.gemini.txt beside it; another .md -> <stem>.gemini.txt
-# beside it. Then prints what to tell the user.
+# Sends the plot file's text, with the guards and author-rules.md (when it exists) as
+# the system instruction, to the Gemini model named by WRITE_GEMINI_MODEL (default
+# gemini-4-neon; GEMINI_API_KEY, thinking high) through the Interactions API, and writes
+# the reply to the output write would use with .gemini before .txt: plot/<x>.md ->
+# ../<leading number of x, else x>.gemini.txt; plot.md -> index.gemini.txt beside it;
+# another .md -> <stem>.gemini.txt beside it. Then prints the same guards, the checks
+# guard-scan's scan.sh --all gives for that file, and the hand-off to reply with.
 set -eu
 [ $# -eq 1 ] || { echo "usage: write.sh <plot file>" >&2; exit 2; }
 . "$(dirname -- "$0")/../../../../refs/local-path.sh"
@@ -26,9 +27,14 @@ case $(basename -- "$dir") in
     out="$dir/$stem.gemini.txt" ;;
 esac
 out=${out#./}
+sys=$(
+  cat .agents/refs/japanese-web-novel-sentence-guard.md
+  cat .agents/refs/japanese-web-novel-narration-guard.md
+  [ ! -f author-rules.md ] || { cat .agents/refs/author-override.md; cat author-rules.md; }
+)
 # Through a file, not --arg: a long plot would pass the exec argument limit.
-res=$(jq -n --arg model "$model" --rawfile in "$f" \
-  '{model: $model, input: $in, generation_config: {thinking_level: "high"}}' |
+res=$(jq -n --arg model "$model" --arg sys "$sys" --rawfile in "$f" \
+  '{model: $model, system_instruction: $sys, input: $in, generation_config: {thinking_level: "high"}}' |
   curl -sS --max-time 590 \
   -H "x-goog-api-key: $GEMINI_API_KEY" -H 'Content-Type: application/json' \
   -X POST --data-binary @- \
@@ -37,4 +43,7 @@ res=$(jq -n --arg model "$model" --rawfile in "$f" \
 text=$(printf '%s' "$res" | jq -r '[.steps[]? | select(.type == "model_output") | .content[]? | select(.type == "text") | .text] | join("")')
 [ -n "$text" ] || { echo "write-gemini: $model returned no text: $res" >&2; exit 1; }
 printf '%s\n' "$text" > "$out"
+printf '%s\n\n' "$sys"
+prompt wrote model="$model" out="$out" src="$f"
+sh "$(dirname -- "$0")/../../../../refs/guard-scan/scripts/scan.sh" --all "$out"
 prompt written model="$model" out="$out"

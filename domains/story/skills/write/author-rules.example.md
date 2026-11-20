@@ -5,6 +5,7 @@
 - 『』: inner thoughts, book titles, emphasis
 - Use kanji numerals, with 〇 for zero and ・ as the decimal point (〇・五)
 - Ruby: `|単語《ルビ》`
+- Never end narration on a bare noun
 - Split a narration sentence well over ~80 chars where its action or object changes
 - Keep a tension events raise open until the source resolves it; end the Scene on exactly one
 - Alternate what the POV is sure of with what the POV only supposes, each on a matter the sentence before it leaves untouched and each supposition one events can later reverse, where events, sensation, or the POV's judgment state offer it

@@ -1,1 +1,4 @@
-Tell the user {model} wrote {out}, and leave its text as it stands.
+
+Then reply with the hand-off alone:
+{model} wrote {out}, fixed by the loaded rules.
+[Each finding you held, if any: its line, what it says, and the fixes open to it]

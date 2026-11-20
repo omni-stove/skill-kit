@@ -1,0 +1,2 @@
+- Check each sentence ending on のだ or のである.
+

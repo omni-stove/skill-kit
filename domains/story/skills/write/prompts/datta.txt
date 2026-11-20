@@ -1,2 +1,0 @@
-- Bring the sentences ending on だった, listed below, within the loaded rules' limits.
-

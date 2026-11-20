@@ -1,0 +1,3 @@
+
+- Where the same wording appears twice within a few lines in narration, keep one; an echo stays only when the source file names it.
+- Fix each contradiction with the source file, any report, or a setting file, and each break in continuity.

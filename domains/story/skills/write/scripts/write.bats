@@ -120,12 +120,12 @@ setup() {
   [ "$status" -eq 1 ]
 }
 
-@test "scene-check.sh prints the five whole-file checks and hands the finished file to check.sh" {
+@test "scene-check.sh prints the six whole-file checks and hands the finished file to check.sh" {
   printf '　彼は頷いた。\n' > story/010.txt
   : > story/plot/arrival.md
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/plot/arrival.md story/010.txt report.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 5 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
   [[ "$output" == *"[Scene name] complete."* ]]
   [[ "$output" == *'check.sh "story/plot/arrival.md" "story/010.txt" "report.txt" instead'* ]]
   [[ "$output" == *'then run '*'scene-check.sh "story/plot/arrival.md" "story/010.txt" "report.txt".'* ]]
@@ -136,22 +136,33 @@ setup() {
   [[ "$output" != *"next Scene"* ]]
 }
 
-@test "check.sh lists narration sentences ending on the copula, not dialogue, " {
-  printf '　彼は頷いた。覚悟を決めた目だった。\n「嘘だった」\n　静かな夜だった。\n　鍵は古い真鍮のようだった。\n' > story/010.txt
+@test "check.sh lists narration ending on the copula beside another, not across a paragraph or in dialogue" {
+  printf '　彼は頷いた。覚悟を決めた目だった。\n「嘘だった」\n　静かな夜だった。\n\n　古い真鍮だった。\n　鍵は古いようだった。\n　鍵だった。冷たい鉄だった。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 4 ]
-  [[ "$output" == *"1:"*"目だった。"* ]]
-  [[ "$output" == *"3:"*"夜だった。"* ]]
-  [[ "$output" == *"4:"*"ようだった。"* ]]
+  listed=$(printf '%s\n' "$output" | sed -n '/no two share a paragraph/,/Then reply/p')
+  [ "$(printf '%s\n' "$listed" | grep -cE '^[0-9]+:')" -eq 3 ]
+  [[ "$listed" == *"3:"*"5:"*"7:"* ]]
+  [[ "$listed" != *"目だった"* ]]
+  [[ "$listed" != *"ようだった"* ]]
   [[ "$output" != *"嘘だった"* ]]
+}
+
+@test "check.sh lists the narration ending a look or voice on the copula only when there is more than one" {
+  printf '　覚悟を決めた目だった。\n　彼は頷いた。\n　乾いた声だった。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/check.sh" story/010.txt story/010.txt
+  listed=$(printf '%s\n' "$output" | sed -n '/look or voice/,/Then reply/p')
+  [[ "$listed" == *"1:"*"3:"* ]]
+  printf '　覚悟を決めた目だった。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/check.sh" story/010.txt story/010.txt
+  [[ "$output" != *"look or voice"* ]]
 }
 
 @test "scene-check.sh lists negative narration sentences, not dialogue or thoughts" {
   printf '　返事はなかった。\n「知らない。帰れ」\n　廊下には誰もいない。\n『来ない。』\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 7 ]
   [[ "$output" == *"1:"*"返事はなかった。"* ]]
   [[ "$output" == *"3:"*"誰もいない。"* ]]
   [[ "$output" != *"知らない"* ]]
@@ -187,6 +198,43 @@ setup() {
   [[ "$listed" != *"また声"* ]]
 }
 
+@test "scene-check.sh lists narration ending on the explanatory copula, not dialogue or thoughts" {
+  printf '　彼は知っていたのだ。\n　それが答えだったのである。\n「行くのだ。急げ」\n『そうなのだ。』\n　彼は頷いた。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
+  [ "$status" -eq 0 ]
+  listed=$(printf '%s\n' "$output" | sed -n '/のだ or のである/,/Then reply/p')
+  [ "$(printf '%s\n' "$listed" | grep -cE '^[0-9]+:')" -eq 2 ]
+  [[ "$listed" == *"1:"*"2:"* ]]
+  [[ "$listed" != *"急げ"* ]]
+  [[ "$listed" != *"そうなのだ"* ]]
+}
+
+@test "scene-check.sh lists lines attributing dialogue with a speech verb, not a quoted phrase" {
+  printf '「聴くべきよ」と彼女は迷いのない声で言った。\n「それで」と私は続けた。\n　「歌」という言葉を思い出した。\n「行く」\n　彼は頷いた。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
+  [ "$status" -eq 0 ]
+  listed=$(printf '%s\n' "$output" | sed -n '/attributes dialogue with a speech verb/,/for what it is listed under/p')
+  [ "$(printf '%s\n' "$listed" | grep -cE '^[0-9]+:')" -eq 2 ]
+  [[ "$listed" == *"1:"*"2:"* ]]
+  [[ "$listed" != *"という言葉"* ]]
+}
+
+@test "scene-check.sh lists narration with an intensifier, crowded commas or a named feeling, not dialogue" {
+  printf '　途方もなく微細な糸だった。\n　それが、この星系の、最初で最後の返信である。\n　それが、私と妻の、最後の触れ合いになることを、私はまだ知らなかった。\n　私は測りかけの古い節の結び目を置き、アイアの後に続いて、経糸のように伸びる織り道を進んだ。\n　私は激しい自己嫌悪に襲われた。\n「完璧な、歌だ、なあ、おい」\n　彼は頷いた。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
+  [ "$status" -eq 0 ]
+  intensifier=$(printf '%s\n' "$output" | sed -n '/each intensifier/,/each comma/p')
+  [ "$(printf '%s\n' "$intensifier" | grep -cE '^[0-9]+:')" -eq 1 ]
+  [[ "$intensifier" == *"1:"*"途方もなく"* ]]
+  comma=$(printf '%s\n' "$output" | sed -n '/each comma/,/each named feeling/p')
+  [ "$(printf '%s\n' "$comma" | grep -cE '^[0-9]+:')" -eq 2 ]
+  [[ "$comma" == *"2:"*"3:"* ]]
+  feeling=$(printf '%s\n' "$output" | sed -n '/each named feeling/,/^- /p')
+  [ "$(printf '%s\n' "$feeling" | grep -cE '^[0-9]+:')" -eq 1 ]
+  [[ "$feeling" == *"5:"*"自己嫌悪"* ]]
+  [[ "$output" != *"完璧な、歌だ"* ]]
+}
+
 @test "scene-check.sh and check.sh fail on a missing file" {
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/missing.txt story/missing.txt
   [ "$status" -eq 1 ]
@@ -198,7 +246,7 @@ setup() {
   printf '彼は頷いた。\n「終わり。」\n「行く」と言った。\n　部屋は3つ……。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 6 ]
+  [ "$(printf '%s\n' "$output" | grep -c '^- ')" -eq 8 ]
   [ "$(head -2 story/010.txt)" = "$(printf '　彼は頷いた。\n「終わり」\n')" ]
   [[ "$output" == *"3:「行く」と言った。"* ]]
   [[ "$output" != *"部屋は3つ"* ]]

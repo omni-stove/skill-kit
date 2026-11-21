@@ -11,7 +11,7 @@ out="docs/design/maps/$1.json"
 printf 'engine\t%s\n' "$(engine_name)"
 printf 'layout\t%s\n' "$out"
 if [ -f "$out" ]; then
-  prompt edit
+  prompt edit layout="$out"
 else
   prompt new
 fi

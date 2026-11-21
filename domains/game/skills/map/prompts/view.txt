@@ -1,0 +1,1 @@
+Have the user open {svg}. Until they accept the layout, change the layout file as they say by the loaded rules and rerun {self}/view.sh {slug}. Then run {self}/build.sh {slug}

@@ -1,1 +1,1 @@
-The layout file exists. Read it, change it as the user says by the loaded rules, and show the user the top view as text until they accept it.
+Read {layout} and change it as the user says by the loaded rules.

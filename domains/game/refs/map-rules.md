@@ -15,7 +15,7 @@ The layout file is the map's only source; change the map there and rebuild.
 }
 ```
 
-A ramp or stairs rises along its local +z.
+Yaw turns clockwise seen from above, and yaw 0 faces +z. A ramp or stairs rises along its local +z. Put height, climb, step or jump in the name of each metric measured upward.
 
 ## Metrics
 

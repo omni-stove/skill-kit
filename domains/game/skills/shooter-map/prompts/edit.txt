@@ -1,0 +1,1 @@
+Read {layout}, set its mode to {mode}, and change it as the user says by the loaded rules and the following.

@@ -1,1 +1,0 @@
-Read {layout} and change it as the user says by the loaded rules.

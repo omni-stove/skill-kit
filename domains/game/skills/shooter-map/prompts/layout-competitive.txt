@@ -1,0 +1,1 @@
+Size the map by its team sizes. Lay out lanes, chokepoints, sightlines, height changes and each team's spawn, and mirror the layout or rotate it about the center.

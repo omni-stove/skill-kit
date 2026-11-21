@@ -1,0 +1,1 @@
+Settle from the repo whether this map is for a campaign or for competitive play, and ask the user only if the repo does not say. Then run {self}/layout.sh {slug} <campaign|competitive>

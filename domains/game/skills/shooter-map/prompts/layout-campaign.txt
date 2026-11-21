@@ -1,0 +1,8 @@
+Size the map by its number of fights and play time. Lay out one route from the start to the goal as a chain of combat spaces joined by connectors, and fit the pieces to it:
+
+- Build each combat space around one encounter: the player's entry with cover at it, where the enemies hold and where they arrive from, a flank that rejoins the space, and the exit. Size the space to the encounter's engagement range, and cut floor no encounter uses.
+- Turn, raise or narrow each connector so no sightline runs from one combat space into the next, and put a checkpoint spawn in it.
+- Rejoin each branch within its combat space, and close the way back behind the player.
+- From each entry, make the way to the next space stand out by landmark, framing, light and leading lines, and make every other opening read as closed.
+- Raise the intensity from space to space, and follow a hard fight with a quiet connector.
+- Shape the footprint after the route, and bound it with what the theme explains instead of a box of walls.

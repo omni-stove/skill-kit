@@ -1,0 +1,1 @@
+In the walk check, also walk the route as someone who has not seen the layout, and mark each spot where the way on is not in view or two ways look equally inviting.

@@ -1,0 +1,1 @@
+Write a Blender Python script that models the {theme} modules in the theme's look: one per kind on the kinds line, plus a pillar, each a whole number of grid cells with its pivot at the center of its bottom face, and exports them into {modules}. Add a make task that runs it through {blender} in the background, and run it.

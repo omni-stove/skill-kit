@@ -48,7 +48,8 @@ flowchart TD
 
 ## Maps
 
-- [map](skills/map/README.md)
+- [shooter-map](skills/shooter-map/README.md)
+- [map-art](skills/map-art/README.md)
 
 ## Settings
 

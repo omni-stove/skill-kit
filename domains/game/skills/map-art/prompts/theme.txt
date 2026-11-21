@@ -1,0 +1,1 @@
+Ask the user which theme to dress: one of the themes above, or a new one for the unthemed layout files. Set the theme in each unthemed layout file the user assigns. Then run {self}/art.sh <theme>

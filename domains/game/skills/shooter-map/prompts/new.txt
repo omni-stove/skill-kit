@@ -1,0 +1,1 @@
+Ask the user, in one message, what the repo does not already answer: what the layout below is sized by, the theme, the engine version and its rendering setup, and whether the game has its own player controller. Then fix the metrics by the loaded rules, and write the layout file with mode {mode}, laid out by the loaded rules and the following.

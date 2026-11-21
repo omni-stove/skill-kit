@@ -47,7 +47,8 @@ flowchart TD
 
 ## マップ
 
-- [map](skills/map/README.ja.md)
+- [shooter-map](skills/shooter-map/README.ja.md)
+- [map-art](skills/map-art/README.ja.md)
 
 ## 設定
 

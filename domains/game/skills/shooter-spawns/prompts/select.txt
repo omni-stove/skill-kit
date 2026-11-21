@@ -1,0 +1,1 @@
+Find the respawn selection under {source_root}; write it by the loaded rules if there is none, and make it read {spawns} and log the [Respawn] lines.

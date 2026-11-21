@@ -1,0 +1,1 @@
+Read the enemy code under {source_root} and {layout}. Ask the user, in one message, what those do not answer: the enemy types and what each does in a fight, and how hard the campaign is meant to be. Then write {encounters} by the loaded rules, one encounter per combat space of the route.

@@ -1,0 +1,1 @@
+Read {spawns} and {layout}, and change the respawn points and the spawn file as the user says by the loaded rules.

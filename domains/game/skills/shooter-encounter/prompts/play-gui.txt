@@ -1,0 +1,1 @@
+Play each encounter through the {ctrl} tools by the loaded rules, fix the encounter file and rebuild, until the user accepts the encounters.

@@ -1,0 +1,1 @@
+Find the greybox builder under {source_root}; if there is none, tell the user to build the map's greybox first, and stop. Extend it by the loaded rules, build {layout}, and fix the encounter file for each [Encounter] line in the log until none is left.

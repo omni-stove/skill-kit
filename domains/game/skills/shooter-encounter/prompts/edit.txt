@@ -1,0 +1,1 @@
+Read {encounters} and {layout}, and change the encounters as the user says by the loaded rules.

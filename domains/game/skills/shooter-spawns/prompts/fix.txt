@@ -1,0 +1,1 @@
+For each missing line, make the greybox builder log that point. For each fail line, move the point in {layout} or drop it by the loaded rules. Rebuild, and run {self}/report.sh {slug} [log] again.

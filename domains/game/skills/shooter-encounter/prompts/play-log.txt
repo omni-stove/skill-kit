@@ -1,0 +1,1 @@
+Give the user the play check from the loaded rules, and fix the encounter file and rebuild from what they report until they accept the encounters.

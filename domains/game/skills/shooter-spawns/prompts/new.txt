@@ -1,0 +1,1 @@
+Read the match and respawn code under {source_root} and {layout}. Ask the user, in one message, what those do not answer: the team size, whether players respawn one by one or in waves, the respawn delay, and any spawn protection. Then place the respawn points in {layout} and write {spawns} by the loaded rules.

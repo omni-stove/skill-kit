@@ -1,0 +1,1 @@
+Weigh each point's spawn_kills against its respawns. For a point that stands out, move it in {layout} or change the weights in {spawns} by the loaded rules, rebuild and play again, and rerun {self}/report.sh {slug} [log], until the user accepts the spawns.

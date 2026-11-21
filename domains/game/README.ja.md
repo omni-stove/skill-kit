@@ -50,3 +50,9 @@ flowchart TD
 物語のあるゲームなら、[character](../../shared/skills/character/README.ja.md)、
 [world](../../shared/skills/world/README.ja.md)、[item](../../shared/skills/item/README.ja.md)、
 [outline](../../shared/skills/outline/README.ja.md) もここで使える。
+その設定から画像生成プロンプトを作る [tachie](../../shared/skills/tachie/README.ja.md) と
+[background](../../shared/skills/background/README.ja.md) も使える。
+
+## 資料を読ませる
+
+- [load](../../shared/skills/load/README.ja.md)

@@ -42,7 +42,7 @@ flowchart TD
 - [write](skills/write/README.ja.md)
 - [draft](skills/draft/README.ja.md)
 - [draft-all](skills/draft-all/README.ja.md)
-- [load](skills/load/README.ja.md)
+- [load](../../shared/skills/load/README.ja.md)
 
 ## 4. チェックと修正
 
@@ -76,8 +76,8 @@ flowchart TD
 
 - [translate](skills/translate/README.ja.md)
 - [translate-check](skills/translate-check/README.ja.md)
-- [tachie](skills/tachie/README.ja.md)
-- [background](skills/background/README.ja.md)
+- [tachie](../../shared/skills/tachie/README.ja.md)
+- [background](../../shared/skills/background/README.ja.md)
 - [bgm](skills/bgm/README.ja.md)
 
 ## 8. 実験中

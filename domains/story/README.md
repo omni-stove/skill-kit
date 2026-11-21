@@ -42,7 +42,7 @@ flowchart TD
 - [write](skills/write/README.md)
 - [draft](skills/draft/README.md)
 - [draft-all](skills/draft-all/README.md)
-- [load](skills/load/README.md)
+- [load](../../shared/skills/load/README.md)
 
 ## 4. Checking and fixing
 
@@ -76,8 +76,8 @@ Before `judge` or `judge-full`, give the contest's rules in the conversation.
 
 - [translate](skills/translate/README.md)
 - [translate-check](skills/translate-check/README.md)
-- [tachie](skills/tachie/README.md)
-- [background](skills/background/README.md)
+- [tachie](../../shared/skills/tachie/README.md)
+- [background](../../shared/skills/background/README.md)
 - [bgm](skills/bgm/README.md)
 
 ## 8. Experimental

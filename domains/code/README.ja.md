@@ -32,6 +32,7 @@ flowchart TD
 
 - [feature-jsdoc](skills/feature-jsdoc/README.ja.md)
 - [tour](skills/tour/README.ja.md)
+- [load](../../shared/skills/load/README.ja.md)
 
 ## 3. 作業をマージまで運ぶ
 

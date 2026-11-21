@@ -50,4 +50,10 @@ flowchart TD
 
 For a game with a story, [character](../../shared/skills/character/README.md),
 [world](../../shared/skills/world/README.md), [item](../../shared/skills/item/README.md) and
-[outline](../../shared/skills/outline/README.md) work here too.
+[outline](../../shared/skills/outline/README.md) work here too, and
+[tachie](../../shared/skills/tachie/README.md) and [background](../../shared/skills/background/README.md)
+build image-generation prompts from those settings.
+
+## Reading material
+
+- [load](../../shared/skills/load/README.md)

@@ -33,6 +33,7 @@ flowchart TD
 
 - [feature-jsdoc](skills/feature-jsdoc/README.md)
 - [tour](skills/tour/README.md)
+- [load](../../shared/skills/load/README.md)
 
 ## 3. Getting work merged
 

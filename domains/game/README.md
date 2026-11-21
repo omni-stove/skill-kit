@@ -46,6 +46,10 @@ flowchart TD
 
 - [post-mortem](skills/post-mortem/README.md)
 
+## Maps
+
+- [map](skills/map/README.md)
+
 ## Settings
 
 For a game with a story, [character](../../shared/skills/character/README.md),

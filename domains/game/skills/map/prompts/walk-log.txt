@@ -1,0 +1,1 @@
+Fix each unreachable spot the [Greybox] lines report and rebuild. Then give the user the walk check from the loaded rules, and fix and rebuild from what they report until they accept the layout.

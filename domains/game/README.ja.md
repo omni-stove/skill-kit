@@ -45,6 +45,10 @@ flowchart TD
 
 - [post-mortem](skills/post-mortem/README.ja.md)
 
+## マップ
+
+- [map](skills/map/README.ja.md)
+
 ## 設定
 
 物語のあるゲームなら、[character](../../shared/skills/character/README.ja.md)、

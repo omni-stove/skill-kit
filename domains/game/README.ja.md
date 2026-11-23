@@ -48,6 +48,7 @@ flowchart TD
 ## マップ
 
 - [shooter-map](skills/shooter-map/README.ja.md)
+- [map-beats](skills/map-beats/README.ja.md)
 - [map-art](skills/map-art/README.ja.md)
 - [shooter-encounter](skills/shooter-encounter/README.ja.md)
 - [shooter-spawns](skills/shooter-spawns/README.ja.md)

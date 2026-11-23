@@ -1,0 +1,1 @@
+Find the greybox builder under {source_root}; if there is none, stop. Build {layout} with it, and wherever the build fails on beats, backdrop or a note, change the builder by the loaded rules and build again until it passes.

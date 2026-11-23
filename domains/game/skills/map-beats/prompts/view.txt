@@ -1,0 +1,1 @@
+Fix each warn line above in {layout} and rerun {self}/view.sh {slug} until none is left. Then have the user open {svg}, and until they accept the beats, change them as they say by the loaded rules and rerun {self}/view.sh {slug}. Then run {self}/build.sh {slug}

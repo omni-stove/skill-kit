@@ -1,0 +1,1 @@
+Read {layout} and the repo's story and design documents. Ask the user what those do not answer by the loaded rules, a few sections per message in route order: for each section above marked -, its whole beat, and for the others what the user wants changed. Write the beats, backdrop and notes into {layout}.

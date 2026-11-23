@@ -1,1 +1,1 @@
-Find the greybox builder under {source_root}; write it by the loaded rules if there is none, and extend it for any layout field it does not read. Build {layout}, and read the [Greybox] lines in the log.
+Find the greybox builder under {source_root}; write it by the loaded rules if there is none, and extend it for any piece kind or spawn field it does not place yet. Build {layout}, and read the [Greybox] lines in the log.

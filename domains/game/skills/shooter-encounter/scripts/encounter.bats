@@ -59,3 +59,26 @@ SH
   [[ "$output" == *"Extend it by the loaded rules, build docs/design/maps/stage.json"* ]]
   [[ "$output" == *"Give the user the play check"* ]]
 }
+
+@test "draws a melee enemy as an arrow to where it meets the player and warns of a crowd past the surround" {
+  printf '%s\n' '{"enemies":{"spear":{"attack":"melee","range":2},"archer":{"attack":"ranged","range":20}},
+    "surround":{"enemies":2,"radius":3},
+    "encounters":[{"id":"yard","entry":[0,0,-8],"exit":[0,0,8],"trigger":{"pos":[0,0,-6],"size":[4,2,2]},"waves":[{"start":"trigger","enemies":[
+      {"type":"spear","pos":[-6,0,6],"hold":[0,0,0]},{"type":"spear","pos":[6,0,6],"hold":[1,0,1]},
+      {"type":"spear","pos":[0,0,9],"hold":[-1,0,1]},{"type":"archer","pos":[5,0,9],"hold":[1,0,0]}]}]}]}' > docs/design/encounters/stage.json
+  run sh "$DIR/view.sh" stage
+  [ "$status" -eq 0 ]
+  [[ "$output" == *$'yard wave 1\t3 melee enemies within 3 m of '*', over surround 2'* ]]
+  [ "$(grep -o 'spear meets the player' docs/design/encounters/stage.svg | wc -l)" -eq 3 ]
+  [ "$(grep -o 'marker-end="url(#m0)"' docs/design/encounters/stage.svg | wc -l)" -eq 3 ]
+  grep -q 'archer hold' docs/design/encounters/stage.svg
+  ! command -v xmllint >/dev/null || xmllint --noout docs/design/encounters/stage.svg
+}
+
+@test "warns when melee enemies have no surround" {
+  printf '%s\n' '{"enemies":{"spear":{"attack":"melee"}},"encounters":[{"id":"yard","entry":[0,0,-8],"exit":[0,0,8],"trigger":{"pos":[0,0,-6],"size":[4,2,2]},
+    "waves":[{"enemies":[{"type":"spear","pos":[0,0,5],"hold":[0,0,0]}]}]}]}' > docs/design/encounters/stage.json
+  run sh "$DIR/view.sh" stage
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"no surround for the melee enemies"* ]]
+}

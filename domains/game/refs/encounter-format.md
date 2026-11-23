@@ -4,7 +4,8 @@
 
 ```json
 {
-  "enemies": { "<type>": { "role": "what it does in a fight", "range": "engagement range in meters", "health": "seconds of the player's fire it takes" } },
+  "enemies": { "<type>": { "attack": "melee | ranged", "role": "what it does in a fight", "range": "engagement range in meters", "health": "seconds of the player's attacks it takes" } },
+  "surround": { "enemies": "most melee enemies the player can fight at once", "radius": "meters within which melee enemies fight the player together" },
   "encounters": [{
     "id": "",
     "intensity": "1 to 5",
@@ -13,7 +14,7 @@
     "trigger": { "pos": "center of the bottom face", "size": "[w, h, d]" },
     "waves": [{
       "start": "trigger | clear | seconds after the previous wave started",
-      "enemies": [{ "type": "", "pos": "[x, y, z] where it appears", "hold": "[x, y, z] where it fights from" }]
+      "enemies": [{ "type": "", "pos": "[x, y, z] where it appears", "hold": "[x, y, z] where it fights from, or where a melee enemy meets the player" }]
     }]
   }]
 }

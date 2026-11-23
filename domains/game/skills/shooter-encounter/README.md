@@ -5,7 +5,7 @@ flowchart TD
   start{campaign map's<br/>layout file exists?}
   start -- "no, or competitive" --> stop[/stops/]
   start -- "yes" --> exists{encounter file<br/>for this map exists?}
-  exists -- "no" --> ask[/asks what the code does not say:<br/>enemy types and their roles,<br/>how hard the campaign is/]
+  exists -- "no" --> ask[/asks what the code does not say:<br/>enemy types, melee or ranged,<br/>and their roles,<br/>how hard the campaign is/]
   ask --> write[lays out an encounter per combat space:<br/>trigger, waves, spawns and holds]
   exists -- "yes" --> edit[edits the encounters<br/>as the user says]
   write --> view

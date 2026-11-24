@@ -3,7 +3,8 @@
 # thread, give each its own worktree at <main checkout>-fix-prs/<number>, beside the main
 # checkout, with the repo's untracked .agents files linked in, and print one line per PR as
 #   <number><TAB><reasons><TAB><worktree><TAB><title><TAB><url>
-# <reasons> is a comma list of conflict, failing and threads. Ends with what to do next.
+# <reasons> is a comma list of conflict, failing and threads. Ends with what to do next, with
+# at most FIX_PRS_MAX (default 5) agents running at once.
 # usage: scan.sh [<pr number>...]   (none: every open PR)
 set -euo pipefail
 . "$(dirname -- "$0")/../../../refs/prompt.sh"
@@ -11,6 +12,8 @@ set -euo pipefail
 gh() { command "${GH_CMD:-gh}" "$@"; }
 
 for n in "$@"; do [[ "$n" =~ ^[0-9]+$ ]] || { echo "usage: scan.sh [<pr number>...]" >&2; exit 2; }; done
+max="${FIX_PRS_MAX:-5}"
+[[ "$max" =~ ^[1-9][0-9]*$ ]] || { echo "scan: FIX_PRS_MAX must be a positive integer, not '$max'" >&2; exit 2; }
 
 # Beside the main checkout, not under .git/, where a repo's tools skip the files or fail on them
 trees="$(git worktree list --porcelain | sed -n '1s/^worktree //p')-fix-prs"
@@ -65,4 +68,4 @@ while IFS=$'\t' read -r number reasons title url; do
   found=1
 done <<< "$prs"
 
-if [ -n "$found" ]; then prompt scan clean="$(dirname -- "$0")/clean.sh" >&2; else prompt none >&2; fi
+if [ -n "$found" ]; then prompt scan max="$max" clean="$(dirname -- "$0")/clean.sh" >&2; else prompt none >&2; fi

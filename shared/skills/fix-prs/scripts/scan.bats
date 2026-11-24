@@ -55,6 +55,15 @@ STUB
   [[ "$stderr" != *warning* ]]
   [[ "$stderr" == *".agents/refs/pr-fix/scripts/fetch.sh"* ]]
   [[ "$stderr" == *"clean.sh"* ]]
+  [[ "$stderr" == *"at most 5 running"* ]]
+}
+
+@test "scan.sh caps the running agents at FIX_PRS_MAX" {
+  FIX_PRS_MAX=2 run --separate-stderr "$SCAN"
+  [ "$status" -eq 0 ]
+  [[ "$stderr" == *"at most 2 running"* ]]
+  FIX_PRS_MAX=0 run --separate-stderr "$SCAN"
+  [ "$status" -eq 2 ]
 }
 
 @test "scan.sh lists only the PRs named and reuses their worktree" {

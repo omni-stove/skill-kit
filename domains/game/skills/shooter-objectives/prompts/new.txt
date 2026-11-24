@@ -1,0 +1,1 @@
+Read the match code under {source_root} and {layout}. Ask the user, in one message, what those do not answer: what a team does to win, which team defends which objective, and how long a plant or capture takes. Then place the objectives in {layout} and write {objectives} by the loaded rules.

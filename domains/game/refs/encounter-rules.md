@@ -14,7 +14,7 @@ Take the enemy types, their attack, ranges and health from the game's code where
 - Mix roles in a wave so that holding one spot loses: one enemy that holds, one that pushes or flanks.
 - Leave the player cover within reach of the entry and a flank no hold covers.
 - Bring a later wave from a new direction, and give the player a sound or a visible opening before it attacks.
-- Rate intensity by the number and threat of enemies at once, raise it along the route, and make the last encounter the hardest.
+- Rate intensity by the number and threat of enemies at once. Raise it along the route with a lighter encounter or a connector after each peak, and make the last encounter the hardest.
 
 ## Greybox
 

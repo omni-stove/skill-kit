@@ -1,0 +1,1 @@
+Have the user capture the engine profiler in section {section} and share what costs most, fix it by the loaded rules, then run the sampler again and rerun {self}/report.sh {slug} [log], until no section is over.

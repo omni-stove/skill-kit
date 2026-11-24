@@ -1,6 +1,6 @@
 # game
 
-Skills for game development on any engine (Unity, Godot, Unreal, custom): building, running and fixing
+Skills for game development on any engine (Unity, Godot, Unreal, custom): laying out maps, building, running and fixing
 the game, and looking back on a milestone.
 Set a repo up with `skill-kit game sync`, run `init`, then `setup`.
 
@@ -11,6 +11,19 @@ flowchart TD
   setup[setup<br/>fits the kit to the engine] --> mcp[setup-mcp<br/>optional]
   setup --> impl[implement]
   mcp --> impl
+  setup --> map[shooter-map<br/>lays out and greyboxes a map]
+  mcp --> map
+  map --> beats[map-beats]
+  beats --> mode{campaign or competitive?}
+  mode -- "campaign" --> enc[shooter-encounter]
+  mode -- "competitive" --> spawns[shooter-spawns]
+  mode -- "competitive" --> obj[shooter-objectives]
+  enc --> pt[playtest]
+  spawns --> pt
+  obj --> pt
+  pt --> art[map-art]
+  art --> prof[profile]
+  prof --> run
   impl --> run[run]
   run --> broken{does it work?}
   broken -- "compile errors" --> fix[fix]
@@ -53,6 +66,9 @@ flowchart TD
 - [map-art](skills/map-art/README.md)
 - [shooter-encounter](skills/shooter-encounter/README.md)
 - [shooter-spawns](skills/shooter-spawns/README.md)
+- [shooter-objectives](skills/shooter-objectives/README.md)
+- [playtest](skills/playtest/README.md)
+- [profile](skills/profile/README.md)
 
 ## Settings
 
@@ -60,7 +76,8 @@ For a game with a story, [character](../../shared/skills/character/README.md),
 [world](../../shared/skills/world/README.md), [item](../../shared/skills/item/README.md) and
 [outline](../../shared/skills/outline/README.md) work here too, and
 [tachie](../../shared/skills/tachie/README.md) and [background](../../shared/skills/background/README.md)
-build image-generation prompts from those settings.
+build image-generation prompts from those settings, and [bgm](../../shared/skills/bgm/README.md) a Suno prompt
+for a map's or a scene's music.
 
 ## Reading material
 

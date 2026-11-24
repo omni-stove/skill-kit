@@ -1,0 +1,1 @@
+Ask the user, in one message, which device the game must run well on and at what frame rate, then write {budget} by the loaded rules.

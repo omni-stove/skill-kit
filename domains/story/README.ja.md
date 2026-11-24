@@ -78,7 +78,7 @@ flowchart TD
 - [translate-check](skills/translate-check/README.ja.md)
 - [tachie](../../shared/skills/tachie/README.ja.md)
 - [background](../../shared/skills/background/README.ja.md)
-- [bgm](skills/bgm/README.ja.md)
+- [bgm](../../shared/skills/bgm/README.ja.md)
 
 ## 8. 実験中
 

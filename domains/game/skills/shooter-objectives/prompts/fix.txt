@@ -1,0 +1,1 @@
+For each missing line, make the greybox builder log that objective. For each fail line, move the objective or the start spawns in {layout} by the loaded rules. Rebuild, and run {self}/report.sh {slug} [log] again.

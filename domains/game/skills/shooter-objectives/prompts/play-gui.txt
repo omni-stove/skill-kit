@@ -1,0 +1,1 @@
+Run the play check from the loaded rules through the {ctrl} tools, then run {self}/report.sh {slug} [log] again.

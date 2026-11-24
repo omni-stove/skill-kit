@@ -78,7 +78,7 @@ Before `judge` or `judge-full`, give the contest's rules in the conversation.
 - [translate-check](skills/translate-check/README.md)
 - [tachie](../../shared/skills/tachie/README.md)
 - [background](../../shared/skills/background/README.md)
-- [bgm](skills/bgm/README.md)
+- [bgm](../../shared/skills/bgm/README.md)
 
 ## 8. Experimental
 

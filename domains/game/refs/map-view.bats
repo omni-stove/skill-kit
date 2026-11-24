@@ -72,3 +72,12 @@ layout() { printf '%s\n' "$1" > docs/design/maps/arena.json; }
   [[ "$svg" == *"backdrop: armies to the horizon"* ]]
   ! command -v xmllint >/dev/null || xmllint --noout docs/design/maps/arena.svg
 }
+
+@test "draws each objective in the top view with its defending team" {
+  layout '{"objectives":[{"id":"site-a","kind":"site","team":"blue","pos":[3,0,3],"size":[4,1,4],"note":"plant"}],
+    "pieces":[{"id":"ground","kind":"floor","pos":[0,-0.2,0],"size":[10,0.2,10]}]}'
+  run sh "$VIEW" arena
+  [ "$status" -eq 0 ]
+  grep -q 'class="ob"><title>site-a site: plant</title>' docs/design/maps/arena.svg
+  grep -q '>site-a (blue)</text>' docs/design/maps/arena.svg
+}

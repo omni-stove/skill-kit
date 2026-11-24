@@ -1,15 +1,13 @@
 ---
 name: bgm
-description: Build a Suno prompt for a BGM track. Use when the user wants music for a scene, an opening or ending, a character theme or a mood.
+description: Build a Suno prompt for a BGM track. Use when the user wants music for a scene, a map or a fight, an opening or ending, a character theme or a mood.
 ---
 
-The user supplies what the track is for (a scene, an opening/ending, a character theme, a work-session loop, etc.) .
-
-When the subject is from this project's story, read only the setting files it needs: the story file under `story/` or the plot file under `story/plot/` for a specific scene, `README.md` and files under `world/` for era and technology level, the character's file under `characters/` for a character theme; otherwise build the prompt from the description alone. Extract the emotional arc, the pacing, and the moment the track should underscore.
+When the subject is from this project, read only the setting files it needs: the story file under `story/` or the plot file under `story/plot/` for a specific scene, `README.md` and files under `world/` for era and technology level, the character's file under `characters/` for a character theme, the map's layout file under `docs/design/maps/` and its beats for a game's map; otherwise build the prompt from the description alone. Extract the emotional arc, the pacing, and the moment the track should underscore.
 
 Ask with a single `AskUserQuestion` call (one round maximum), only for what the request doesn't already imply:
 
-- Usage: シーン伴奏 / オープニング / エンディング / キャラクターテーマ / 作業用ループ.
+- Usage: シーン伴奏 / オープニング / エンディング / キャラクターテーマ / 探索ループ / 戦闘ループ / 作業用ループ.
 - Genre direction: orchestral / electronic / acoustic / rock / hybrid.
 - Energy: 静か / 抑制 / 高揚 / 激烈.
 

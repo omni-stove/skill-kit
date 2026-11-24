@@ -1,3 +1,3 @@
-Launch one Agent per line above in parallel. Each agent's prompt holds its line and has it run every command as cd <the worktree on its line> && <command>, starting with .agents/refs/pr-fix/scripts/fetch.sh <the PR number on its line>. Where a step says to ask the user, it stops there and returns the question. It returns what it fixed, what it skipped and why, and where it stopped.
+Launch one Agent per line above, at most {max} running at once, launching the next as one returns. Each agent's prompt holds its line and has it run every command as cd <the worktree on its line> && <command>, starting with .agents/refs/pr-fix/scripts/fetch.sh <the PR number on its line>. Where a step says to ask the user, it stops there and returns the question. It does the work itself without launching agents of its own. It returns what it fixed, what it skipped and why, and where it stopped.
 
 Once every agent has returned, run {clean}

@@ -2,8 +2,8 @@
 
 ```mermaid
 flowchart TD
-  subject{このプロジェクトの<br/>物語が題材?}
-  subject -- "はい" --> read[曲に必要な<br/>設定を読む]
+  subject{このプロジェクトの<br/>物語やマップが題材?}
+  subject -- "はい" --> read[曲に必要な<br/>設定やマップを読む]
   subject -- "いいえ" --> ask
   read --> ask[/"依頼で決まっていなければ<br/>用途、ジャンル、温度感を聞く"/]
   ask --> build[スタイルプロンプトを作る]

@@ -9,7 +9,7 @@ flowchart TD
   ask --> write[lays out an encounter per combat space:<br/>trigger, waves, spawns and holds]
   exists -- "yes" --> edit[edits the encounters<br/>as the user says]
   write --> view
-  edit --> view[/writes the encounter file and an SVG over<br/>the map's top view, with warnings/]
+  edit --> view[/writes the encounter file and an SVG over<br/>the map's top view and a pacing chart,<br/>with warnings/]
   view -- "revise" --> edit
   view -- "OK" --> build[builds the encounters<br/>into the greybox]
   build -- "no greybox yet" --> stop

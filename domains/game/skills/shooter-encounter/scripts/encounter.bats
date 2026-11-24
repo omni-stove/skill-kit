@@ -82,3 +82,18 @@ SH
   [ "$status" -eq 0 ]
   [[ "$output" == *"no surround for the melee enemies"* ]]
 }
+
+@test "warns of an encounter without intensity and a last encounter that is not the hardest, and charts the pacing" {
+  printf '%s\n' '{"enemies":{"grunt":{"attack":"ranged"},"dog":{"attack":"melee"}},"surround":{"enemies":3,"radius":4},"encounters":[
+    {"id":"yard","intensity":4,"entry":[0,0,-8],"exit":[0,0,0],"trigger":{"pos":[0,0,-6],"size":[4,2,1]},"waves":[{"start":"trigger","enemies":[
+      {"type":"grunt","pos":[2,0,5],"hold":[2,0,4]},{"type":"dog","pos":[1,0,5],"hold":[1,0,1]}]}]},
+    {"id":"gap","entry":[0,0,0],"exit":[0,0,4],"trigger":{"pos":[0,0,1],"size":[4,2,1]},"waves":[]},
+    {"id":"hall","intensity":2,"entry":[0,0,4],"exit":[0,0,8],"trigger":{"pos":[0,0,5],"size":[4,2,1]},"waves":[{"start":"trigger","enemies":[
+      {"type":"grunt","pos":[3,0,7],"hold":[3,0,6]}]}]}]}' > docs/design/encounters/stage.json
+  run sh "$DIR/view.sh" stage
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"gap	no intensity"* ]]
+  [[ "$output" == *"hall	the last encounter is not the hardest (intensity 2 of 4)"* ]]
+  grep -q '<title>yard 1 melee</title>' docs/design/encounters/stage.svg
+  grep -q '★4 2 enemies' docs/design/encounters/stage.svg
+}

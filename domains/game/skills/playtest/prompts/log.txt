@@ -1,0 +1,1 @@
+Find where the game kills, hurts and moves the player under {source_root}, and make it log the [Play] lines by the loaded rules where it does not yet.

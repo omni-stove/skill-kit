@@ -1,0 +1,1 @@
+Run the play check from the loaded rules through the {ctrl} tools, then run {self}/heat.sh {slug} [log...], passing the files the play logged to if they are not the log above.

@@ -1,0 +1,1 @@
+Make the sampler log each missing section, run it again, and rerun {self}/report.sh {slug} [log].

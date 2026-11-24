@@ -2,8 +2,8 @@
 
 ```mermaid
 flowchart TD
-  subject{subject from this<br/>project's story?}
-  subject -- "yes" --> read[read the settings<br/>the track needs]
+  subject{subject from<br/>this project?}
+  subject -- "yes" --> read[read the settings or map<br/>the track needs]
   subject -- "no" --> ask
   read --> ask[/"asks usage, genre, energy,<br/>if the request leaves them open"/]
   ask --> build[build the style prompt]

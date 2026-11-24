@@ -1,0 +1,1 @@
+Have the user open {svg}. Weigh each section above against its beat in {layout} and the design files above by the loaded rules, tell the user which sections stand out and what in the layout or design files would change them, and change what the user accepts. Rebuild, play again, and rerun {self}/heat.sh {slug} [log...] until the user accepts the map.

@@ -1,6 +1,6 @@
 # game
 
-ゲーム開発のためのスキル。エンジンは問わない（Unity、Godot、Unreal、自作）。ゲームをビルド・実行・修正し、マイルストーンをふりかえる。
+ゲーム開発のためのスキル。エンジンは問わない（Unity、Godot、Unreal、自作）。マップを組み、ゲームをビルド・実行・修正し、マイルストーンをふりかえる。
 `skill-kit game sync` のあと `init`、次に `setup` を実行して使い始める。
 
 ## 流れ
@@ -10,6 +10,19 @@ flowchart TD
   setup[setup<br/>キットをエンジンに合わせる] --> mcp[setup-mcp<br/>任意]
   setup --> impl[実装]
   mcp --> impl
+  setup --> map[shooter-map<br/>マップを組んでグレーボックスにする]
+  mcp --> map
+  map --> beats[map-beats]
+  beats --> mode{キャンペーンか対戦か?}
+  mode -- "キャンペーン" --> enc[shooter-encounter]
+  mode -- "対戦" --> spawns[shooter-spawns]
+  mode -- "対戦" --> obj[shooter-objectives]
+  enc --> pt[playtest]
+  spawns --> pt
+  obj --> pt
+  pt --> art[map-art]
+  art --> prof[profile]
+  prof --> run
   impl --> run[run]
   run --> broken{動く?}
   broken -- "コンパイルエラー" --> fix[fix]
@@ -52,6 +65,9 @@ flowchart TD
 - [map-art](skills/map-art/README.ja.md)
 - [shooter-encounter](skills/shooter-encounter/README.ja.md)
 - [shooter-spawns](skills/shooter-spawns/README.ja.md)
+- [shooter-objectives](skills/shooter-objectives/README.ja.md)
+- [playtest](skills/playtest/README.ja.md)
+- [profile](skills/profile/README.ja.md)
 
 ## 設定
 
@@ -59,7 +75,8 @@ flowchart TD
 [world](../../shared/skills/world/README.ja.md)、[item](../../shared/skills/item/README.ja.md)、
 [outline](../../shared/skills/outline/README.ja.md) もここで使える。
 その設定から画像生成プロンプトを作る [tachie](../../shared/skills/tachie/README.ja.md) と
-[background](../../shared/skills/background/README.ja.md) も使える。
+[background](../../shared/skills/background/README.ja.md)、マップや場面の曲の Suno プロンプトを作る
+[bgm](../../shared/skills/bgm/README.ja.md) も使える。
 
 ## 資料を読ませる
 

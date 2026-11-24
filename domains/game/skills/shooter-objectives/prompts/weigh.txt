@@ -1,0 +1,1 @@
+Weigh each objective's takes per team against the others. For an objective one team takes far more or far less often, change its ways in, its cover or its place in {layout} by the loaded rules, rebuild and play again, and rerun {self}/report.sh {slug} [log], until the user accepts the objectives.

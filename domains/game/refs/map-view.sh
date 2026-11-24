@@ -2,9 +2,9 @@
 # Usage: map-view.sh <slug>
 # Draws docs/design/maps/<slug>.json as docs/design/maps/<slug>.svg: the top view, the front
 # view from -z, the side view from +x and a 3D view from above -x -z, each piece coloured by
-# kind, with the spawns and the height metrics. The top view names each beat over its pieces,
-# every note is the tooltip of its beat, piece or spawn, and the backdrop lines sit under the
-# legend. Prints the SVG path as a data line.
+# kind, with the spawns and the height metrics. The top view names each beat over its pieces
+# and draws each objective with its defending team, every note is the tooltip of its beat,
+# piece, objective or spawn, and the backdrop lines sit under the legend. Prints the SVG path as a data line.
 set -eu
 [ $# -eq 1 ] || { echo "usage: map-view.sh <slug>" >&2; exit 2; }
 command -v jq >/dev/null || { echo "view: jq not found — install jq, then rerun." >&2; exit 1; }
@@ -29,6 +29,11 @@ def turned: ((.yaw // 0) * 3.141592653589793 / 180) as $t | {s: ($t | sin), c: (
   | .fp = ([[-1, -1], [1, -1], [1, 1], [-1, 1]]
       | map([$p.x + .[0] * $p.w / 2 * $p.c + .[1] * $p.d / 2 * $p.s, $p.z - .[0] * $p.w / 2 * $p.s + .[1] * $p.d / 2 * $p.c]))
 ] as $ps
+| [(.objectives // [])[] | select((.pos | length) == 3 and (.size | length) == 3) | . as $o | turned as $r
+   | {label: ((.id // "" | tostring) + (if (.team // "") != "" then " (" + (.team | tostring) + ")" else "" end) | esc),
+      tip: ((.id // "" | tostring) + " " + (.kind // "" | tostring) + (if .note then ": " + (.note | tostring) else "" end) | esc),
+      x: .pos[0], z: .pos[2],
+      fp: ([[-1, -1], [1, -1], [1, 1], [-1, 1]] | map([$o.pos[0] + .[0] * $o.size[0] / 2 * $r.c + .[1] * $o.size[2] / 2 * $r.s, $o.pos[2] - .[0] * $o.size[0] / 2 * $r.s + .[1] * $o.size[2] / 2 * $r.c]))}] as $ob
 | [(.spawns // [])[] | turned as $r | {team: (.team // "" | esc), tip: ((.team // "" | tostring) + (if .note then ": " + (.note | tostring) else "" end) | esc), x: .pos[0], y: .pos[1], z: .pos[2], s: $r.s, c: $r.c}] as $sp
 | [(.metrics // {}) | to_entries[] | select((.value | type) == "number" and (.key | test("height|climb|step|jump"; "i"))) | {k: (.key | esc), v: .value}] as $ml
 | [(.beats // [])[] | (.id // "" | tostring) as $b | [$ps[] | select(.sec == $b) | .fp[]] as $f | select($f | length > 0)
@@ -37,7 +42,7 @@ def turned: ((.yaw // 0) * 3.141592653589793 / 180) as $t | {s: ($t | sin), c: (
 | [(.backdrop // [])[] | tostring | esc] as $bd
 | (.grid // 1 | if type == "number" and . > 0 then . else 1 end) as $g
 
-| ([$ps[].fp[][0]] + [$sp[].x]) as $xs | ([$ps[].fp[][1]] + [$sp[].z]) as $zs
+| ([$ps[].fp[][0]] + [$ob[].fp[][0]] + [$sp[].x]) as $xs | ([$ps[].fp[][1]] + [$ob[].fp[][1]] + [$sp[].z]) as $zs
 | ([$ps[] | .y, .y + .h] + [$sp[].y] + [$ml[].v] + [0]) as $ys
 | ($xs | min) as $x0 | ($xs | max) as $x1 | ($zs | min) as $z0 | ($zs | max) as $z1 | ($ys | min) as $y0 | ($ys | max) as $y1
 | ([$x1 - $x0, $z1 - $z0, $y1 - $y0, 1] | max) as $span
@@ -92,7 +97,7 @@ def turned: ((.yaw // 0) * 3.141592653589793 / 180) as $t | {s: ($t | sin), c: (
   # Above about 100 lines a grid stops reading as one, so the step grows by whole cells.
   ($g * ((($span / $g) / 100) | ceil | if . < 1 then 1 else . end)) as $gs
   | "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\($W | r2)\" height=\"\($H | r2)\" viewBox=\"0 0 \($W | r2) \($H | r2)\" font-family=\"sans-serif\">"
-  + "<style>.t{font-size:13px;font-weight:bold}.f{fill:none;stroke:#999}.g{stroke:#e4e4e4;stroke-width:0.5}.gl{stroke:#555;stroke-width:1}.ml{stroke:#c33;stroke-dasharray:4 3;stroke-width:0.8}.mt{font-size:10px;fill:#c33;text-anchor:end}.sp{fill:#d22;stroke:#fff;stroke-width:1}.st{font-size:10px;fill:#d22}.ar{stroke:#fff;stroke-width:1.5;marker-end:url(#a)}.lg{font-size:11px}.bt{font-size:13px;font-weight:bold;fill:#225;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:3}</style>"
+  + "<style>.t{font-size:13px;font-weight:bold}.f{fill:none;stroke:#999}.g{stroke:#e4e4e4;stroke-width:0.5}.gl{stroke:#555;stroke-width:1}.ml{stroke:#c33;stroke-dasharray:4 3;stroke-width:0.8}.mt{font-size:10px;fill:#c33;text-anchor:end}.sp{fill:#d22;stroke:#fff;stroke-width:1}.st{font-size:10px;fill:#d22}.ar{stroke:#fff;stroke-width:1.5;marker-end:url(#a)}.lg{font-size:11px}.bt{font-size:13px;font-weight:bold;fill:#225;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:3}.ob{fill:#93c;fill-opacity:0.25;stroke:#93c;stroke-width:1.5;stroke-dasharray:4 2}.ot{font-size:11px;font-weight:bold;fill:#62a;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:3}</style>"
   + "<defs><marker id=\"a\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"4\" markerHeight=\"4\" orient=\"auto\"><path d=\"M0,0L10,5L0,10z\" fill=\"#fff\"/></marker></defs>"
   + "<rect width=\"100%\" height=\"100%\" fill=\"#fff\"/>"
 
@@ -104,6 +109,7 @@ def turned: ((.yaw // 0) * 3.141592653589793 / 180) as $t | {s: ($t | sin), c: (
       + (if sloped then
           "<line x1=\"\(tx(.x - .s * .d * 0.3) | r2)\" y1=\"\(tz(.z - .c * .d * 0.3) | r2)\" x2=\"\(tx(.x + .s * .d * 0.3) | r2)\" y2=\"\(tz(.z + .c * .d * 0.3) | r2)\" class=\"ar\"/>"
         else "" end)) | join(""))
+  + ($ob | map("<polygon points=\"\(.fp | map([tx(.[0]), tz(.[1])]) | pts)\" class=\"ob\"><title>\(.tip)</title></polygon><text x=\"\(tx(.x) | r2)\" y=\"\(tz(.z) + 4 | r2)\" class=\"ot\">\(.label)</text>") | join(""))
   + ($sp | map("<line x1=\"\(tx(.x) | r2)\" y1=\"\(tz(.z) | r2)\" x2=\"\(tx(.x) + .s * 14 | r2)\" y2=\"\(tz(.z) - .c * 14 | r2)\" stroke=\"#d22\" stroke-width=\"2\"/><circle cx=\"\(tx(.x) | r2)\" cy=\"\(tz(.z) | r2)\" r=\"5\" class=\"sp\"><title>\(.tip)</title></circle><text x=\"\(tx(.x) + 7 | r2)\" y=\"\(tz(.z) + 12 | r2)\" class=\"st\">\(.team)</text>") | join(""))
   + ($bt | map("<text x=\"\(tx(.x) | r2)\" y=\"\(tz(.z) | r2)\" class=\"bt\"><title>\(.tip)</title>\(.label)</text>") | join(""))
   + "</g>"
@@ -128,7 +134,7 @@ def turned: ((.yaw // 0) * 3.141592653589793 / 180) as $t | {s: ($t | sin), c: (
 
   + ("<g transform=\"translate(\($m),\($lgy | r2))\">"
      + ([["floor", "wall", "cover", "ramp", "stairs"] | to_entries[] | "<rect x=\"\(.key * 80)\" y=\"-9\" width=\"10\" height=\"10\" fill=\"\(.value | color)\" stroke=\"#333\" stroke-width=\"0.6\"/><text x=\"\(.key * 80 + 14)\" y=\"0\" class=\"lg\">\(.value)</text>"] | join(""))
-     + "<circle cx=\"405\" cy=\"-4\" r=\"4\" class=\"sp\"/><text x=\"414\" y=\"0\" class=\"lg\">spawn</text><line x1=\"470\" x2=\"490\" y1=\"-4\" y2=\"-4\" class=\"ml\"/><text x=\"494\" y=\"0\" class=\"lg\">height metric</text>"
+     + "<circle cx=\"405\" cy=\"-4\" r=\"4\" class=\"sp\"/><text x=\"414\" y=\"0\" class=\"lg\">spawn</text><line x1=\"470\" x2=\"490\" y1=\"-4\" y2=\"-4\" class=\"ml\"/><text x=\"494\" y=\"0\" class=\"lg\">height metric</text><rect x=\"580\" y=\"-9\" width=\"14\" height=\"10\" class=\"ob\"/><text x=\"598\" y=\"0\" class=\"lg\">objective</text>"
      + ($bd | to_entries | map("<text x=\"0\" y=\"\(.key * 16 + 18)\" class=\"lg\">backdrop: \(.value)</text>") | join("")) + "</g>")
   + "</svg>"
 ' "$in" > "$out"

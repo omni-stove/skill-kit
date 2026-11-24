@@ -1,0 +1,1 @@
+Capture the engine profiler in section {section} through the {ctrl} tools and fix it by the loaded rules, then run the sampler again and rerun {self}/report.sh {slug} [log], until no section is over.

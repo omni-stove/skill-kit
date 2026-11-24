@@ -1,0 +1,1 @@
+Find where the game decides that a team took an objective under {source_root}, and make it log the [Take] lines by the loaded rules.

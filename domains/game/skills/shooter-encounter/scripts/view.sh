@@ -3,10 +3,11 @@
 # Draws docs/design/encounters/<slug>.json over the top view of docs/design/maps/<slug>.json as
 # docs/design/encounters/<slug>.svg: each encounter's trigger, entry, exit and intensity, each
 # enemy's spawn, hold and range coloured by wave, a melee enemy as an arrow from its spawn to
-# where it meets the player, and the route between encounters. Prints a warn line per unknown
-# enemy type, missing trigger, spawn or hold over no floor, ramp or stairs, missing surround
-# for melee enemies, and wave whose melee holds crowd past the surround, then the SVG path and
-# the review step.
+# where it meets the player, and the route between encounters, with a pacing chart of each
+# encounter's intensity and its ranged and melee enemies in route order. Prints a warn line per
+# unknown enemy type, missing trigger, spawn or hold over no floor, ramp or stairs, missing
+# surround for melee enemies, wave whose melee holds crowd past the surround, encounter without
+# an intensity, and last encounter that is not the hardest, then the SVG path and the review step.
 set -eu
 . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 [ $# -eq 1 ] || { echo "usage: view.sh <slug>" >&2; exit 2; }
@@ -37,6 +38,9 @@ jq -r --slurpfile layout "$layout" "$common"'
 (.enemies // {}) as $types
 | .surround as $sr
 | (if $sr == null and any(.encounters[].waves[]?.enemies[]?; melee($types)) then "warn\t-\tno surround for the melee enemies" else empty end),
+  ([.encounters[] | .intensity | numbers] as $is | .encounters[-1] as $l
+   | if ($l.intensity | type) == "number" and ($is | max) > $l.intensity then "warn\t\($l.id)\tthe last encounter is not the hardest (intensity \($l.intensity) of \($is | max))" else empty end),
+  (.encounters[] | select((.intensity | type) != "number") | "warn\t\(.id)\tno intensity"),
   (.encounters[] | .id as $e
 | (if .trigger == null then "warn\t\($e)\tno trigger" else empty end),
   (.waves // [] | to_entries[] | (.key + 1) as $w | .value.enemies[]?
@@ -69,7 +73,9 @@ def fp: (.yaw | rad) as $t | ($t | sin) as $s | ($t | cos) as $c | . as $p
 | ([$x1 - $x0, $z1 - $z0, 1] | max) as $span | (800 / $span) as $S
 | 40 as $m | 24 as $tt
 | (($x1 - $x0) * $S) as $w | (($z1 - $z0) * $S) as $d
-| ($m + $w + $m) as $W | ($m + $tt + $d + $m + 20) as $H
+| ($m + $tt + $d + $m + $tt) as $cy | 110 as $ch
+| ($es | length) as $n | ([$es[] | [.waves[]?.enemies[]?] | length] + [1] | max) as $nmax
+| ([$w, $n * 90] | max) as $cw | ($m + $cw + $m) as $W | ($cy + $ch + 40 + 20) as $H
 | def tx($x): ($x - $x0) * $S; def tz($z): ($z1 - $z) * $S;
   def at($p): "cx=\"\(tx($p[0]) | r2)\" cy=\"\(tz($p[2]) | r2)\"";
 
@@ -104,6 +110,17 @@ def fp: (.yaw | rad) as $t | ($t | sin) as $s | ($t | cos) as $c | . as $p
       + "<circle \(at(.exit)) r=\"6\" fill=\"#fff\" class=\"ee\"><title>\($e) exit</title></circle>"
       + "<text x=\"\(tx(.entry[0]) + 9 | r2)\" y=\"\(tz(.entry[2]) - 8 | r2)\" class=\"lb\">\($e) ★\(.intensity // "?" | esc)</text>") | join(""))
   + "</g>"
+  + "<g transform=\"translate(\($m),\($cy | r2))\"><text x=\"0\" y=\"-8\" class=\"t\">pacing (route order: intensity, then ranged and melee enemies)</text><rect x=\"0\" y=\"0\" width=\"\($cw | r2)\" height=\"\($ch | r2)\" class=\"f\"/>"
+  + ([$es | to_entries[] | (.key * ($cw / $n)) as $x0 | .value as $e
+      | ($e.intensity // 0 | if type == "number" then . else 0 end) as $in
+      | [$e.waves[]?.enemies[]? | if melee($types) then "melee" else "ranged" end] as $ks
+      | ([$ks[] | select(. == "ranged")] | length) as $nr | ([$ks[] | select(. == "melee")] | length) as $nm
+      | ($ch - 10) as $bh
+      | "<rect x=\"\($x0 + 10 | r2)\" y=\"\($ch - $in / 5 * $bh | r2)\" width=\"18\" height=\"\($in / 5 * $bh | r2)\" fill=\"#2a2\"><title>\($e.id // "" | esc) intensity \($in)</title></rect>"
+      + "<rect x=\"\($x0 + 32 | r2)\" y=\"\($ch - $nr / $nmax * $bh | r2)\" width=\"18\" height=\"\($nr / $nmax * $bh | r2)\" fill=\"#08a\"><title>\($e.id // "" | esc) \($nr) ranged</title></rect>"
+      + "<rect x=\"\($x0 + 32 | r2)\" y=\"\($ch - ($nr + $nm) / $nmax * $bh | r2)\" width=\"18\" height=\"\($nm / $nmax * $bh | r2)\" fill=\"#d22\"><title>\($e.id // "" | esc) \($nm) melee</title></rect>"
+      + "<text x=\"\($x0 + 10 | r2)\" y=\"\($ch + 14 | r2)\" class=\"lg\">\($e.id // "" | esc)</text><text x=\"\($x0 + 10 | r2)\" y=\"\($ch + 28 | r2)\" class=\"lg\">★\($in) \($nr + $nm) enemies</text>"] | join(""))
+  + "</g>"
   + "<g transform=\"translate(\($m),\($H - 14 | r2))\">"
   + ([range(0; 5) | "<rect x=\"\(. * 62)\" y=\"-9\" width=\"10\" height=\"10\" fill=\"\(. | wave)\"/><text x=\"\(. * 62 + 14)\" y=\"0\" class=\"lg\">wave \(. + 1)</text>"] | join(""))
   + "<circle cx=\"325\" cy=\"-4\" r=\"5\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"334\" y=\"0\" class=\"lg\">hold</text>"
@@ -111,6 +128,7 @@ def fp: (.yaw | rad) as $t | ($t | sin) as $s | ($t | cos) as $c | . as $p
   + "<circle cx=\"437\" cy=\"-4\" r=\"5\" fill=\"#fff\" class=\"ee\"/><text x=\"446\" y=\"0\" class=\"lg\">exit</text>"
   + "<rect x=\"486\" y=\"-9\" width=\"14\" height=\"10\" class=\"tr\"/><text x=\"504\" y=\"0\" class=\"lg\">trigger</text>"
   + "<line x1=\"560\" x2=\"585\" y1=\"-4\" y2=\"-4\" class=\"rt\"/><text x=\"589\" y=\"0\" class=\"lg\">route</text>"
+  + "<rect x=\"720\" y=\"-9\" width=\"10\" height=\"10\" fill=\"#2a2\"/><text x=\"734\" y=\"0\" class=\"lg\">intensity</text><rect x=\"790\" y=\"-9\" width=\"10\" height=\"10\" fill=\"#08a\"/><text x=\"804\" y=\"0\" class=\"lg\">ranged</text>"
   + "<line x1=\"630\" x2=\"655\" y1=\"-4\" y2=\"-4\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#m5)\"/><circle cx=\"664\" cy=\"-4\" r=\"5\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"2\"/><circle cx=\"664\" cy=\"-4\" r=\"2\" fill=\"#333\"/><text x=\"673\" y=\"0\" class=\"lg\">melee</text></g>"
   + "</svg>"
 ' "$in" > "$out"

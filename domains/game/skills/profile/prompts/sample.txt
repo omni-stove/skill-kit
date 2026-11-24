@@ -1,0 +1,1 @@
+Find the sampler under {source_root}; write it by the loaded rules if there is none, and make it log every measure in the budget. Build and run it on {layout}, then run {self}/report.sh {slug} [log], passing the file its log went to if it is not {log}.

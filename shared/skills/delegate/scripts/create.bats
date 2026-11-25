@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# delegate scripts — argument checks, the label on creation or the blockers, manual issues, and the parent link.
+# delegate scripts — argument checks, the label on creation or the blockers, the one manual issue per parent, and the parent link.
 
 bats_require_minimum_version 1.5.0
 
@@ -23,6 +23,8 @@ case "\$1 \$2" in
   "api repos/{owner}/{repo}/issues/7") echo 123 ;;
   "api repos/{owner}/{repo}/issues/5") echo 125 ;;
   "api repos/{owner}/{repo}/issues/6") echo 126 ;;
+  "api repos/{owner}/{repo}/issues/9") echo 129 ;;
+  "api repos/{owner}/{repo}/issues/4/sub_issues") echo '[{"number":5,"labels":[{"name":"implementation"}]},{"number":9,"labels":[]}]' | jq -r "\${@: -1}" ;;
   "api repos/{owner}/{repo}/issues/3/sub_issues") echo '[{"number":7,"title":"child","labels":[{"name":"implementation"}],"type":null,"html_url":"u7"},{"number":9,"title":"next","labels":[],"type":{"name":"Bug"},"html_url":"u9"},{"number":10,"title":"key","labels":[{"name":"manual"}],"type":null,"html_url":"u10"}]' | jq -r "\${@: -1}" ;;
   "api repos/{owner}/{repo}/issues/9/dependencies/blocked_by") echo '#7 #8' ;;
   "api repos/{owner}/{repo}/issues/10/dependencies/blocked_by") echo '#7' ;;
@@ -76,7 +78,7 @@ STUB
   ! grep -q -- '--label' "$CALLS" || false
   grep -q -- '-f type=Bug' "$CALLS"
   : > "$CALLS"
-  ISSUE_WORKER=off run "$CREATE" --parent 3 manual "Title" --task T --check C
+  ISSUE_WORKER=off run "$CREATE" --parent 4 manual "Title" --task T --check C
   [ "$status" -eq 0 ]
   grep -q -- '--label manual' "$CALLS"
   : > "$CALLS"
@@ -91,13 +93,23 @@ STUB
   [[ "$stderr" == *"done on this machine"* ]]
 }
 
-@test "create.sh files a manual issue labeled, creating the label, even when it waits" {
-  run "$CREATE" --parent 3 --after 5 manual "Title" --task T --check C
+@test "create.sh files a manual issue labeled, creating the label, blocked by every other child" {
+  run "$CREATE" --parent 4 manual "Title" --task T --check C
   [ "$status" -eq 0 ]
   grep -q 'label create manual' "$CALLS"
   grep -q -- '--label manual' "$CALLS"
   grep -q 'issues/7/dependencies/blocked_by -F issue_id=125' "$CALLS"
+  grep -q 'issues/7/dependencies/blocked_by -F issue_id=129' "$CALLS"
   ! grep -q 'type=Bug' "$CALLS" || false
+}
+
+@test "create.sh refuses --after on a manual issue and a second manual issue under one parent" {
+  run "$CREATE" --parent 4 --after 5 manual "Title" --task T --check C
+  [ "$status" -eq 2 ]
+  run --separate-stderr "$CREATE" --parent 3 manual "Title" --task T --check C
+  [ "$status" -eq 1 ]
+  [[ "$stderr" == *"#10"* ]]
+  ! grep -q 'issue create' "$CALLS" || false
 }
 
 @test "parent.sh creates an unlabeled parent and prints its number" {

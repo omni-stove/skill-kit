@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 # Create one child issue linked to its parent and print its URL.
-#   create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> --task <text> --check <text>
+#   create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation> <title> --task <text> --check <text>
+#   create.sh --parent <number> manual <title> --task <text> --check <text>
 # The body is a parent line, then the task and how a person checks it done, under fixed headings.
 # Without --after the label goes on at creation, so the worker's labeled event fires exactly once.
 # With --after the issue is marked blocked by those issues (GitHub's issue dependencies); a bug or
 # implementation is filed unlabeled, a bug also getting the Bug issue type, so its label can be
 # added once they close. With ISSUE_WORKER=off every bug and implementation is filed that way, so
 # no worker starts it and it is done on this machine. A manual issue is for the user, not the
-# worker, so it is always labeled.
+# worker, so it is always labeled, and is blocked by every child the parent already has; the
+# parent takes only one, filed last.
 set -euo pipefail
 
-usage() { echo "usage: create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation|manual> <title> --task <text> --check <text>" >&2; exit 2; }
+usage() { echo "usage: create.sh --parent <number> [--after <number>[,<number>...]] <bug|implementation> <title> --task <text> --check <text> | create.sh --parent <number> manual <title> --task <text> --check <text>" >&2; exit 2; }
 [ "${1:-}" = "--parent" ] && [[ "${2:-}" =~ ^[0-9]+$ ]] || usage
 parent="$2"
 shift 2
@@ -35,6 +37,11 @@ $6"
 case "$type" in bug|implementation|manual) ;; *) usage ;; esac
 
 if [ "$type" = manual ]; then
+  [ -z "$after" ] || usage
+  children="$("${GH_CMD:-gh}" api "repos/{owner}/{repo}/issues/${parent}/sub_issues" --paginate --jq '.[] | "\(.number)\t\([.labels[].name] | join(","))"')"
+  existing="$(printf '%s\n' "$children" | awk -F '\t' '$2 ~ /(^|,)manual(,|$)/ { print $1; exit }')"
+  [ -z "$existing" ] || { echo "create.sh: #${parent} already has manual issue #${existing}; add these steps to it with gh issue edit ${existing} instead" >&2; exit 1; }
+  after="$(printf '%s\n' "$children" | cut -f1 | paste -sd, -)"
   # Repos set up for the worker have bug and implementation but not this one; it already exists after the first run.
   "${GH_CMD:-gh}" label create manual --description "Done by hand on the user's machine, not by the issue worker" >/dev/null 2>&1 || true
 fi

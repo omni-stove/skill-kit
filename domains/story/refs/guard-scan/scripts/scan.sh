@@ -10,7 +10,9 @@
 # the narration lines setting a thing against a denied alternative (ではなく, ではない。,
 # というより and the like), the narration lines describing a voice or sound (低い声,
 # 声は平らだった and the like), the narration lines with a negative sentence ending
-# (ない。, なかった。) and the lines format.sh finds against the format rules.
+# (ない。, なかった。), the narration lines holding a run of four or more narration
+# sentences in a row ending on the same form (だ or である, た, い, or another verb's
+# dictionary form), and the lines format.sh finds against the format rules.
 # --whole: the checks over the whole file, with findings held for the hand-off, the
 # narration lines ending on だった with another in the same or next paragraph, and, when
 # more than one, the narration lines ending a look or voice on だった (目だった。,
@@ -85,6 +87,36 @@ scene() {
   if [ -n "$neg" ]; then
     prompt negative
     printf '%s\n' "$neg"
+  fi
+  # Dialogue, a separator or a line with no 。 ends a run, since the reader hears the
+  # ending change there; a sentence ending on a noun or anything else ends one too.
+  ending=$(awk '
+  function form(s) {
+    if (s ~ /(だ|である)$/) return "da"
+    if (s ~ /た$/) return "ta"
+    if (s ~ /い$/) return "i"
+    if (s ~ /(う|く|ぐ|す|つ|ぬ|ぶ|む|る)$/) return "u"
+    return ""
+  }
+  function flush(j) {
+    if (run >= 4) for (j = 1; j <= nl; j++) if (!seen[ln[j]]++) print ln[j] ":" line[ln[j]]
+    run = 0; nl = 0
+  }
+  { line[NR] = $0 }
+  /^(「|『)/ || !/。/ { prev = ""; flush(); next }
+  {
+    k = split($0, x, "。")
+    for (i = 1; i < k; i++) {
+      fm = form(x[i])
+      if (fm == "" || fm != prev) flush()
+      prev = fm
+      if (fm != "") { run++; if (!nl || ln[nl] != NR) ln[++nl] = NR }
+    }
+  }
+  END { flush() }' "$f")
+  if [ -n "$ending" ]; then
+    prompt ending
+    printf '%s\n' "$ending"
   fi
 }
 

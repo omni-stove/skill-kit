@@ -169,6 +169,15 @@ setup() {
   [[ "$output" != *"来ない"* ]]
 }
 
+@test "scene-check.sh lists the lines of four or more narration sentences in a row on the same ending, broken by dialogue or another ending" {
+  printf '　女は顔を上げる。男が迫っている。\n　女は身をすくめる。男は飛んでいく。\n　空は晴れていた。風が吹いた。\n　彼は笑った。\n「行く。来る。見る。帰る」\n　犬が吠える。猫が逃げる。\n「待て」\n　鳥が鳴く。虫が跳ねる。\n' > story/010.txt
+  run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
+  [ "$status" -eq 0 ]
+  listed=$(printf '%s\n' "$output" | sed -n '/on the same form/,/^- /p' | grep -E '^[0-9]+:')
+  [ "$(printf '%s\n' "$listed" | grep -c '^')" -eq 2 ]
+  [[ "$listed" == *"1:"*"2:"* ]]
+}
+
 @test "scene-check.sh lists narration set against a denied alternative, apart from negatives and not dialogue" {
   printf '　離さないのではなく、離せないのだ。\n　落ちたのは尾根からではなかった。\n　怒鳴るというより、押し出すようだった。\n　棚田でも餅でもなく、社を見に来た。\n　任されたのとは違う。\n　道を教えていたわけではないだろう。\n「敵ではなく味方だ」\n　臼をどかすまでもなく、わかった。\n　残念がるでもなく繰り返した。\n　返事はなかった。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
@@ -189,7 +198,7 @@ setup() {
   printf '　しゃがれた声が続いた。\n　金具が小さな音を立てた。\n　声は平らだった。\n　声が尖った。\n　怒っているのだと、声の低さでわかった。\n「低い声で言え」\n　笑い声が上がった。\n　銃声は続いた。\n　また声がした。\n　彼は頷いた。\n' > story/010.txt
   run sh "$BATS_TEST_DIRNAME/scene-check.sh" story/010.txt story/010.txt
   [ "$status" -eq 0 ]
-  listed=$(printf '%s\n' "$output" | sed -n '/how a voice or sound sounds/,/Then reply/p')
+  listed=$(printf '%s\n' "$output" | sed -n '/how a voice or sound sounds/,/^- /p')
   [ "$(printf '%s\n' "$listed" | grep -cE '^[0-9]+:')" -eq 5 ]
   [[ "$listed" == *"1:"*"2:"*"3:"*"4:"*"5:"* ]]
   [[ "$listed" != *"低い声で言え"* ]]

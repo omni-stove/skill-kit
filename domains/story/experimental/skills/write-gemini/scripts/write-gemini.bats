@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 # shellcheck disable=SC2030,SC2031 # each @test runs in its own subshell, and run sets $output afresh in each
-# write.sh — the plot sent to Gemini with the guards through a stub curl, the reply written to <write's output>.gemini.txt, then the checks over it.
+# write.sh — the plot sent to Gemini alone through a stub curl, the reply written to <write's output>.gemini.txt, then the checks over it.
 
 setup() {
   WRITE="$BATS_TEST_DIRNAME/write.sh"
@@ -24,22 +24,23 @@ reply() {
   jq -n --arg t "$1" '{status: "completed", steps: [{type: "thought"}, {type: "model_output", content: [{type: "text", text: $t}]}]}' > response.json
 }
 
-@test "write.sh sends the plot with the guards and writes the reply beside write's output" {
+@test "write.sh sends the plot alone and writes the reply beside write's output" {
   reply '　俺は扉を開けた。'
   GEMINI_API_KEY=k run sh "$WRITE" story/plot/010-arrival.md
   [ "$status" -eq 0 ]
   [ "$(cat story/010.gemini.txt)" = '　俺は扉を開けた。' ]
   [ "$(jq -r .input request.json)" = 'プロット本文' ]
   [ "$(jq -r .model request.json)" = gemini-4-neon ]
-  [ "$(jq -r .system_instruction request.json)" = "$(printf 'japanese-web-novel-sentence-guard\njapanese-web-novel-narration-guard')" ]
+  [ "$(jq -r 'has("system_instruction")' request.json)" = false ]
   [[ "$output" == *"japanese-web-novel-narration-guard"*"gemini-4-neon wrote story/010.gemini.txt, the output file"* ]]
 }
 
-@test "write.sh adds author-rules.md to the guards only when it exists" {
+@test "write.sh prints author-rules.md after the guards only when it exists, and sends it nowhere" {
   reply 'x'
   echo mine > author-rules.md
   GEMINI_API_KEY=k run sh "$WRITE" story/plot/010-arrival.md
-  [[ "$(jq -r .system_instruction request.json)" == *narration-guard*override*mine* ]]
+  [[ "$output" == *narration-guard*override*mine* ]]
+  [[ "$(cat request.json)" != *mine* ]]
 }
 
 @test "write.sh prints the checks over the reply with its flagged lines, then the hand-off" {

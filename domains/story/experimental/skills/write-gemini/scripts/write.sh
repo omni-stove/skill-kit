@@ -1,11 +1,11 @@
 #!/bin/sh
 # Usage: write.sh <plot file>
-# Sends the plot file's text, with the guards and author-rules.md (when it exists) as
-# the system instruction, to the Gemini model named by WRITE_GEMINI_MODEL (default
-# gemini-4-neon; GEMINI_API_KEY, thinking high) through the Interactions API, and writes
+# Sends the plot file's text alone to the Gemini model named by WRITE_GEMINI_MODEL
+# (default gemini-4-neon; GEMINI_API_KEY, thinking high) through the Interactions API, and writes
 # the reply to the output write would use with .gemini before .txt: plot/<x>.md ->
 # ../<leading number of x, else x>.gemini.txt; plot.md -> index.gemini.txt beside it;
-# another .md -> <stem>.gemini.txt beside it. Then prints the same guards, the checks
+# another .md -> <stem>.gemini.txt beside it. Then prints the guards and author-rules.md
+# (when it exists) for the caller to fix the reply by, the checks
 # guard-scan's scan.sh --all gives for that file, and the hand-off to reply with.
 set -eu
 [ $# -eq 1 ] || { echo "usage: write.sh <plot file>" >&2; exit 2; }
@@ -33,8 +33,8 @@ sys=$(
   [ ! -f author-rules.md ] || { cat .agents/refs/author-override.md; cat author-rules.md; }
 )
 # Through a file, not --arg: a long plot would pass the exec argument limit.
-res=$(jq -n --arg model "$model" --arg sys "$sys" --rawfile in "$f" \
-  '{model: $model, system_instruction: $sys, input: $in, generation_config: {thinking_level: "high"}}' |
+res=$(jq -n --arg model "$model" --rawfile in "$f" \
+  '{model: $model, input: $in, generation_config: {thinking_level: "high"}}' |
   curl -sS --max-time 590 \
   -H "x-goog-api-key: $GEMINI_API_KEY" -H 'Content-Type: application/json' \
   -X POST --data-binary @- \

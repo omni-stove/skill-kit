@@ -53,7 +53,6 @@ flowchart TD
 - [analyze](skills/analyze/README.ja.md)
 - [staging](skills/staging/README.ja.md) / [staging-all](skills/staging-all/README.ja.md)
 - [format-check](skills/format-check/README.ja.md) / [format-check-all](skills/format-check-all/README.ja.md)
-- [block-breaks](skills/block-breaks/README.ja.md)
 - [line-break](skills/line-break/README.ja.md)
 - [layman](skills/layman/README.ja.md)
 - [clarify](skills/clarify/README.ja.md)

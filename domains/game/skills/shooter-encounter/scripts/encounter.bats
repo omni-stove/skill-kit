@@ -70,7 +70,7 @@ SH
   [ "$status" -eq 0 ]
   [[ "$output" == *$'yard wave 1\t3 melee enemies within 3 m of '*', over surround 2'* ]]
   [ "$(grep -o 'spear meets the player' docs/design/encounters/stage.svg | wc -l)" -eq 3 ]
-  [ "$(grep -o 'marker-end="url(#m0)"' docs/design/encounters/stage.svg | wc -l)" -eq 3 ]
+  [ "$(grep -o 'marker-end="url(#m)"' docs/design/encounters/stage.svg | wc -l)" -eq 3 ]
   grep -q 'archer hold' docs/design/encounters/stage.svg
   ! command -v xmllint >/dev/null || xmllint --noout docs/design/encounters/stage.svg
 }

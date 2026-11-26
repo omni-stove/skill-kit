@@ -9,7 +9,7 @@ flowchart TD
   ask --> place[places the objectives<br/>in the layout file]
   exists -- "yes" --> edit[edits the objectives<br/>as the user says]
   place --> view
-  edit --> view[/writes the map SVG with the objectives<br/>and prints warnings/]
+  edit --> view[/writes the map SVG with the objectives<br/>and prints warnings, in the colours<br/>of docs/design/map-style.json/]
   view -- "changes" --> edit
   view -- "OK" --> measure[builds the greybox and measures each objective:<br/>each team's time to it and the rotation time]
   measure -- "no greybox yet" --> stop

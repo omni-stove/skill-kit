@@ -2,12 +2,13 @@
 # Usage: view.sh <slug>
 # Draws docs/design/encounters/<slug>.json over the top view of docs/design/maps/<slug>.json as
 # docs/design/encounters/<slug>.svg: each encounter's trigger, entry, exit and intensity, each
-# enemy's spawn, hold and range coloured by wave, a melee enemy as an arrow from its spawn to
+# enemy's spawn, hold and range numbered by wave, a melee enemy as an arrow from its spawn to
 # where it meets the player, and the route between encounters, with a pacing chart of each
 # encounter's intensity and its ranged and melee enemies in route order. Prints a warn line per
 # unknown enemy type, missing trigger, spawn or hold over no floor, ramp or stairs, missing
 # surround for melee enemies, wave whose melee holds crowd past the surround, encounter without
 # an intensity, and last encounter that is not the hardest, then the SVG path and the review step.
+# Colours and legend labels come from docs/design/map-style.json, kept by map-style.sh.
 set -eu
 . "$(dirname -- "$0")/../../../../../shared/refs/prompt.sh"
 [ $# -eq 1 ] || { echo "usage: view.sh <slug>" >&2; exit 2; }
@@ -53,12 +54,11 @@ jq -r --slurpfile layout "$layout" "$common"'
     | if $c != null and $c.n > $sr.enemies then "warn\t\($e) wave \($w)\t\($c.n) melee enemies within \($sr.radius) m of \($c.at | tostring), over surround \($sr.enemies)" else empty end end))
 ' "$in"
 
-jq -r --slurpfile layout "$layout" "$common"'
-def r2: (. * 100 | round) / 100 | tostring;
-def esc: tostring | gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub("\""; "&quot;");
+refs="$(dirname -- "$0")/../../../refs"
+style=$(sh "$refs/map-style.sh" "$layout")
+jq -r -L "$refs" --slurpfile st "$style" --slurpfile layout "$layout" 'include "map-style";'"$common"'
 def pts: map("\(.[0] | r2),\(.[1] | r2)") | join(" ");
-def color: {floor: "#e4e0d6", wall: "#6e6e6e", cover: "#c4884a", ramp: "#b6d3b3", stairs: "#b3c8de"}[.] // "#cccccc";
-def wave: ["#d22", "#e80", "#a3c", "#08a", "#690"][. % 5];
+def color: col("pieces"; .);
 def fp: (.yaw | rad) as $t | ($t | sin) as $s | ($t | cos) as $c | . as $p
   | [[-1, -1], [1, -1], [1, 1], [-1, 1]]
   | map([$p.pos[0] + .[0] * $p.size[0] / 2 * $c + .[1] * $p.size[2] / 2 * $s, $p.pos[2] - .[0] * $p.size[0] / 2 * $s + .[1] * $p.size[2] / 2 * $c]);
@@ -75,17 +75,31 @@ def fp: (.yaw | rad) as $t | ($t | sin) as $s | ($t | cos) as $c | . as $p
 | (($x1 - $x0) * $S) as $w | (($z1 - $z0) * $S) as $d
 | ($m + $tt + $d + $m + $tt) as $cy | 110 as $ch
 | ($es | length) as $n | ([$es[] | [.waves[]?.enemies[]?] | length] + [1] | max) as $nmax
-| ([$w, $n * 90] | max) as $cw | ($m + $cw + $m) as $W | ($cy + $ch + 40 + 20) as $H
+| ([$w, $n * 90] | max) as $cw | ($m + $cw + $m) as $W
+| col("teams"; "enemy") as $en | col("teams"; "player") as $pl | col("marks"; "trigger") as $tg
+| ([{sw: "<rect x=\"0\" y=\"-10\" width=\"11\" height=\"11\" fill=\"\($en)\"/><text x=\"5.5\" y=\"-1.5\" class=\"wn\">1</text>", label: (lab("teams"; "enemy") + " spawn, by wave")},
+    {sw: "<circle cx=\"5\" cy=\"-4\" r=\"5\" fill=\"#fff\" stroke=\"\($en)\" stroke-width=\"2\"/>", label: "hold"},
+    {sw: "<line x1=\"0\" x2=\"12\" y1=\"-4\" y2=\"-4\" stroke=\"\($en)\" stroke-width=\"2\"/>", label: "melee: where it meets the player"},
+    {sw: "<circle cx=\"5\" cy=\"-4\" r=\"5\" fill=\"\($pl)\"/>", label: (lab("teams"; "player") + " entry")},
+    {sw: "<circle cx=\"5\" cy=\"-4\" r=\"5\" fill=\"#fff\" stroke=\"\($pl)\" stroke-width=\"2.5\"/>", label: (lab("teams"; "player") + " exit")},
+    {sw: "<line x1=\"0\" x2=\"12\" y1=\"-4\" y2=\"-4\" class=\"rt\"/>", label: "route"},
+    {sw: "<rect x=\"0\" y=\"-9\" width=\"12\" height=\"10\" class=\"tr\"/>", label: lab("marks"; "trigger")},
+    {sw: sw_area(col("marks"; "intensity")), label: lab("marks"; "intensity")},
+    {sw: "<rect x=\"0\" y=\"-9\" width=\"10\" height=\"10\" fill=\"\($en)\" fill-opacity=\"0.45\"/>", label: "ranged"},
+    {sw: sw_area($en), label: "melee"}]
+   + [$ps | map(.kind // "" | tostring) | unique[] | select(. != "") | {sw: sw_area(col("pieces"; .)), label: lab("pieces"; .)}]
+   | legend($W - 2 * $m)) as $lg
+| ($cy + $ch + 40 + $lg.h) as $H
 | def tx($x): ($x - $x0) * $S; def tz($z): ($z1 - $z) * $S;
   def at($p): "cx=\"\(tx($p[0]) | r2)\" cy=\"\(tz($p[2]) | r2)\"";
 
   "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\($W | r2)\" height=\"\($H | r2)\" viewBox=\"0 0 \($W | r2) \($H | r2)\" font-family=\"sans-serif\">"
-  + "<style>.t{font-size:13px;font-weight:bold}.f{fill:none;stroke:#999}.tr{fill:#39f;fill-opacity:0.12;stroke:#39f;stroke-dasharray:5 3}.rt{stroke:#2a2;stroke-width:2;stroke-dasharray:2 4;fill:none}.ee{stroke:#2a2;stroke-width:2.5}.lb{font-size:12px;font-weight:bold;fill:#151}.lg{font-size:11px}</style>"
-  + "<defs>" + ([range(0; 5) | "<marker id=\"m\(.)\" viewBox=\"0 0 10 10\" refX=\"16\" refY=\"5\" markerWidth=\"5\" markerHeight=\"5\" orient=\"auto\"><path d=\"M0,0L10,5L0,10z\" fill=\"\(. | wave)\"/></marker>"] | join("")) + "</defs>"
+  + "<style>.t{font-size:13px;font-weight:bold}.f{fill:none;stroke:#999}.tr{fill:\($tg);fill-opacity:0.12;stroke:\($tg);stroke-dasharray:5 3}.rt{stroke:\($pl);stroke-width:2;stroke-dasharray:2 4;fill:none}.ee{stroke:\($pl);stroke-width:2.5}.lb{font-size:12px;font-weight:bold;fill:\($pl);paint-order:stroke;stroke:#fff;stroke-width:3}.lg{font-size:11px}.wn{font-size:8px;font-weight:bold;fill:#fff;text-anchor:middle;pointer-events:none}.hn{font-size:7px;font-weight:bold;text-anchor:middle;pointer-events:none}</style>"
+  + "<defs><marker id=\"m\" viewBox=\"0 0 10 10\" refX=\"16\" refY=\"5\" markerWidth=\"5\" markerHeight=\"5\" orient=\"auto\"><path d=\"M0,0L10,5L0,10z\" fill=\"\($en)\"/></marker></defs>"
   + "<rect width=\"100%\" height=\"100%\" fill=\"#fff\"/>"
   + "<g transform=\"translate(\($m),\($m + $tt))\"><text x=\"0\" y=\"-8\" class=\"t\">encounters (top, +z up)</text><rect x=\"0\" y=\"0\" width=\"\($w | r2)\" height=\"\($d | r2)\" class=\"f\"/>"
   + "<clipPath id=\"c\"><rect x=\"0\" y=\"0\" width=\"\($w | r2)\" height=\"\($d | r2)\"/></clipPath>"
-  + ($ps | sort_by(.pos[1] + .size[1]) | map("<polygon points=\"\(.fp | map([tx(.[0]), tz(.[1])]) | pts)\" fill=\"\(.kind | color)\" stroke=\"#999\" stroke-width=\"0.5\"><title>\(.id // "" | esc) (\(.kind // "" | esc))</title></polygon>") | join(""))
+  + ($ps | sort_by(.pos[1] + .size[1]) | map("<polygon points=\"\(.fp | map([tx(.[0]), tz(.[1])]) | pts)\" fill=\"\(.kind | color)\" fill-opacity=\"0.45\" stroke=\"#999\" stroke-width=\"0.5\"><title>\(.id // "" | esc) (\(.kind // "" | esc))</title></polygon>") | join(""))
   + ([range(0; ($es | length) - 1) as $i | $es[$i].exit as $a | $es[$i + 1].entry as $b
       | "<line x1=\"\(tx($a[0]) | r2)\" y1=\"\(tz($a[2]) | r2)\" x2=\"\(tx($b[0]) | r2)\" y2=\"\(tz($b[2]) | r2)\" class=\"rt\"/>"] | join(""))
   + ($es | map(
@@ -93,20 +107,20 @@ def fp: (.yaw | rad) as $t | ($t | sin) as $s | ($t | cos) as $c | . as $p
       | (if .trigger then .trigger as $t
           | "<rect x=\"\(tx($t.pos[0] - $t.size[0] / 2) | r2)\" y=\"\(tz($t.pos[2] + $t.size[2] / 2) | r2)\" width=\"\($t.size[0] * $S | r2)\" height=\"\($t.size[2] * $S | r2)\" class=\"tr\"><title>\($e) trigger</title></rect>"
         else "" end)
-      + (.waves // [] | to_entries | map(.key as $w0 | (.key | wave) as $c | (.key + 1) as $n | (.value.start // "" | esc) as $st | .value.enemies[]?
+      + (.waves // [] | to_entries | map($en as $c | (.key + 1) as $n | (.value.start // "" | esc) as $st | .value.enemies[]?
           | (($types[.type].range // 0) | if type == "number" then . else 0 end) as $rg
           | (.type // "" | esc) as $ty
           | if melee($types) then
-            "<line x1=\"\(tx(.pos[0]) | r2)\" y1=\"\(tz(.pos[2]) | r2)\" x2=\"\(tx(.hold[0]) | r2)\" y2=\"\(tz(.hold[2]) | r2)\" stroke=\"\($c)\" stroke-width=\"2\" marker-end=\"url(#m\($w0 % 5))\"/>"
-            + "<rect x=\"\(tx(.pos[0]) - 4 | r2)\" y=\"\(tz(.pos[2]) - 4 | r2)\" width=\"8\" height=\"8\" fill=\"\($c)\"><title>\($e) wave \($n) (\($st)): \($ty) spawn</title></rect>"
-            + "<circle \(at(.hold)) r=\"6\" fill=\"#fff\" stroke=\"\($c)\" stroke-width=\"2\"><title>\($e) wave \($n): \($ty) meets the player</title></circle><circle \(at(.hold)) r=\"2.5\" fill=\"\($c)\" pointer-events=\"none\"/>"
+            "<line x1=\"\(tx(.pos[0]) | r2)\" y1=\"\(tz(.pos[2]) | r2)\" x2=\"\(tx(.hold[0]) | r2)\" y2=\"\(tz(.hold[2]) | r2)\" stroke=\"\($c)\" stroke-width=\"2\" marker-end=\"url(#m)\"/>"
+            + "<rect x=\"\(tx(.pos[0]) - 5.5 | r2)\" y=\"\(tz(.pos[2]) - 5.5 | r2)\" width=\"11\" height=\"11\" fill=\"\($c)\"><title>\($e) wave \($n) (\($st)): \($ty) spawn</title></rect><text x=\"\(tx(.pos[0]) | r2)\" y=\"\(tz(.pos[2]) + 3 | r2)\" class=\"wn\">\($n)</text>"
+            + "<circle \(at(.hold)) r=\"6\" fill=\"#fff\" stroke=\"\($c)\" stroke-width=\"2\"><title>\($e) wave \($n): \($ty) meets the player</title></circle><text x=\"\(tx(.hold[0]) | r2)\" y=\"\(tz(.hold[2]) + 2.5 | r2)\" class=\"hn\" fill=\"\($c)\">\($n)</text>"
           else
           (if $rg > 0 then "<circle \(at(.hold)) r=\"\($rg * $S | r2)\" clip-path=\"url(#c)\" fill=\"\($c)\" fill-opacity=\"0.05\" stroke=\"\($c)\" stroke-opacity=\"0.3\" stroke-width=\"0.6\"/>" else "" end)
           + "<line x1=\"\(tx(.pos[0]) | r2)\" y1=\"\(tz(.pos[2]) | r2)\" x2=\"\(tx(.hold[0]) | r2)\" y2=\"\(tz(.hold[2]) | r2)\" stroke=\"\($c)\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>"
-          + "<rect x=\"\(tx(.pos[0]) - 4 | r2)\" y=\"\(tz(.pos[2]) - 4 | r2)\" width=\"8\" height=\"8\" fill=\"\($c)\"><title>\($e) wave \($n) (\($st)): \($ty) spawn</title></rect>"
-          + "<circle \(at(.hold)) r=\"5\" fill=\"#fff\" stroke=\"\($c)\" stroke-width=\"2\"><title>\($e) wave \($n): \($ty) hold</title></circle>" end) | join(""))
+          + "<rect x=\"\(tx(.pos[0]) - 5.5 | r2)\" y=\"\(tz(.pos[2]) - 5.5 | r2)\" width=\"11\" height=\"11\" fill=\"\($c)\"><title>\($e) wave \($n) (\($st)): \($ty) spawn</title></rect><text x=\"\(tx(.pos[0]) | r2)\" y=\"\(tz(.pos[2]) + 3 | r2)\" class=\"wn\">\($n)</text>"
+          + "<circle \(at(.hold)) r=\"5\" fill=\"#fff\" stroke=\"\($c)\" stroke-width=\"2\"><title>\($e) wave \($n): \($ty) hold</title></circle><text x=\"\(tx(.hold[0]) | r2)\" y=\"\(tz(.hold[2]) + 2.5 | r2)\" class=\"hn\" fill=\"\($c)\">\($n)</text>" end) | join(""))
       + "<line x1=\"\(tx(.entry[0]) | r2)\" y1=\"\(tz(.entry[2]) | r2)\" x2=\"\(tx(.exit[0]) | r2)\" y2=\"\(tz(.exit[2]) | r2)\" class=\"rt\" stroke-opacity=\"0.4\"/>"
-      + "<circle \(at(.entry)) r=\"6\" fill=\"#2a2\"><title>\($e) entry</title></circle>"
+      + "<circle \(at(.entry)) r=\"6\" fill=\"\($pl)\"><title>\($e) entry</title></circle>"
       + "<circle \(at(.exit)) r=\"6\" fill=\"#fff\" class=\"ee\"><title>\($e) exit</title></circle>"
       + "<text x=\"\(tx(.entry[0]) + 9 | r2)\" y=\"\(tz(.entry[2]) - 8 | r2)\" class=\"lb\">\($e) ★\(.intensity // "?" | esc)</text>") | join(""))
   + "</g>"
@@ -116,20 +130,12 @@ def fp: (.yaw | rad) as $t | ($t | sin) as $s | ($t | cos) as $c | . as $p
       | [$e.waves[]?.enemies[]? | if melee($types) then "melee" else "ranged" end] as $ks
       | ([$ks[] | select(. == "ranged")] | length) as $nr | ([$ks[] | select(. == "melee")] | length) as $nm
       | ($ch - 10) as $bh
-      | "<rect x=\"\($x0 + 10 | r2)\" y=\"\($ch - $in / 5 * $bh | r2)\" width=\"18\" height=\"\($in / 5 * $bh | r2)\" fill=\"#2a2\"><title>\($e.id // "" | esc) intensity \($in)</title></rect>"
-      + "<rect x=\"\($x0 + 32 | r2)\" y=\"\($ch - $nr / $nmax * $bh | r2)\" width=\"18\" height=\"\($nr / $nmax * $bh | r2)\" fill=\"#08a\"><title>\($e.id // "" | esc) \($nr) ranged</title></rect>"
-      + "<rect x=\"\($x0 + 32 | r2)\" y=\"\($ch - ($nr + $nm) / $nmax * $bh | r2)\" width=\"18\" height=\"\($nm / $nmax * $bh | r2)\" fill=\"#d22\"><title>\($e.id // "" | esc) \($nm) melee</title></rect>"
+      | "<rect x=\"\($x0 + 10 | r2)\" y=\"\($ch - $in / 5 * $bh | r2)\" width=\"18\" height=\"\($in / 5 * $bh | r2)\" fill=\"\(col("marks"; "intensity"))\"><title>\($e.id // "" | esc) intensity \($in)</title></rect>"
+      + "<rect x=\"\($x0 + 32 | r2)\" y=\"\($ch - $nr / $nmax * $bh | r2)\" width=\"18\" height=\"\($nr / $nmax * $bh | r2)\" fill=\"\($en)\" fill-opacity=\"0.45\"><title>\($e.id // "" | esc) \($nr) ranged</title></rect>"
+      + "<rect x=\"\($x0 + 32 | r2)\" y=\"\($ch - ($nr + $nm) / $nmax * $bh | r2)\" width=\"18\" height=\"\($nm / $nmax * $bh | r2)\" fill=\"\($en)\"><title>\($e.id // "" | esc) \($nm) melee</title></rect>"
       + "<text x=\"\($x0 + 10 | r2)\" y=\"\($ch + 14 | r2)\" class=\"lg\">\($e.id // "" | esc)</text><text x=\"\($x0 + 10 | r2)\" y=\"\($ch + 28 | r2)\" class=\"lg\">★\($in) \($nr + $nm) enemies</text>"] | join(""))
   + "</g>"
-  + "<g transform=\"translate(\($m),\($H - 14 | r2))\">"
-  + ([range(0; 5) | "<rect x=\"\(. * 62)\" y=\"-9\" width=\"10\" height=\"10\" fill=\"\(. | wave)\"/><text x=\"\(. * 62 + 14)\" y=\"0\" class=\"lg\">wave \(. + 1)</text>"] | join(""))
-  + "<circle cx=\"325\" cy=\"-4\" r=\"5\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"334\" y=\"0\" class=\"lg\">hold</text>"
-  + "<circle cx=\"380\" cy=\"-4\" r=\"5\" fill=\"#2a2\"/><text x=\"389\" y=\"0\" class=\"lg\">entry</text>"
-  + "<circle cx=\"437\" cy=\"-4\" r=\"5\" fill=\"#fff\" class=\"ee\"/><text x=\"446\" y=\"0\" class=\"lg\">exit</text>"
-  + "<rect x=\"486\" y=\"-9\" width=\"14\" height=\"10\" class=\"tr\"/><text x=\"504\" y=\"0\" class=\"lg\">trigger</text>"
-  + "<line x1=\"560\" x2=\"585\" y1=\"-4\" y2=\"-4\" class=\"rt\"/><text x=\"589\" y=\"0\" class=\"lg\">route</text>"
-  + "<rect x=\"720\" y=\"-9\" width=\"10\" height=\"10\" fill=\"#2a2\"/><text x=\"734\" y=\"0\" class=\"lg\">intensity</text><rect x=\"790\" y=\"-9\" width=\"10\" height=\"10\" fill=\"#08a\"/><text x=\"804\" y=\"0\" class=\"lg\">ranged</text>"
-  + "<line x1=\"630\" x2=\"655\" y1=\"-4\" y2=\"-4\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#m5)\"/><circle cx=\"664\" cy=\"-4\" r=\"5\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"2\"/><circle cx=\"664\" cy=\"-4\" r=\"2\" fill=\"#333\"/><text x=\"673\" y=\"0\" class=\"lg\">melee</text></g>"
+  + "<g transform=\"translate(\($m),\($cy + $ch + 52 | r2))\">" + $lg.svg + "</g>"
   + "</svg>"
 ' "$in" > "$out"
 

@@ -11,7 +11,7 @@ flowchart TD
   layoutc --> top
   layoutp --> top
   exists -- "yes" --> edit[edit the layout<br/>as the user says]
-  edit --> top[/writes the layout file and an SVG<br/>of the top, front, side and 3D views/]
+  edit --> top[/writes the layout file and an SVG<br/>of the top, front, side and 3D views,<br/>in the colours of docs/design/map-style.json/]
   top -- "revise" --> edit
   top -- "OK" --> build[build the greybox]
   build --> how{editor under<br/>Computer Use?}

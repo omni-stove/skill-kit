@@ -1,0 +1,27 @@
+{
+  "pieces": {
+    "floor": { "color": "#d8d2c4", "label": "floor" },
+    "wall": { "color": "#6e6e6e", "label": "wall" },
+    "cover": { "color": "#c4884a", "label": "cover" },
+    "ramp": { "color": "#73a86f", "label": "ramp" },
+    "stairs": { "color": "#5d8fba", "label": "stairs" }
+  },
+  "teams": {
+    "enemy": { "color": "#d22222", "label": "enemy" },
+    "player": { "color": "#1f5fd6", "label": "player" },
+    "ally": { "color": "#1a9a5a", "label": "ally" },
+    "npc": { "color": "#8c8c8c", "label": "npc" },
+    "civilian": { "color": "#d4a017", "label": "civilian" }
+  },
+  "marks": {
+    "objective": { "color": "#9933cc", "label": "objective" },
+    "beat": { "color": "#222255", "label": "beat" },
+    "height metric": { "color": "#777777", "label": "height metric" },
+    "trigger": { "color": "#00aaaa", "label": "trigger" },
+    "intensity": { "color": "#777777", "label": "intensity" },
+    "death": { "color": "#111111", "label": "death" },
+    "hit": { "color": "#ff8800", "label": "hit" },
+    "stuck": { "color": "#cc00cc", "label": "stuck" }
+  },
+  "palette": ["#17becf", "#bcbd22", "#9467bd", "#8c564b", "#e377c2", "#2ca02c", "#ff7f0e", "#1f77b4"]
+}

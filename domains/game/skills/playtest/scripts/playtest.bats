@@ -50,4 +50,5 @@ SH
   [[ "$output" == *"svg	docs/design/playtests/stage.svg"* ]]
   [[ "$output" == *"against its beat"* ]]
   grep -q '<title>death \[1,0,1\] from \[4,0,4\]</title>' docs/design/playtests/stage.svg
+  grep -q '>s1</tspan> yard</text>' docs/design/playtests/stage.svg
 }

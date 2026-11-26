@@ -32,7 +32,7 @@ layout() { printf '%s\n' "$1" > docs/design/maps/arena.json; }
   [[ "$output" == *"svg	docs/design/maps/arena.svg"* ]]
   svg=$(cat docs/design/maps/arena.svg)
   for t in "top (" "3D (" "front (" "side ("; do [[ "$svg" == *">$t"* ]]; done
-  [[ "$svg" == *">red</text>"* ]]
+  [[ "$svg" == *'class="lg">red</text>'* ]]
   [[ "$svg" == *"cover_height 1.2"* ]]
   [[ "$svg" != *"passage_width"* ]]
   [[ "$svg" == *"<title>r&lt;1> (ramp)</title>"* ]]
@@ -65,7 +65,8 @@ layout() { printf '%s\n' "$1" > docs/design/maps/arena.json; }
   run sh "$VIEW" arena
   [ "$status" -eq 0 ]
   svg=$(cat docs/design/maps/arena.svg)
-  [[ "$svg" == *"teach attack</title>s1 gap &lt;1></text>"* ]]
+  [[ "$svg" == *"teach attack</title>s1</text>"* ]]
+  [[ "$svg" == *'<tspan font-weight="bold">s1</tspan> gap &lt;1></text>'* ]]
   [[ "$svg" != *"lost"* ]]
   [[ "$svg" == *"<title>s1-wall (wall): falls at runtime</title>"* ]]
   [[ "$svg" == *"<title>ally: captain</title>"* ]]
@@ -80,4 +81,41 @@ layout() { printf '%s\n' "$1" > docs/design/maps/arena.json; }
   [ "$status" -eq 0 ]
   grep -q 'class="ob"><title>site-a site: plant</title>' docs/design/maps/arena.svg
   grep -q '>site-a (blue)</text>' docs/design/maps/arena.svg
+}
+
+@test "colours each spawn by its team from the repo's map-style file and lists each team in the legend" {
+  mkdir -p docs/design
+  printf '%s\n' '{"teams":{"enemy":{"color":"#123456","label":"敵"}}}' > docs/design/map-style.json
+  layout '{"spawns":[{"team":"enemy","pos":[0,0,0],"yaw":0},{"team":"player","pos":[2,0,0],"yaw":0},{"team":"drone","pos":[3,0,0],"yaw":0}],
+    "pieces":[{"id":"ground","kind":"floor","pos":[0,-0.2,0],"size":[10,0.2,10]}]}'
+  run sh "$VIEW" arena
+  [ "$status" -eq 0 ]
+  svg=$(cat docs/design/maps/arena.svg)
+  [[ "$svg" == *'fill="#123456" class="sp"'* ]]
+  [[ "$svg" == *'class="lg">敵</text>'* ]]
+  [[ "$svg" == *'class="lg">player</text>'* ]]
+  [ "$(jq -r .teams.enemy.label docs/design/map-style.json)" = "敵" ]
+  [ "$(jq -r .teams.player.color docs/design/map-style.json)" = "#1f5fd6" ]
+  [ "$(jq -r .teams.drone.color docs/design/map-style.json)" = "$(jq -r '.palette[0]' "$BATS_TEST_DIRNAME/map-style.json")" ]
+  [[ "$svg" == *'class="lg">drone</text>'* ]]
+  ! command -v xmllint >/dev/null || xmllint --noout docs/design/maps/arena.svg
+}
+
+@test "map-style.sh refuses a style file that is not JSON" {
+  mkdir -p docs/design
+  echo '{' > docs/design/map-style.json
+  run sh "$BATS_TEST_DIRNAME/map-style.sh"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"is not valid JSON"* ]]
+}
+
+@test "moves a section's name off the spawn at its centre" {
+  layout '{"beats":[{"id":"s1","name":"yard","notes":["x"]}],
+    "spawns":[{"team":"enemy","pos":[0,0,0],"yaw":0}],
+    "pieces":[{"id":"s1-floor","kind":"floor","pos":[0,0,0],"size":[20,0.2,20]}]}'
+  run sh "$VIEW" arena
+  [ "$status" -eq 0 ]
+  cx=$(grep -o '<circle cx="[^"]*" cy="[^"]*" r="5"' docs/design/maps/arena.svg | head -1 | awk -F'"' '{print $2, $4}')
+  grep -o '<text x="[^"]*" y="[^"]*" class="bt">' docs/design/maps/arena.svg | awk -F'"' -v c="$cx" '
+    { split(c, p, " "); dx = $2 - p[1]; dy = $4 - p[2]; if (dx < 0) dx = -dx; exit !(dx > 30 || dy > 10 || dy < -18) }'
 }

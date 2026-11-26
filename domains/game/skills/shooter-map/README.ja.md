@@ -11,7 +11,7 @@ flowchart TD
   layoutc --> top
   layoutp --> top
   exists -- "ある" --> edit[ユーザーの指示どおりに<br/>レイアウトを直す]
-  edit --> top[/レイアウトファイルと、上・正面・横から見た図と<br/>立体図をまとめたSVGを書き出す/]
+  edit --> top[/レイアウトファイルと、上・正面・横から見た図と<br/>立体図をまとめたSVGを書き出す（色は<br/>docs/design/map-style.json）/]
   top -- "修正" --> edit
   top -- "OK" --> build[グレーボックスを生成]
   build --> how{エディタを<br/>Computer Useで操作できる?}

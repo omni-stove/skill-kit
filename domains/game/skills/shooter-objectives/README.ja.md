@@ -9,7 +9,7 @@ flowchart TD
   ask --> place[目標地点を<br/>レイアウトファイルに置く]
   exists -- "ある" --> edit[ユーザーの指示どおりに<br/>目標地点を直す]
   place --> view
-  edit --> view[/目標地点を描いたマップのSVGを書き出し、<br/>警告を出す/]
+  edit --> view[/目標地点を描いたマップのSVGを書き出し、<br/>警告を出す（色は<br/>docs/design/map-style.json）/]
   view -- "修正" --> edit
   view -- "OK" --> measure[グレーボックスを生成し各目標を測る:<br/>各チームの到達時間と守り側の移動時間]
   measure -- "グレーボックスがまだない" --> stop

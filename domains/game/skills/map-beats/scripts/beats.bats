@@ -42,7 +42,7 @@ layout() { printf '%s\n' "$1" > docs/design/maps/plain.json; }
   [[ "$output" == *$'warn\ts1\tno notes'* ]]
   [[ "$output" == *$'svg\tdocs/design/maps/plain.svg'* ]]
   [[ "$output" == *"build.sh plain"* ]]
-  grep -q '>s1 gap</text>' docs/design/maps/plain.svg
+  grep -q '>s1</tspan> gap</text>' docs/design/maps/plain.svg
 }
 
 @test "prints no warn line when every section has a beat with notes" {

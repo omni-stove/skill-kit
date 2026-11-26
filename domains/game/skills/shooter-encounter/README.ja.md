@@ -9,7 +9,7 @@ flowchart TD
   ask --> write[戦闘エリアごとにエンカウンターを組む:<br/>トリガー、ウェーブ、出現位置と陣取る位置]
   exists -- "ある" --> edit[ユーザーの指示どおりに<br/>エンカウンターを直す]
   write --> view
-  edit --> view[/エンカウンターファイルと、マップの上面図に重ねたSVGと<br/>強さの推移を書き出し、警告を出す/]
+  edit --> view[/エンカウンターファイルと、マップの上面図に重ねたSVGと<br/>強さの推移を書き出し、警告を出す（色は<br/>docs/design/map-style.json）/]
   view -- "修正" --> edit
   view -- "OK" --> build[エンカウンターを<br/>グレーボックスに組み込む]
   build -- "グレーボックスがまだない" --> stop

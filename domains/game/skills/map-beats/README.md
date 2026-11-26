@@ -7,7 +7,7 @@ flowchart TD
   start -- "yes" --> sections[/lists the map's sections<br/>and the beats they have/]
   sections --> ask[/asks, a few sections at a time, what the repo does not say:<br/>controls taught, set pieces, what enemies and allies do,<br/>landmarks, why a section breaks a rule/]
   ask --> write[writes the beats, backdrop and notes<br/>into the layout file]
-  write --> view[/an SVG with each section named over it,<br/>notes as tooltips, and warnings/]
+  write --> view[/an SVG with each section named over it,<br/>notes as tooltips, and warnings,<br/>in the colours of docs/design/map-style.json/]
   view -- "revise" --> write
   view -- "OK" --> builder{greybox builder<br/>exists?}
   builder -- "no" --> done

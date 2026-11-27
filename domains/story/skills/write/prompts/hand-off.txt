@@ -1,5 +1,5 @@
 
 Then reply with the hand-off alone:
-[Scene name] complete. Reply y for the next Scene, or say what to revise.
-y: write the next Scene, then run {again}; once the source file has no Scene left, run
-{check} instead. Anything else: revise the Scene as the input says, then run {again}.
+[Output file] complete. Reply y to finish, or say what to revise.
+[Each finding you held, if any: its line, what it says, and the fixes open to it]
+y: finish. Anything else: revise the file as the input says, then run {again}.

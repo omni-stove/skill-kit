@@ -1,2 +1,2 @@
-Read the output file and revise it as the user says, by the loaded rules.
-Save it, then run {scene_check} "{file}" "{file}"
+Read the output file and revise it as the user says.
+Save it, then run {check} "{file}" "{file}"

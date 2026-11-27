@@ -16,7 +16,7 @@ flowchart TD
   draft --> write
   plot --> write
   plot --> draftall[draft-all<br/>every plot at once]
-  split --> write[write<br/>1 Scene at a time]
+  split --> write[write<br/>written, then fixed by the guards]
   write --> checks[check the draft]
   checks -- "fix" --> write
   checks --> synopsis[synopsis]

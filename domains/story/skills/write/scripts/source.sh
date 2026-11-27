@@ -1,7 +1,7 @@
 #!/bin/sh
 # Usage: source.sh <file>   (a plot file, or the story file itself)
 # Prints the output file the source is written to and the step to report on the
-# source, which leads to scene.sh.
+# source, which leads to write.sh.
 # Output, from where the source sits: plot/<x>.md -> ../<leading number of x,
 # else x>.txt; plot.md -> index.txt beside it; another .md -> <stem>.txt beside
 # it; a .txt is the output itself and is revised in place.
@@ -24,7 +24,7 @@ case $f in
     echo "Output: $f"
     prompt scope others="$others" file="$f"
     refs
-    prompt revise scene_check="$(dirname -- "$0")/scene-check.sh" file="$f"
+    prompt revise check="$(dirname -- "$0")/check.sh" file="$f"
     exit 0 ;;
 esac
 case $(basename -- "$dir") in
@@ -40,4 +40,4 @@ echo "Output: $out"
 [ ! -f "$out" ] || prompt exists
 prompt scope others="$others" file="$f"
 refs
-prompt report file="$f" scene="$(dirname -- "$0")/scene.sh" out="$out"
+prompt report file="$f" write="$(dirname -- "$0")/write.sh" out="$out"

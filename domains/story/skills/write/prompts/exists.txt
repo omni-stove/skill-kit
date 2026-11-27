@@ -1,1 +1,1 @@
-Read the output file, ask "Continue from where you left off, or start over?", and wait for the response.
+The output file exists. Ask "Overwrite it?" and wait for the response; go on only on yes.

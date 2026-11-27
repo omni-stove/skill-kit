@@ -1,4 +1,4 @@
 Launch one Agent on the source file, stating the limit above in its prompt with that command
 and the Reference lines, to report what the source must stay consistent with and what of it
 the reader already has. Open no other file until it returns. Save its report to a file, then
-run {scene} "{file}" "{out}" <the report file>
+run {write} "{file}" "{out}" <the report file>

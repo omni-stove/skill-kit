@@ -16,7 +16,7 @@ flowchart TD
   draft --> write
   plot --> write
   plot --> draftall[draft-all<br/>全プロットをまとめて]
-  split --> write[write<br/>1 Sceneずつ]
+  split --> write[write<br/>書いてからguardで直す]
   write --> checks[本文をチェック]
   checks -- "修正" --> write
   checks --> synopsis[synopsis]

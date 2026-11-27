@@ -2,22 +2,14 @@
 
 ```mermaid
 flowchart TD
-  author{author-rules.md<br/>at the repo root?}
-  author -- "yes" --> override[its rules override<br/>the default rules]
-  author -- "no" --> input
-  override --> input{input file?}
+  input{input file?}
   input -- "plot" --> exists{story file exists?}
-  exists -- "yes" --> ask[/asks: continue<br/>or start over?/]
-  exists -- "no" --> write
-  ask --> write[write 1 Scene]
-  write --> check[check and fix the Scene]
-  check --> reply[/"Scene complete.<br/>y: next Scene<br/>or say what to revise"/]
-  reply -- "y, Scene left" --> write
-  reply -- "y, no Scene left" --> final[check the whole file]
-  final --> done[/"complete + findings left<br/>for the user to decide"/]
+  exists -- "yes" --> ask[/asks: overwrite it?/]
+  ask -- "no" --> stop[ends]
+  ask -- "yes" --> write
+  exists -- "no" --> write[an Agent writes every Scene<br/>from the plot, without the guards]
+  write --> check[the file is checked and fixed<br/>by the guards, overridden by<br/>author-rules.md at the repo root]
+  input -- "story:<br/>revise as the user says" --> check
+  check --> reply[/"complete + findings left<br/>for the user to decide.<br/>y: finish<br/>or say what to revise"/]
   reply -- "revise" --> check
-  input -- "story:<br/>revise as the user says" --> rcheck[check and fix the file]
-  rcheck --> rreply[/"revised.<br/>y: finish<br/>or say what to revise"/]
-  rreply -- "y" --> final
-  rreply -- "revise" --> rcheck
 ```

@@ -1,0 +1,6 @@
+Launch one Agent with only these steps as its prompt: read {file} and {report}, and open
+no other file. Write every Scene of {file} in order and save them to {out}: the source file
+leads, take each fact it lacks from {report}, deliver its Intent through events alone,
+keep each line under ## Highlights word for word, and give each Scene its share of the
+length under ## Length, which covers the whole plot.
+Open no file until it returns, then run {check} "{file}" "{out}" "{report}"
